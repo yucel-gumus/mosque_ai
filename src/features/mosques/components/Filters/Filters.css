@@ -1,0 +1,111 @@
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+    align-items: flex-end;
+    padding: var(--spacing-md) 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-card);
+}
+
+.filters>* {
+    flex: 1 1 260px;
+}
+
+/* District Filter */
+.district-filter {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.district-filter__select {
+    margin-top: var(--spacing-sm);
+    min-width: 220px;
+    padding: 0.55rem 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-strong);
+    font-size: 0.95rem;
+    background: var(--color-bg-primary);
+}
+
+.district-filter__select:focus {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+}
+
+/* List Limit Slider */
+.list-limit {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.list-limit__label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.list-limit__slider {
+    margin-top: var(--spacing-sm);
+}
+
+.list-limit__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.list-limit__input {
+    width: 80px;
+    padding: 0.4rem 0.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border-strong);
+}
+
+.list-limit__btn {
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--color-primary);
+    color: var(--color-bg-primary);
+    padding: 0.45rem 0.85rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Filter Meta */
+.filter-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-meta__summary {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.filter-meta__reset {
+    border: none;
+    background: none;
+    color: var(--color-primary-light);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-left: var(--spacing-sm);
+}
+
+.filter-meta__reset:hover {
+    text-decoration: underline;
+}
+
+.filter-meta__hint {
+    display: block;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+    font-size: 0.85rem;
+}

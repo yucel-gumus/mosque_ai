@@ -1,0 +1,97 @@
+.map-panel {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    min-height: 420px;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+}
+
+.map.muted-base {
+    background: radial-gradient(circle at top, #111827, #020617 70%);
+}
+
+.map.muted-base .leaflet-pane.leaflet-tile-pane img {
+    filter: grayscale(1) brightness(0.35) contrast(1.1);
+    opacity: 0.6;
+}
+
+/* Mosque Pin Styles */
+.mosque-pin {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+}
+
+.mosque-pin .pin-body {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50% 50% 50% 0;
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+    transform: rotate(-45deg);
+    box-shadow: 0 8px 16px rgba(234, 88, 12, 0.4);
+}
+
+.mosque-pin .pin-dot {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fef3c7;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* User Pin Styles */
+.user-pin {
+    width: 18px;
+    height: 18px;
+    background: transparent;
+}
+
+.user-pin .user-dot {
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 3px solid #38bdf8;
+    background: rgba(14, 165, 233, 0.35);
+    box-shadow: 0 0 10px rgba(14, 165, 233, 0.8);
+}
+
+/* Cluster Styles */
+.mosque-cluster {
+    background: transparent;
+    border: none;
+}
+
+.mosque-cluster .cluster-body {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(79, 70, 229, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-bg-primary);
+    font-weight: 700;
+    box-shadow: 0 12px 20px rgba(79, 70, 229, 0.35);
+}
+
+/* Popup Styles */
+.mosque-popup {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 960px) {
+    .map-panel {
+        min-height: 360px;
+    }
+}

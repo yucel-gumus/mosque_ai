@@ -1,0 +1,91 @@
+/**
+ * CSS Custom Properties (Design Tokens)
+ * 
+ * Bu dosya tüm renk, spacing ve diğer design tokenlarını içerir.
+ * Tema değişikliği için tek bir nokta sağlar.
+ */
+
+:root {
+    /* ============================
+     Colors - Brand
+     ============================ */
+    --color-primary: #312e81;
+    --color-primary-light: #4338ca;
+    --color-accent: #f97316;
+    --color-accent-dark: #ea580c;
+
+    /* ============================
+     Colors - Text
+     ============================ */
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #334155;
+    --color-text-muted: #94a3b8;
+
+    /* ============================
+     Colors - Background
+     ============================ */
+    --color-bg-primary: #f8fafc;
+    --color-bg-secondary: #f1f5f9;
+    --color-bg-card: rgba(255, 255, 255, 0.9);
+
+    /* ============================
+     Colors - Border
+     ============================ */
+    --color-border: rgba(15, 23, 42, 0.1);
+    --color-border-strong: rgba(15, 23, 42, 0.2);
+
+    /* ============================
+     Colors - State
+     ============================ */
+    --color-error: #dc2626;
+    --color-error-bg: #fef2f2;
+    --color-success: #16a34a;
+    --color-warning: #ca8a04;
+
+    /* ============================
+     Spacing Scale
+     ============================ */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+    --spacing-2xl: 3rem;
+    /* 48px */
+
+    /* ============================
+     Border Radius
+     ============================ */
+    --radius-sm: 0.5rem;
+    /* 8px */
+    --radius-md: 0.75rem;
+    /* 12px */
+    --radius-lg: 1rem;
+    /* 16px */
+    --radius-full: 9999px;
+
+    /* ============================
+     Shadows
+     ============================ */
+    --shadow-sm: 0 4px 8px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 12px 20px rgba(15, 23, 42, 0.12);
+    --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.15);
+
+    /* ============================
+     Typography
+     ============================ */
+    --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    --font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+    /* ============================
+     Transitions
+     ============================ */
+    --transition-fast: 160ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 400ms ease;
+}

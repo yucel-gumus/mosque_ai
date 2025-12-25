@@ -1,0 +1,29 @@
+/* CSS Variables (Design Tokens) */
+@import './shared/styles/variables.css';
+
+/* Base Styles */
+:root {
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-secondary);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #e0e7ff 0%, var(--color-bg-secondary) 55%);
+}
+
+#root {
+  min-height: 100vh;
+}

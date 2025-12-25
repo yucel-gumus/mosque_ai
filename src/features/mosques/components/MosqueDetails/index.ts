@@ -1,0 +1,1 @@
+export { MosqueDetails } from './MosqueDetails';
