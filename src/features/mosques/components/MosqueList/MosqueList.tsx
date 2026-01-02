@@ -14,8 +14,6 @@ interface MosqueListProps {
 export function MosqueList({
     mosques,
     selectedId,
-    totalCount,
-    isTruncated,
     onSelect,
 }: MosqueListProps) {
     return (
@@ -60,13 +58,6 @@ export function MosqueList({
                         );
                     })}
                 </ul>
-
-                {isTruncated && (
-                    <div className="border-t border-border bg-muted/50 px-4 py-2 text-center text-xs text-muted-foreground">
-                        Yalnızca ilk {mosques.length} / {totalCount} sonuç listeleniyor.
-                        Kaydırıcıyı artırarak daha fazla kayıt görebilirsin.
-                    </div>
-                )}
             </CardContent>
         </Card>
     );

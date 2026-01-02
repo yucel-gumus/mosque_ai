@@ -56,3 +56,209 @@ body {
   color: var(--color-foreground);
   font-feature-settings: "rlig" 1, "calt" 1;
 }
+
+[data-radix-popper-content-wrapper] {
+  z-index: 9999 !important;
+}
+
+.leaflet-control-container {
+  z-index: 800;
+}
+
+.mosque-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+}
+
+.mosque-pin .pin-body {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(180deg, hsl(45 90% 55%) 0%, hsl(35 85% 45%) 100%);
+  border: 3px solid hsl(0 0% 100%);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mosque-pin .pin-body::before {
+  content: '🕌';
+  font-size: 14px;
+  transform: rotate(45deg);
+  position: absolute;
+}
+
+
+.mosque-pin.selected {
+  z-index: 999 !important;
+}
+
+.mosque-pin.selected .pin-body {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(180deg, hsl(205 90% 55%) 0%, hsl(195 85% 45%) 100%);
+  border-width: 4px;
+  filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.6));
+  animation: mosqueSelectedPulse 2s infinite ease-in-out;
+}
+
+.mosque-pin.selected .pin-body::before {
+  font-size: 18px;
+}
+
+@keyframes mosqueSelectedPulse {
+  0% {
+    transform: rotate(-45deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(-45deg) scale(1.15);
+  }
+
+  100% {
+    transform: rotate(-45deg) scale(1);
+  }
+}
+
+.mosque-pin .pin-dot {
+  display: none;
+}
+
+.user-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-pin .user-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #0ea5e9;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  color: white;
+  z-index: 2;
+}
+
+.user-pin .user-marker::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background-color: #0ea5e9;
+  z-index: -1;
+  opacity: 0.4;
+  animation: userPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.user-pin .user-marker::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+@keyframes userPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.mosque-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mosque-cluster .cluster-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 4px 8px;
+  background: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(262 83% 42%) 100%);
+  border: 3px solid hsl(0 0% 100%);
+  border-radius: 50%;
+  box-shadow: 0 3px 12px rgba(99, 102, 241, 0.5);
+}
+
+.mosque-cluster .cluster-body span {
+  color: hsl(0 0% 100%);
+  font-size: 13px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom Popup Styles */
+.leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background) !important;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  padding: 16px !important;
+  line-height: 1.5 !important;
+  font-family: inherit !important;
+  min-width: 220px;
+  color: var(--color-foreground) !important;
+}
+
+.leaflet-popup-tip-container {
+  overflow: visible !important;
+}
+
+.leaflet-popup-tip {
+  background-color: var(--color-background) !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-left: none;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 8px !important;
+  right: 8px !important;
+  color: var(--color-muted-foreground) !important;
+  padding: 4px !important;
+  width: 24px !important;
+  height: 24px !important;
+  font: 18px/14px Tahoma, Verdana, sans-serif !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  background-color: var(--color-muted) !important;
+  color: var(--color-foreground) !important;
+}

@@ -18,8 +18,8 @@ function App() {
       <AppShell>
         <Header
           eyebrow="İstanbul Camileri"
-          title="Şehrin tamamındaki ibadethaneler tek haritada"
-          lead="Overpass API ile OpenStreetMap verisi canlı olarak çekiliyor. Binlerce cami özel pinlerle kümeleniyor, dilerseniz tek bir ilçe seçerek haritayı ve listeyi daraltabilirsiniz."
+          title=""
+          lead=""
         />
         <MosquesFeature />
       </AppShell>

@@ -1,77 +1,63 @@
-import { useCallback, useEffect, useState } from 'react';
+// React imports removed as they are no longer needed
 import type { Mosque, FetchStatus } from '../types/mosque.types';
-import { fetchMosques } from '../api/overpassApi';
+import mosquesData from '../../../data/mosques.json';
 
-/**
- * useMosques hook'unun dönüş tipi.
- */
+interface MosquesDataFile {
+    fetchedAt: string;
+    totalCount: number;
+    withDistrict: number;
+    withoutDistrict: number;
+    mosques: Array<{
+        id: number;
+        type: string;
+        name: string;
+        lat: number;
+        lon: number;
+        district?: string;
+        neighborhood?: string;
+        street?: string;
+        wikidata?: string;
+        osmUrl: string;
+    }>;
+}
+
 interface UseMosquesResult {
-    /** Çekilen cami listesi */
     mosques: Mosque[];
-    /** API çağrı durumu */
     status: FetchStatus;
-    /** Hata mesajı (varsa) */
     error: string | null;
-    /** Verileri yeniden çekme fonksiyonu */
     refetch: () => void;
+    forceRefresh: () => void;
 }
 
-/**
- * Cami verilerini Overpass API'den çeken custom hook.
- *
- * @param queryBody - Overpass sorgu gövdesi
- * @returns Cami listesi, durum, hata ve yenileme fonksiyonu
- *
- * @example
- * ```tsx
- * const { mosques, status, error, refetch } = useMosques(DEFAULT_QUERY_BODY);
- *
- * if (status === 'loading') return <LoadingSpinner />;
- * if (status === 'error') return <ErrorCard message={error} onRetry={refetch} />;
- *
- * return <MosqueList mosques={mosques} />;
- * ```
- */
-export function useMosques(queryBody: string): UseMosquesResult {
-    const [mosques, setMosques] = useState<Mosque[]>([]);
-    const [status, setStatus] = useState<FetchStatus>('idle');
-    const [error, setError] = useState<string | null>(null);
-    const [reloadToken, setReloadToken] = useState(0);
+const normalizeDistrict = (district: string | undefined): string | undefined => {
+    if (!district) return undefined;
+    const trimmed = district.trim();
+    if (!trimmed) return undefined;
+    return trimmed.charAt(0).toLocaleUpperCase('tr-TR') + trimmed.slice(1).toLocaleLowerCase('tr-TR');
+};
 
-    const refetch = useCallback(() => {
-        setReloadToken((token) => token + 1);
-    }, []);
+const data = mosquesData as MosquesDataFile;
 
-    useEffect(() => {
-        let cancelled = false;
+// Process data immediately
+const processedMosques: Mosque[] = data.mosques.map((m) => ({
+    id: m.id,
+    name: m.name,
+    lat: m.lat,
+    lon: m.lon,
+    district: normalizeDistrict(m.district),
+    neighborhood: m.neighborhood,
+    wikidata: m.wikidata,
+    osmUrl: m.osmUrl,
+})).sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 
-        const loadMosques = async () => {
-            setStatus('loading');
-            setError(null);
-
-            try {
-                const data = await fetchMosques(queryBody);
-
-                if (!cancelled) {
-                    setMosques(data);
-                    setStatus('success');
-                }
-            } catch (err) {
-                if (!cancelled) {
-                    const message = err instanceof Error ? err.message : 'Bilinmeyen hata';
-                    setError(message);
-                    setMosques([]);
-                    setStatus('error');
-                }
-            }
-        };
-
-        void loadMosques();
-
-        return () => {
-            cancelled = true;
-        };
-    }, [queryBody, reloadToken]);
-
-    return { mosques, status, error, refetch };
+export function useMosques(): UseMosquesResult {
+    // Since data is static, we can return it immediately with success status
+    return {
+        mosques: processedMosques,
+        status: 'success',
+        error: null,
+        refetch: () => { },
+        forceRefresh: () => { }
+    };
 }
+

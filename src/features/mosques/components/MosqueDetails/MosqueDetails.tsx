@@ -1,30 +1,19 @@
 import type { Mosque } from '../../types/mosque.types';
 import { formatCoordinates } from '../../utils/geo.utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Building2, MapPin, ExternalLink, Info } from 'lucide-react';
+import { Building2, MapPin, ExternalLink } from 'lucide-react';
 
 interface MosqueDetailsProps {
     mosque: Mosque;
-    filteredCount: number;
-    totalCount: number;
-    listLimit: number;
 }
 
 export function MosqueDetails({
     mosque,
-    filteredCount,
-    totalCount,
 }: MosqueDetailsProps) {
     return (
         <Card>
             <CardHeader className="pb-3">
-                <div className="flex items-center justify-between gap-2">
-                    <Badge variant="secondary" className="text-xs">
-                        {filteredCount} / {totalCount} cami
-                    </Badge>
-                </div>
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <Building2 className="h-5 w-5 text-primary" />
                     {mosque.name}
@@ -85,14 +74,6 @@ export function MosqueDetails({
                         </div>
                     )}
                 </dl>
-
-                <div className="mt-4 flex items-start gap-2 rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
-                    <Info className="mt-0.5 h-3 w-3 shrink-0" />
-                    <p>
-                        Veriler OpenStreetMap gönüllülerinin katkılarına dayanır.
-                        Bir hata görürseniz OSM üzerinden düzeltebilirsiniz.
-                    </p>
-                </div>
             </CardContent>
         </Card>
     );

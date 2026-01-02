@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# 🕌 İstanbul Camileri Haritası
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+İstanbul genelindeki 3000'den fazla camiyi harita üzerinde görüntüleyen, konum bazlı sıralama yapan ve detaylı bilgiler sunan modern bir web uygulamasıdır.
 
-Currently, two official plugins are available:
+## 🚀 Özellikler
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Geniş Veri Tabanı:** OpenStreetMap verileriyle oluşturulmuş, İstanbul'daki tüm camileri kapsayan statik veri seti.
+- **İnteraktif Harita:** Leaflet.js tabanlı, kümeleme (clustering) özellikli performanslı harita.
+- **Konum Bazlı Sıralama:** Kullanıcı konumuna göre en yakın camileri otomatik listeleme.
+- **Detaylı Bilgiler:** Her cami için adres, ilçe, mahalle ve WikiData/OSM bağlantıları.
+- **Modern Arayüz:** Tailwind CSS ve shadcn/ui ile tasarlanmış, mobil uyumlu ve şık tasarım.
+- **Performans:** Statik JSON verisi kullanımı sayesinde API bağımlılığı olmadan anlık yükleme.
 
-## React Compiler
+## 🛠 Teknolojiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Core:** [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
+- **UI & Styling:** [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
+- **Harita:** [React Leaflet](https://react-leaflet.js.org/), [Leaflet](https://leafletjs.com/)
+- **Veri:** OpenStreetMap (Overpass API ile çekilmiş statik JSON)
 
-## Expanding the ESLint configuration
+## 📦 Kurulum
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Projeyi yerel ortamınızda çalıştırmak için:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+1.  **Repoyu klonlayın:**
+    ```bash
+    git clone https://github.com/kullaniciadi/istanbul-camileri.git
+    cd istanbul-camileri
+    ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+2.  **Bağımlılıkları yükleyin:**
+    ```bash
+    npm install
+    ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3.  **Geliştirme sunucusunu başlatın:**
+    ```bash
+    npm run dev
+    ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+4.  Tarayıcınızda `http://localhost:5173` adresine gidin.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🏗 Mimari
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Proje, "Feature-Based" (Özellik Tabanlı) klasör yapısını kullanır:
+
+- `src/data`: Statik cami verilerini içerir (`mosques.json`).
+- `src/features/mosques`: Cami listeleme ve harita özellikleri buradadır.
+  - `components`: UI bileşenleri (Harita, Liste, Detay).
+  - `hooks`: Logic (Konum, Sıralama).
+  - `types`: TypeScript tip tanımları.
+- `src/shared`: Paylaşılan bileşenler (Layout, ErrorBoundary).
+- `src/components/ui`: shadcn/ui taban bileşenleri.
+
+## 📝 Lisans
+
+Bu proje MIT lisansı ile lisanslanmıştır. Veriler [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanları tarafından sağlanmıştır.
