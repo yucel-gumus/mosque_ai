@@ -1,37 +1,37 @@
 import type { ReactNode } from 'react';
-import './Layout.css';
 
 interface AppShellProps {
-    /** Uygulama içeriği */
     children: ReactNode;
 }
 
-/**
- * Ana uygulama kabuğu.
- * Maksimum genişlik ve padding sağlar.
- */
 export function AppShell({ children }: AppShellProps) {
-    return <div className="app-shell">{children}</div>;
+    return (
+        <div className="min-h-screen bg-background">
+            <div className="container mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                {children}
+            </div>
+        </div>
+    );
 }
 
 interface HeaderProps {
-    /** Üst başlık (eyebrow) */
     eyebrow: string;
-    /** Ana başlık */
     title: string;
-    /** Alt açıklama */
     lead: string;
 }
 
-/**
- * Uygulama başlık komponenti.
- */
 export function Header({ eyebrow, title, lead }: HeaderProps) {
     return (
-        <header className="app-header">
-            <p className="app-header__eyebrow">{eyebrow}</p>
-            <h1 className="app-header__title">{title}</h1>
-            <p className="app-header__lead">{lead}</p>
+        <header className="mb-8 space-y-4">
+            <p className="text-sm font-medium uppercase tracking-wider text-primary">
+                {eyebrow}
+            </p>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                {title}
+            </h1>
+            <p className="max-w-3xl text-base text-muted-foreground sm:text-lg">
+                {lead}
+            </p>
         </header>
     );
 }

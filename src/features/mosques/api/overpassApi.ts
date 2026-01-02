@@ -1,6 +1,18 @@
 import type { Mosque, OverpassResponse, OverpassElement } from '../types/mosque.types';
-import { OVERPASS_API_URL, OVERPASS_TIMEOUT } from '../constants/mosque.constants';
+import { OVERPASS_TIMEOUT } from '../constants/mosque.constants';
 import { findDistrictByProximity } from './districtBoundariesApi';
+
+const OVERPASS_SERVERS = [
+    import.meta.env.VITE_OVERPASS_API_URL || 'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+];
+
+const RETRY_CONFIG = {
+    maxRetries: 2,
+    baseDelayMs: 1000,
+    timeoutMs: 30000,
+};
 
 const buildOverpassQuery = (body: string): string => `
 [out:json][timeout:${OVERPASS_TIMEOUT}];
@@ -66,28 +78,73 @@ const enrichMosquesWithDistricts = (mosques: Mosque[]): Mosque[] => {
     });
 };
 
-export async function fetchMosques(queryBody: string): Promise<Mosque[]> {
-    const response = await fetch(OVERPASS_API_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ data: buildOverpassQuery(queryBody) }),
-    });
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
-    if (!response.ok) {
-        throw new Error(`Overpass API hatası: ${response.status} ${response.statusText}`);
+const fetchWithTimeout = async (url: string, options: RequestInit, timeoutMs: number): Promise<Response> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        return response;
+    } finally {
+        clearTimeout(timeoutId);
+    }
+};
+
+const tryFetchFromServer = async (serverUrl: string, queryBody: string): Promise<OverpassResponse> => {
+    let lastError: Error | null = null;
+
+    for (let attempt = 0; attempt <= RETRY_CONFIG.maxRetries; attempt++) {
+        try {
+            if (attempt > 0) {
+                const delayMs = RETRY_CONFIG.baseDelayMs * Math.pow(2, attempt - 1);
+                await delay(delayMs);
+            }
+
+            const response = await fetchWithTimeout(
+                serverUrl,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ data: buildOverpassQuery(queryBody) }),
+                },
+                RETRY_CONFIG.timeoutMs
+            );
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            lastError = error instanceof Error ? error : new Error(String(error));
+        }
     }
 
-    const data: OverpassResponse = await response.json();
+    throw lastError ?? new Error('Bilinmeyen hata');
+};
 
-    const mosques = data.elements
-        .map(parseElement)
-        .filter((mosque): mosque is Mosque => mosque !== null);
+export async function fetchMosques(queryBody: string): Promise<Mosque[]> {
+    let lastError: Error | null = null;
 
-    const uniqueMosques = deduplicateByCoordinates(mosques);
+    for (const serverUrl of OVERPASS_SERVERS) {
+        try {
+            const data = await tryFetchFromServer(serverUrl, queryBody);
 
-    const enrichedMosques = enrichMosquesWithDistricts(uniqueMosques);
+            const mosques = data.elements
+                .map(parseElement)
+                .filter((mosque): mosque is Mosque => mosque !== null);
 
-    return enrichedMosques.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+            const uniqueMosques = deduplicateByCoordinates(mosques);
+            const enrichedMosques = enrichMosquesWithDistricts(uniqueMosques);
+
+            return enrichedMosques.sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+        } catch (error) {
+            lastError = error instanceof Error ? error : new Error(String(error));
+        }
+    }
+
+    throw new Error(`Tüm Overpass sunucuları başarısız oldu. Son hata: ${lastError?.message}`);
 }
+

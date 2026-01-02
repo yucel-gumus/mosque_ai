@@ -1,73 +1,47 @@
-import { type ChangeEvent, useCallback } from 'react';
+import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components/ui/button';
 import { LIST_LIMIT } from '../../constants/mosque.constants';
+import { Plus } from 'lucide-react';
+
 
 interface ListLimitSliderProps {
-    /** Mevcut limit değeri */
     value: number;
-    /** Değer değiştiğinde çağrılır */
     onChange: (limit: number) => void;
 }
 
-/**
- * Liste limiti kaydırıcı komponenti.
- */
 export function ListLimitSlider({ value, onChange }: ListLimitSliderProps) {
-    const handleSliderChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            onChange(Number(e.target.value));
-        },
-        [onChange]
-    );
+    const handleSliderChange = (values: number[]) => {
+        onChange(values[0]);
+    };
 
-    const handleInputChange = useCallback(
-        (e: ChangeEvent<HTMLInputElement>) => {
-            const newValue = Math.min(
-                Math.max(Math.round(Number(e.target.value)), LIST_LIMIT.MIN),
-                LIST_LIMIT.MAX
-            );
-            onChange(newValue);
-        },
-        [onChange]
-    );
-
-    const handleIncrement = useCallback(() => {
+    const handleIncrement = () => {
         const newValue = Math.min(value + 10, LIST_LIMIT.MAX);
         onChange(newValue);
-    }, [value, onChange]);
+    };
 
     return (
-        <div className="list-limit">
-            <label htmlFor="list-limit-input" className="list-limit__label">
-                Listede gösterilecek cami adedi ({value})
-                <input
-                    type="range"
-                    className="list-limit__slider"
-                    min={LIST_LIMIT.MIN}
-                    max={LIST_LIMIT.MAX}
-                    step={LIST_LIMIT.STEP}
-                    value={value}
-                    onChange={handleSliderChange}
-                />
+        <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-foreground whitespace-nowrap">
+                Limit: {value}
             </label>
-
-            <div className="list-limit__controls">
-                <input
-                    id="list-limit-input"
-                    type="number"
-                    className="list-limit__input"
-                    min={LIST_LIMIT.MIN}
-                    max={LIST_LIMIT.MAX}
-                    value={value}
-                    onChange={handleInputChange}
-                />
-                <button
-                    type="button"
-                    className="list-limit__btn"
-                    onClick={handleIncrement}
-                >
-                    +10
-                </button>
-            </div>
+            <Slider
+                value={[value]}
+                onValueChange={handleSliderChange}
+                min={LIST_LIMIT.MIN}
+                max={LIST_LIMIT.MAX}
+                step={LIST_LIMIT.STEP}
+                className="w-32"
+            />
+            <Button
+                variant="outline"
+                size="sm"
+                onClick={handleIncrement}
+                className="h-8 gap-1 px-2"
+                title="Limiti 10 artır"
+            >
+                <Plus className="h-3 w-3" />
+                <span>10</span>
+            </Button>
         </div>
     );
 }

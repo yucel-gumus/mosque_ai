@@ -1,92 +1,99 @@
 import type { Mosque } from '../../types/mosque.types';
 import { formatCoordinates } from '../../utils/geo.utils';
-import './MosqueDetails.css';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Building2, MapPin, ExternalLink, Info } from 'lucide-react';
 
 interface MosqueDetailsProps {
-    /** Gösterilecek cami */
     mosque: Mosque;
-    /** Filtrelenmiş cami sayısı */
     filteredCount: number;
-    /** Toplam cami sayısı */
     totalCount: number;
-    /** Listede gösterilen maksimum cami sayısı */
     listLimit: number;
 }
 
-/**
- * Seçili cami detay paneli.
- *
- * @description
- * Caminin adı, koordinatları, ilçe/mahalle bilgisi ve
- * OSM/Wikidata bağlantılarını gösterir.
- */
 export function MosqueDetails({
     mosque,
     filteredCount,
     totalCount,
-    listLimit,
 }: MosqueDetailsProps) {
     return (
-        <div className="mosque-details">
-            <p className="mosque-details__meta">
-                Filtrelenen cami: {filteredCount} · İstanbul geneli: {totalCount}
-            </p>
+        <Card>
+            <CardHeader className="pb-3">
+                <div className="flex items-center justify-between gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                        {filteredCount} / {totalCount} cami
+                    </Badge>
+                </div>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                    <Building2 className="h-5 w-5 text-primary" />
+                    {mosque.name}
+                </CardTitle>
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <MapPin className="h-3 w-3" />
+                    {formatCoordinates(mosque.lat, mosque.lon, 5)}
+                </p>
+            </CardHeader>
 
-            <h2 className="mosque-details__name">{mosque.name}</h2>
+            <Separator />
 
-            <p className="mosque-details__coords">
-                Koordinatlar: {formatCoordinates(mosque.lat, mosque.lon, 5)}
-            </p>
+            <CardContent className="pt-4">
+                <dl className="space-y-2 text-sm">
+                    {mosque.district && (
+                        <div className="flex justify-between">
+                            <dt className="text-muted-foreground">İlçe</dt>
+                            <dd className="font-medium">{mosque.district}</dd>
+                        </div>
+                    )}
 
-            <ul className="mosque-details__attributes">
-                {mosque.district && (
-                    <li className="mosque-details__attribute">
-                        <span>İlçe</span>
-                        <span className="mosque-details__attribute-value">{mosque.district}</span>
-                    </li>
-                )}
+                    {mosque.neighborhood && (
+                        <div className="flex justify-between">
+                            <dt className="text-muted-foreground">Mahalle</dt>
+                            <dd className="font-medium">{mosque.neighborhood}</dd>
+                        </div>
+                    )}
 
-                {mosque.neighborhood && (
-                    <li className="mosque-details__attribute">
-                        <span>Mahalle</span>
-                        <span className="mosque-details__attribute-value">
-                            {mosque.neighborhood}
-                        </span>
-                    </li>
-                )}
+                    <div className="flex justify-between">
+                        <dt className="text-muted-foreground">OSM</dt>
+                        <dd>
+                            <a
+                                href={mosque.osmUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-primary hover:underline"
+                            >
+                                #{mosque.id}
+                                <ExternalLink className="h-3 w-3" />
+                            </a>
+                        </dd>
+                    </div>
 
-                <li className="mosque-details__attribute">
-                    <span>OSM</span>
-                    <a
-                        href={mosque.osmUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mosque-details__attribute-link"
-                    >
-                        #{mosque.id}
-                    </a>
-                </li>
+                    {mosque.wikidata && (
+                        <div className="flex justify-between">
+                            <dt className="text-muted-foreground">Wikidata</dt>
+                            <dd>
+                                <a
+                                    href={`https://www.wikidata.org/wiki/${mosque.wikidata}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-primary hover:underline"
+                                >
+                                    {mosque.wikidata}
+                                    <ExternalLink className="h-3 w-3" />
+                                </a>
+                            </dd>
+                        </div>
+                    )}
+                </dl>
 
-                {mosque.wikidata && (
-                    <li className="mosque-details__attribute">
-                        <span>Wikidata</span>
-                        <a
-                            href={`https://www.wikidata.org/wiki/${mosque.wikidata}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mosque-details__attribute-link"
-                        >
-                            {mosque.wikidata}
-                        </a>
-                    </li>
-                )}
-            </ul>
-
-            <p className="mosque-details__description">
-                Noktalar, OpenStreetMap gönüllülerinin sağladığı verilere dayanır. Liste
-                varsayılan olarak konumuna en yakın {listLimit} camiyi gösterir; sağdaki
-                kaydırıcı ile bu sayıyı artırabilirsin.
-            </p>
-        </div>
+                <div className="mt-4 flex items-start gap-2 rounded-md bg-muted/50 p-3 text-xs text-muted-foreground">
+                    <Info className="mt-0.5 h-3 w-3 shrink-0" />
+                    <p>
+                        Veriler OpenStreetMap gönüllülerinin katkılarına dayanır.
+                        Bir hata görürseniz OSM üzerinden düzeltebilirsiniz.
+                    </p>
+                </div>
+            </CardContent>
+        </Card>
     );
 }

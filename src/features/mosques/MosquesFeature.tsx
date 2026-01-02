@@ -1,48 +1,26 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
-// Hooks
 import { useMosques, useGeolocation, useDistanceSort } from './hooks';
 
-// Components
 import { MosqueMap } from './components/MosqueMap';
 import { MosqueList } from './components/MosqueList';
 import { MosqueDetails } from './components/MosqueDetails';
 
 import { Filters } from './components/Filters';
 
-// Shared
 import { StatusCard } from '../../shared/components/StatusCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// Constants
 import { DEFAULT_QUERY_BODY, LIST_LIMIT } from './constants/mosque.constants';
 
-// Styles
-import './MosquesFeature.css';
-
-/**
- * İstanbul Camileri feature container.
- *
- * @description
- * Tüm cami feature'ının state yönetimi ve koordinasyonunu sağlar.
- * Alt komponentlere props aracılığıyla veri iletir.
- */
 export function MosquesFeature() {
-    // ============================
-    // State
-    // ============================
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [activeDistrict, setActiveDistrict] = useState('all');
     const [listLimit, setListLimit] = useState<number>(LIST_LIMIT.DEFAULT);
 
-    // ============================
-    // Custom Hooks
-    // ============================
     const { mosques, status, error, refetch } = useMosques(DEFAULT_QUERY_BODY);
     const { coords: userCoords, error: geoError } = useGeolocation();
 
-    // ============================
-    // Derived State (Memoized)
-    // ============================
     const districtOptions = useMemo(() => {
         const districts = new Set<string>();
         mosques.forEach((mosque) => {
@@ -65,53 +43,29 @@ export function MosquesFeature() {
         [sortedMosques, listLimit]
     );
 
+    const computedSelectedId = useMemo(() => {
+        if (!sortedMosques.length) return null;
+
+        const exists = sortedMosques.some((m) => m.id === selectedId);
+        if (exists && selectedId !== null) return selectedId;
+
+        return sortedMosques[0].id;
+    }, [sortedMosques, selectedId]);
+
     const selectedMosque = useMemo(
-        () => filteredMosques.find((m) => m.id === selectedId) ?? null,
-        [filteredMosques, selectedId]
+        () => filteredMosques.find((m) => m.id === computedSelectedId) ?? null,
+        [filteredMosques, computedSelectedId]
     );
 
-    // Counts
     const totalCount = mosques.length;
     const filteredCount = filteredMosques.length;
     const isTruncated = sortedMosques.length > displayedMosques.length;
 
-    // Geo status message
     const geoStatusMessage = useMemo(() => {
         if (!userCoords) return 'Konum belirleniyor...';
         if (geoError) return `İstanbul merkezine göre listeleniyor (${geoError}).`;
         return 'Konumuna göre listeleniyor.';
     }, [userCoords, geoError]);
-
-    // ============================
-    // Effects
-    // ============================
-
-    // API başarılı olduğunda ilk camiyi seç
-    useEffect(() => {
-        if (status === 'success' && mosques.length > 0 && selectedId === null) {
-            setSelectedId(mosques[0].id);
-            setActiveDistrict('all');
-        }
-    }, [status, mosques, selectedId]);
-
-    // Filtre değiştiğinde seçili camiyi güncelle
-    useEffect(() => {
-        if (!sortedMosques.length) {
-            if (selectedId !== null) {
-                setSelectedId(null);
-            }
-            return;
-        }
-
-        const exists = sortedMosques.some((m) => m.id === selectedId);
-        if (!exists || selectedId === null) {
-            setSelectedId(sortedMosques[0].id);
-        }
-    }, [sortedMosques, selectedId]);
-
-    // ============================
-    // Event Handlers
-    // ============================
 
     const handleMosqueSelect = useCallback((id: number) => {
         setSelectedId(id);
@@ -119,6 +73,7 @@ export function MosquesFeature() {
 
     const handleDistrictChange = useCallback((district: string) => {
         setActiveDistrict(district);
+        setSelectedId(null);
     }, []);
 
     const handleListLimitChange = useCallback((limit: number) => {
@@ -128,23 +83,17 @@ export function MosquesFeature() {
 
     const handleResetFilter = useCallback(() => {
         setActiveDistrict('all');
+        setSelectedId(null);
     }, []);
 
-    // ============================
-    // Render Helpers
-    // ============================
-    const isLoading = status === 'loading';
+    const isLoading = status === 'loading' || status === 'idle';
     const hasError = status === 'error';
     const hasData = status === 'success' && filteredCount > 0 && selectedMosque;
     const hasNoFiltered = status === 'success' && totalCount > 0 && filteredCount === 0;
     const hasNoData = status === 'success' && mosques.length === 0;
 
-    // ============================
-    // Render
-    // ============================
     return (
         <>
-            {/* Filters (sadece veri varsa göster) */}
             {!isLoading && !hasError && districtOptions.length > 0 && (
                 <Filters
                     activeDistrict={activeDistrict}
@@ -160,14 +109,22 @@ export function MosquesFeature() {
                 />
             )}
 
-            {/* Loading State */}
             {isLoading && (
-                <StatusCard>
-                    <p>İstanbul'daki camiler Overpass API'den çekiliyor...</p>
-                </StatusCard>
+                <div className="space-y-4 py-8">
+                    <div className="flex items-center gap-4">
+                        <Skeleton className="h-10 w-48" />
+                        <Skeleton className="h-10 w-32" />
+                    </div>
+                    <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
+                        <Skeleton className="h-[500px] rounded-xl" />
+                        <div className="space-y-4">
+                            <Skeleton className="h-32 rounded-xl" />
+                            <Skeleton className="h-64 rounded-xl" />
+                        </div>
+                    </div>
+                </div>
             )}
 
-            {/* Error State */}
             {hasError && (
                 <StatusCard variant="error" action={{ label: 'Tekrar dene', onClick: refetch }}>
                     <p>
@@ -176,9 +133,8 @@ export function MosquesFeature() {
                 </StatusCard>
             )}
 
-            {/* Main Content */}
             {hasData && (
-                <section className="content-grid">
+                <section className="grid gap-6 lg:grid-cols-[1fr_400px]">
                     <MosqueMap
                         mosques={filteredMosques}
                         selectedMosque={selectedMosque}
@@ -186,7 +142,7 @@ export function MosquesFeature() {
                         onMosqueSelect={handleMosqueSelect}
                     />
 
-                    <div className="info-panel">
+                    <div className="flex flex-col gap-4">
                         <MosqueDetails
                             mosque={selectedMosque}
                             filteredCount={filteredCount}
@@ -196,7 +152,7 @@ export function MosquesFeature() {
 
                         <MosqueList
                             mosques={displayedMosques}
-                            selectedId={selectedId}
+                            selectedId={computedSelectedId}
                             totalCount={sortedMosques.length}
                             isTruncated={isTruncated}
                             onSelect={handleMosqueSelect}
@@ -205,7 +161,6 @@ export function MosquesFeature() {
                 </section>
             )}
 
-            {/* No Filtered Results */}
             {hasNoFiltered && (
                 <StatusCard action={{ label: 'Filtreyi temizle', onClick: handleResetFilter }}>
                     <p>
@@ -215,7 +170,6 @@ export function MosquesFeature() {
                 </StatusCard>
             )}
 
-            {/* No Data */}
             {hasNoData && (
                 <StatusCard action={{ label: 'Verileri yenile', onClick: refetch }}>
                     <p>
@@ -227,3 +181,5 @@ export function MosquesFeature() {
         </>
     );
 }
+
+

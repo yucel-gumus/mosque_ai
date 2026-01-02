@@ -10,22 +10,15 @@ import {
     createClusterIcon,
 } from '../../utils/leaflet.utils';
 import { formatCoordinates } from '../../utils/geo.utils';
-import './MosqueMap.css';
+import { Card } from '@/components/ui/card';
 
 interface MosqueMapProps {
-    /** Haritada gösterilecek camiler */
     mosques: Mosque[];
-    /** Seçili cami (harita bu camiye odaklanır) */
     selectedMosque: Mosque | null;
-    /** Kullanıcı konumu */
     userCoords: Coordinates | null;
-    /** Cami seçildiğinde çağrılır */
     onMosqueSelect: (id: number) => void;
 }
 
-/**
- * Haritayı belirtilen konuma animate eder.
- */
 function FlyToLocation({ position }: { position: Coordinates }) {
     const map = useMap();
 
@@ -38,38 +31,32 @@ function FlyToLocation({ position }: { position: Coordinates }) {
     return null;
 }
 
-/**
- * İstanbul cami haritası komponenti.
- *
- * @description
- * Leaflet tabanlı interaktif harita. Camileri cluster halinde gösterir,
- * seçili camiye zoom yapar ve kullanıcı konumunu işaretler.
- */
 export function MosqueMap({
     mosques,
     selectedMosque,
     userCoords,
     onMosqueSelect,
 }: MosqueMapProps) {
-    // Memoized ikonlar (re-render'da yeniden oluşturulmasını engelle)
     const mosqueIcon = useMemo(() => createMosqueIcon(), []);
     const userIcon = useMemo(() => createUserIcon(), []);
 
-    // Harita sınırlarını hesapla
     const bounds = useMemo(() => {
         if (!mosques.length) return null;
         return L.latLngBounds(mosques.map((m) => [m.lat, m.lon]));
     }, [mosques]);
 
-    // Seçili cami yoksa haritayı render etme
     if (!selectedMosque) {
         return null;
     }
 
     return (
-        <div className="map-panel">
+        <Card
+            className="relative h-[500px] overflow-hidden lg:h-auto"
+            role="application"
+            aria-label="İstanbul cami haritası - haritada gezinmek için ok tuşlarını kullanın"
+        >
             <MapContainer
-                className="map muted-base"
+                className="h-full w-full"
                 center={[selectedMosque.lat, selectedMosque.lon]}
                 bounds={bounds ?? undefined}
                 scrollWheelZoom
@@ -90,18 +77,18 @@ export function MosqueMap({
                     showCoverageOnHover={false}
                     polygonOptions={{ color: '#4338ca', weight: 1, opacity: 0.6 }}
                 >
-                    {/* Kullanıcı konum marker'ı */}
                     {userCoords && (
                         <Marker position={userCoords} icon={userIcon}>
                             <Popup>
-                                <strong>Konumun</strong>
+                                <strong className="text-foreground">Konumun</strong>
                                 <br />
-                                {formatCoordinates(userCoords[0], userCoords[1])}
+                                <span className="text-muted-foreground text-xs">
+                                    {formatCoordinates(userCoords[0], userCoords[1])}
+                                </span>
                             </Popup>
                         </Marker>
                     )}
 
-                    {/* Cami marker'ları */}
                     {mosques.map((mosque) => (
                         <Marker
                             key={mosque.id}
@@ -111,27 +98,29 @@ export function MosqueMap({
                                 click: () => onMosqueSelect(mosque.id),
                             }}
                         >
-                            <Popup className="mosque-popup">
-                                <strong>{mosque.name}</strong>
+                            <Popup>
+                                <strong className="text-foreground">{mosque.name}</strong>
                                 {mosque.district && (
                                     <>
                                         <br />
-                                        <span>{mosque.district}</span>
+                                        <span className="text-muted-foreground">{mosque.district}</span>
                                     </>
                                 )}
                                 {mosque.neighborhood && (
                                     <>
                                         <br />
-                                        <span>{mosque.neighborhood}</span>
+                                        <span className="text-muted-foreground text-xs">{mosque.neighborhood}</span>
                                     </>
                                 )}
                                 <br />
-                                <small>{formatCoordinates(mosque.lat, mosque.lon)}</small>
+                                <small className="text-muted-foreground">
+                                    {formatCoordinates(mosque.lat, mosque.lon)}
+                                </small>
                             </Popup>
                         </Marker>
                     ))}
                 </MarkerClusterGroup>
             </MapContainer>
-        </div>
+        </Card>
     );
 }
