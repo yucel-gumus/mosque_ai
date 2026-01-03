@@ -1,25 +1,7 @@
 // React imports removed as they are no longer needed
-import type { Mosque, FetchStatus } from '../types/mosque.types';
+import type { Mosque, FetchStatus, MosquesDataFile } from '../types/mosque.types';
 import mosquesData from '../../../data/mosques.json';
 
-interface MosquesDataFile {
-    fetchedAt: string;
-    totalCount: number;
-    withDistrict: number;
-    withoutDistrict: number;
-    mosques: Array<{
-        id: number;
-        type: string;
-        name: string;
-        lat: number;
-        lon: number;
-        district?: string;
-        neighborhood?: string;
-        street?: string;
-        wikidata?: string;
-        osmUrl: string;
-    }>;
-}
 
 interface UseMosquesResult {
     mosques: Mosque[];
@@ -36,18 +18,18 @@ const normalizeDistrict = (district: string | undefined): string | undefined => 
     return trimmed.charAt(0).toLocaleUpperCase('tr-TR') + trimmed.slice(1).toLocaleLowerCase('tr-TR');
 };
 
-const data = mosquesData as MosquesDataFile;
+const data = mosquesData as unknown as MosquesDataFile;
 
 // Process data immediately
 const processedMosques: Mosque[] = data.mosques.map((m) => ({
-    id: m.id,
-    name: m.name,
-    lat: m.lat,
-    lon: m.lon,
-    district: normalizeDistrict(m.district),
-    neighborhood: m.neighborhood,
-    wikidata: m.wikidata,
-    osmUrl: m.osmUrl,
+    id: m.osm_id,
+    name: m.name ?? m.name_tr ?? 'İsimsiz Cami',
+    lat: m.latitude,
+    lon: m.longitude,
+    district: normalizeDistrict(m.tags['addr:district']),
+    neighborhood: m.tags['addr:subdistrict'],
+    wikidata: m.tags['wikidata'],
+    osmUrl: `https://www.openstreetmap.org/${m.osm_type}/${m.osm_id}`,
 })).sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 
 export function useMosques(): UseMosquesResult {

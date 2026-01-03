@@ -25,7 +25,13 @@ function FlyToLocation({ position }: { position: Coordinates }) {
     const map = useMap();
 
     useEffect(() => {
-        map.flyTo(position, MAP_CONFIG.FLY_TO_ZOOM, {
+        // Eğer mevcut zoom seviyesi hedef zoom'dan büyükse (daha yakındaysa),
+        // mevcut zoom'u koru. Değilse hedef zoom'a git.
+        // Bu, spiderfy edilmiş cluster'a tıklandığında "uzaklaşma" hissini önler.
+        const currentZoom = map.getZoom();
+        const targetZoom = Math.max(currentZoom, MAP_CONFIG.FLY_TO_ZOOM);
+
+        map.flyTo(position, targetZoom, {
             duration: MAP_CONFIG.FLY_DURATION,
         });
     }, [map, position]);
@@ -114,8 +120,10 @@ export function MosqueMap({
                 <MarkerClusterGroup
                     chunkedLoading
                     iconCreateFunction={createClusterIcon}
-                    spiderfyOnMaxZoom
+                    spiderfyOnMaxZoom={true}
                     showCoverageOnHover={false}
+                    disableClusteringAtZoom={18} // Yüksek zoomda gruplamayı kapat
+                    maxClusterRadius={40} // Daha hassas gruplama için yarıçapı küçült
                     polygonOptions={{ color: '#4338ca', weight: 1, opacity: 0.6 }}
                 >
                     {mosques.map((mosque) => (

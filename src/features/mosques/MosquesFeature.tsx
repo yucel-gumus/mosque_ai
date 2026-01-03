@@ -13,7 +13,7 @@ import { MapPin, Navigation } from 'lucide-react';
 
 export function MosquesFeature() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
-    // const listLimit = 50; // Removed slicing limit
+
 
 
     const { mosques } = useMosques();
@@ -21,10 +21,7 @@ export function MosquesFeature() {
 
     const sortedMosques = useDistanceSort(mosques, userCoords);
 
-    const displayedMosques = useMemo(
-        () => sortedMosques,
-        [sortedMosques]
-    );
+
 
     const computedSelectedId = useMemo(() => {
         if (!sortedMosques.length) return null;
@@ -41,7 +38,7 @@ export function MosquesFeature() {
     );
 
     const totalCount = mosques.length;
-    const isTruncated = false; // No longer slicing
+
 
     const geoStatusMessage = useMemo(() => {
         if (!userCoords) return 'Konum belirleniyor...';
@@ -71,7 +68,7 @@ export function MosquesFeature() {
                 </div>
             )}
 
-            {/* Loading and Error states removed as data is static */}
+
 
             {hasData && (
                 <section className="grid gap-6 lg:grid-cols-[1fr_400px]">
@@ -85,10 +82,8 @@ export function MosquesFeature() {
                     <div className="flex flex-col gap-4">
                         <MosqueDetails mosque={selectedMosque} />
                         <MosqueList
-                            mosques={displayedMosques}
+                            mosques={sortedMosques}
                             selectedId={computedSelectedId}
-                            totalCount={sortedMosques.length}
-                            isTruncated={isTruncated}
                             onSelect={handleMosqueSelect}
                         />
                     </div>
