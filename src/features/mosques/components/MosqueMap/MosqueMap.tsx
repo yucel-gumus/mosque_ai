@@ -84,7 +84,7 @@ export function MosqueMap({
 
     return (
         <Card
-            className="relative h-[500px] overflow-hidden lg:h-auto lg:min-h-[600px]"
+            className="relative h-[200px] overflow-hidden sm:h-[280px] md:h-[350px] lg:h-auto lg:min-h-[550px] xl:min-h-[600px]"
             role="application"
             aria-label="İstanbul cami haritası - haritada gezinmek için ok tuşlarını kullanın"
         >
@@ -98,7 +98,7 @@ export function MosqueMap({
                 maxBoundsViscosity={1}
             >
                 <TileLayer
-                    attribution='&copy; <a href="https://carto.com/">CARTO</a> | &copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+                    attribution=''
                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                 />
                 <MapController onMapReady={handleMapReady} />

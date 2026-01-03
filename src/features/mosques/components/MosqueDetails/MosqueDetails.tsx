@@ -13,21 +13,21 @@ export function MosqueDetails({
 }: MosqueDetailsProps) {
     return (
         <Card>
-            <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                    <Building2 className="h-5 w-5 text-primary" />
+            <CardHeader className="pb-2 sm:pb-3">
+                <CardTitle className="flex items-center gap-1.5 text-base sm:gap-2 sm:text-lg">
+                    <Building2 className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                     {mosque.name}
                 </CardTitle>
-                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" />
+                <p className="flex items-center gap-1 text-[10px] text-muted-foreground sm:text-xs">
+                    <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     {formatCoordinates(mosque.lat, mosque.lon, 5)}
                 </p>
             </CardHeader>
 
             <Separator />
 
-            <CardContent className="pt-4">
-                <dl className="space-y-2 text-sm">
+            <CardContent className="pt-3 sm:pt-4">
+                <dl className="space-y-1.5 text-xs sm:space-y-2 sm:text-sm">
                     {mosque.district && (
                         <div className="flex justify-between">
                             <dt className="text-muted-foreground">İlçe</dt>

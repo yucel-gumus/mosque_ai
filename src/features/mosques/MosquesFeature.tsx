@@ -14,14 +14,10 @@ import { MapPin, Navigation } from 'lucide-react';
 export function MosquesFeature() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
-
-
     const { mosques } = useMosques();
     const { coords: userCoords, error: geoError } = useGeolocation();
 
     const sortedMosques = useDistanceSort(mosques, userCoords);
-
-
 
     const computedSelectedId = useMemo(() => {
         if (!sortedMosques.length) return null;
@@ -39,7 +35,6 @@ export function MosquesFeature() {
 
     const totalCount = mosques.length;
 
-
     const geoStatusMessage = useMemo(() => {
         if (!userCoords) return 'Konum belirleniyor...';
         if (geoError) return `İstanbul merkezine göre listeleniyor.`;
@@ -56,22 +51,20 @@ export function MosquesFeature() {
     return (
         <>
             {hasData && (
-                <div className="mb-6 flex flex-wrap items-center gap-3">
-                    <Badge variant="secondary" className="gap-1.5 px-3 py-1.5 text-sm">
-                        <MapPin className="h-4 w-4" />
+                <div className="mb-4 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+                    <Badge variant="secondary" className="w-fit gap-1.5 px-2.5 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm">
+                        <MapPin className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         Toplam: {totalCount} cami
                     </Badge>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Navigation className="h-4 w-4" />
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground sm:gap-2 sm:text-sm">
+                        <Navigation className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         <span>{geoStatusMessage}</span>
                     </div>
                 </div>
             )}
 
-
-
             {hasData && (
-                <section className="grid gap-6 lg:grid-cols-[1fr_400px]">
+                <section className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-[1fr_380px] lg:gap-6 xl:grid-cols-[1fr_400px]">
                     <MosqueMap
                         mosques={mosques}
                         selectedMosque={selectedMosque}
@@ -79,7 +72,7 @@ export function MosquesFeature() {
                         onMosqueSelect={handleMosqueSelect}
                     />
 
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-3 sm:gap-4">
                         <MosqueDetails mosque={selectedMosque} />
                         <MosqueList
                             mosques={sortedMosques}

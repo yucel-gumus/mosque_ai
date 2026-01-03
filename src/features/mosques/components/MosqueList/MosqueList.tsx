@@ -2,7 +2,6 @@ import { memo } from 'react';
 import type { Mosque } from '../../types/mosque.types';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
-import { MapPin } from 'lucide-react';
 import { Virtuoso } from 'react-virtuoso';
 
 interface MosqueListProps {
@@ -18,41 +17,37 @@ interface MosqueItemProps {
 }
 
 const MosqueItem = memo(({ mosque, isActive, onSelect }: MosqueItemProps) => {
-    const district = mosque.district ?? 'İlçe bilinmiyor';
+    const district = mosque.district ?? '';
     const neighborhood = mosque.neighborhood
         ? ` • ${mosque.neighborhood}`
         : '';
 
     return (
-        <div className="px-1 py-1">
+        <div className="px-0.5 py-0.5 sm:px-1 sm:py-1">
             <button
                 type="button"
                 className={cn(
-                    'flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-accent rounded-md',
+                    'flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left transition-colors hover:bg-accent rounded-md sm:gap-3 sm:px-4 sm:py-3',
                     isActive && 'bg-primary/10 border-l-2 border-l-primary'
                 )}
                 onClick={() => onSelect(mosque.id)}
                 aria-pressed={isActive}
             >
                 <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-foreground">
+                    <p className="truncate text-sm font-medium text-foreground sm:text-base">
                         {mosque.name}
                     </p>
-                    <p className="truncate text-xs text-muted-foreground">
+                    <p className="truncate text-[11px] text-muted-foreground sm:text-xs">
                         {district}
                         {neighborhood}
                     </p>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3 w-3" />
-                    <span>
-                        {mosque.lat.toFixed(2)}, {mosque.lon.toFixed(2)}
-                    </span>
                 </div>
             </button>
         </div>
     );
 });
+
+MosqueItem.displayName = 'MosqueItem';
 
 export function MosqueList({
     mosques,
@@ -60,7 +55,7 @@ export function MosqueList({
     onSelect,
 }: MosqueListProps) {
     return (
-        <Card className="flex-1 overflow-hidden h-[400px]">
+        <Card className="overflow-hidden h-[200px] sm:h-[250px] md:h-[300px] lg:h-[380px]">
             <CardContent className="p-0 h-full">
                 <Virtuoso
                     style={{ height: '100%', width: '100%' }}
@@ -77,3 +72,4 @@ export function MosqueList({
         </Card>
     );
 }
+

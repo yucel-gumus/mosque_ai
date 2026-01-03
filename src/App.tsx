@@ -16,11 +16,7 @@ function App() {
   return (
     <ErrorBoundary>
       <AppShell>
-        <Header
-          eyebrow="İstanbul Camileri"
-          title=""
-          lead=""
-        />
+        <Header eyebrow="İstanbul Camileri" />
         <MosquesFeature />
       </AppShell>
     </ErrorBoundary>

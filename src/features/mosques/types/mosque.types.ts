@@ -6,36 +6,55 @@ export interface Mosque {
     district?: string;
     neighborhood?: string;
     wikidata?: string;
+    wikipedia?: string;
     osmUrl: string;
+    architect?: string;
+    image?: string;
+    website?: string;
+    capacity?: string;
+    wheelchair?: string;
 }
+
 export type FetchStatus = 'idle' | 'loading' | 'success' | 'error';
 
 export type Coordinates = [number, number];
 
-
-export interface RawMosque {
-    osm_type: string;
-    osm_id: number;
-    name: string;
-    name_tr: string | null;
-    latitude: number;
-    longitude: number;
-    tags: {
-        [key: string]: string | undefined;
-    };
+export interface GeoJSONProperties {
+    '@id': string;
+    name?: string;
+    'name:tr'?: string;
+    'addr:city'?: string;
+    'addr:district'?: string;
+    'addr:neighbourhood'?: string;
+    'addr:street'?: string;
+    'addr:housenumber'?: string;
+    'addr:postcode'?: string;
+    architect?: string;
+    image?: string;
+    website?: string;
+    wikidata?: string;
+    wikipedia?: string;
+    capacity?: string;
+    wheelchair?: string;
+    [key: string]: string | undefined;
 }
 
-export interface MosquesDataFile {
-    metadata: {
-        description: string;
-        source: string;
-        boundary: {
-            boundary: string;
-            admin_level: string;
-            "ISO3166-2": string;
-        };
-        total_count: number;
-        generated_at: string;
-    };
-    mosques: RawMosque[];
+export interface GeoJSONGeometry {
+    type: 'Point';
+    coordinates: [number, number];
+}
+
+export interface GeoJSONFeature {
+    type: 'Feature';
+    id: string;
+    properties: GeoJSONProperties;
+    geometry: GeoJSONGeometry;
+}
+
+export interface GeoJSONFeatureCollection {
+    type: 'FeatureCollection';
+    generator?: string;
+    copyright?: string;
+    timestamp?: string;
+    features: GeoJSONFeature[];
 }
