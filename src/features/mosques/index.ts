@@ -1,2 +1,2 @@
 export { MosquesFeature } from './MosquesFeature';
-export type { Mosque, FetchStatus } from './types/mosque.types';
+export type { Mosque } from './types/mosque.types';

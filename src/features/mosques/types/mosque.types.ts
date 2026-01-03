@@ -14,9 +14,6 @@ export interface Mosque {
     capacity?: string;
     wheelchair?: string;
 }
-
-export type FetchStatus = 'idle' | 'loading' | 'success' | 'error';
-
 export type Coordinates = [number, number];
 
 export interface GeoJSONProperties {

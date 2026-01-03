@@ -14,7 +14,7 @@ import { MapPin, Navigation } from 'lucide-react';
 export function MosquesFeature() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
 
-    const { mosques } = useMosques();
+    const { mosques, isLoading } = useMosques();
     const { coords: userCoords, error: geoError } = useGeolocation();
 
     const sortedMosques = useDistanceSort(mosques, userCoords);
@@ -83,7 +83,16 @@ export function MosquesFeature() {
                 </section>
             )}
 
-            {hasNoData && (
+            {isLoading && (
+                <StatusCard>
+                    <div className="flex items-center gap-3">
+                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                        <p>Cami verileri yükleniyor...</p>
+                    </div>
+                </StatusCard>
+            )}
+
+            {!isLoading && hasNoData && (
                 <StatusCard>
                     <p>Cami verisi bulunamadı.</p>
                 </StatusCard>
