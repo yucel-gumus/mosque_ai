@@ -1,4 +1,4 @@
-import { useState, useEffect, cache } from 'react';
+import { useState, useEffect } from 'react';
 import type { Mosque, GeoJSONFeatureCollection } from '../types/mosque.types';
 
 interface UseMosquesResult {
@@ -40,11 +40,11 @@ const processGeoJSON = (data: GeoJSONFeatureCollection): Mosque[] => {
         .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 };
 
-const fetchAndProcessMosques = cache(async (): Promise<Mosque[]> => {
+const fetchAndProcessMosques = async (): Promise<Mosque[]> => {
     const module = await import('../../../data/mosques-geojson.json');
     const data = module.default as unknown as GeoJSONFeatureCollection;
     return processGeoJSON(data);
-});
+};
 
 export function useMosques(): UseMosquesResult {
     const [mosques, setMosques] = useState<Mosque[]>([]);

@@ -3,17 +3,15 @@ import { formatCoordinates } from '../../utils/geo.utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import {
-    Building2,
-    MapPin,
-    ExternalLink,
-    User,
-    Globe,
-    Users,
-    Accessibility,
-    Image as ImageIcon,
-    BookOpen,
-} from 'lucide-react';
+import Building2 from 'lucide-react/dist/esm/icons/building-2';
+import MapPin from 'lucide-react/dist/esm/icons/map-pin';
+import ExternalLink from 'lucide-react/dist/esm/icons/external-link';
+import User from 'lucide-react/dist/esm/icons/user';
+import Globe from 'lucide-react/dist/esm/icons/globe';
+import Users from 'lucide-react/dist/esm/icons/users';
+import Accessibility from 'lucide-react/dist/esm/icons/accessibility';
+import ImageIcon from 'lucide-react/dist/esm/icons/image';
+import BookOpen from 'lucide-react/dist/esm/icons/book-open';
 
 interface MosqueDetailsProps {
     mosque: Mosque;

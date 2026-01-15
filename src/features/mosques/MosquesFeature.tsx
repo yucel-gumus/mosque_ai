@@ -11,7 +11,8 @@ import { PerformanceProfiler } from '../../shared/components/PerformanceProfiler
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 
-import { MapPin, Navigation } from 'lucide-react';
+import MapPin from 'lucide-react/dist/esm/icons/map-pin';
+import Navigation from 'lucide-react/dist/esm/icons/navigation';
 
 export function MosquesFeature() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
