@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, cache } from 'react';
 import type { Mosque, GeoJSONFeatureCollection } from '../types/mosque.types';
 
 interface UseMosquesResult {
@@ -40,22 +40,37 @@ const processGeoJSON = (data: GeoJSONFeatureCollection): Mosque[] => {
         .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 };
 
-let cachedMosques: Mosque[] | null = null;
+const fetchAndProcessMosques = cache(async (): Promise<Mosque[]> => {
+    const module = await import('../../../data/mosques-geojson.json');
+    const data = module.default as unknown as GeoJSONFeatureCollection;
+    return processGeoJSON(data);
+});
 
 export function useMosques(): UseMosquesResult {
-    const [mosques, setMosques] = useState<Mosque[]>(cachedMosques ?? []);
-    const [isLoading, setIsLoading] = useState(!cachedMosques);
+    const [mosques, setMosques] = useState<Mosque[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        if (cachedMosques) return;
+        let isMounted = true;
 
-        import('../../../data/mosques-geojson.json').then((module) => {
-            const data = module.default as unknown as GeoJSONFeatureCollection;
-            const processed = processGeoJSON(data);
-            cachedMosques = processed;
-            setMosques(processed);
-            setIsLoading(false);
-        });
+        fetchAndProcessMosques()
+            .then((processed) => {
+                if (isMounted) {
+                    setMosques(processed);
+                    setIsLoading(false);
+                }
+            })
+            .catch((error) => {
+                console.error('Failed to load mosques:', error);
+                if (isMounted) {
+                    setMosques([]);
+                    setIsLoading(false);
+                }
+            });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     return { mosques, isLoading };

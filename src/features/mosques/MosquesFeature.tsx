@@ -1,13 +1,15 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, lazy, Suspense } from 'react';
 
 import { useMosques, useGeolocation, useDistanceSort } from './hooks';
 
-import { MosqueMap } from './components/MosqueMap';
+const MosqueMap = lazy(() => import('./components/MosqueMap/MosqueMap').then(m => ({ default: m.MosqueMapComponent })));
 import { MosqueList } from './components/MosqueList';
 import { MosqueDetails } from './components/MosqueDetails';
 
 import { StatusCard } from '../../shared/components/StatusCard';
+import { PerformanceProfiler } from '../../shared/components/PerformanceProfiler';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 import { MapPin, Navigation } from 'lucide-react';
 
@@ -65,20 +67,37 @@ export function MosquesFeature() {
 
             {hasData && (
                 <section className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-[1fr_380px] lg:gap-6 xl:grid-cols-[1fr_400px]">
-                    <MosqueMap
-                        mosques={mosques}
-                        selectedMosque={selectedMosque}
-                        userCoords={userCoords}
-                        onMosqueSelect={handleMosqueSelect}
-                    />
+                    <Suspense
+                        fallback={
+                            <Card className="h-[200px] sm:h-[280px] md:h-[350px] lg:min-h-[550px] xl:min-h-[600px]">
+                                <CardContent className="flex items-center justify-center h-full">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                        <p>Harita yükleniyor...</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        }
+                    >
+                        <MosqueMap
+                            mosques={mosques}
+                            selectedMosque={selectedMosque}
+                            userCoords={userCoords}
+                            onMosqueSelect={handleMosqueSelect}
+                        />
+                    </Suspense>
 
                     <div className="flex flex-col gap-3 sm:gap-4">
-                        <MosqueDetails mosque={selectedMosque} />
-                        <MosqueList
-                            mosques={sortedMosques}
-                            selectedId={computedSelectedId}
-                            onSelect={handleMosqueSelect}
-                        />
+                        <PerformanceProfiler id="MosqueDetails">
+                            <MosqueDetails mosque={selectedMosque} />
+                        </PerformanceProfiler>
+                        <PerformanceProfiler id="MosqueList">
+                            <MosqueList
+                                mosques={sortedMosques}
+                                selectedId={computedSelectedId}
+                                onSelect={handleMosqueSelect}
+                            />
+                        </PerformanceProfiler>
                     </div>
                 </section>
             )}

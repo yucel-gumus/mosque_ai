@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Virtuoso } from 'react-virtuoso';
 import { Search, X } from 'lucide-react';
+import { normalizeText } from '../../../../shared/utils/text.utils';
 
 interface MosqueListProps {
     mosques: Mosque[];
@@ -17,17 +18,6 @@ interface MosqueItemProps {
     isActive: boolean;
     onSelect: (id: number) => void;
 }
-
-const normalizeText = (text: string): string => {
-    return text
-        .toLocaleLowerCase('tr-TR')
-        .replace(/ı/g, 'i')
-        .replace(/ğ/g, 'g')
-        .replace(/ü/g, 'u')
-        .replace(/ş/g, 's')
-        .replace(/ö/g, 'o')
-        .replace(/ç/g, 'c');
-};
 
 const MosqueItem = memo(({ mosque, isActive, onSelect }: MosqueItemProps) => {
     const district = mosque.district ?? '';

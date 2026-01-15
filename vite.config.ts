@@ -15,9 +15,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'leaflet-vendor': ['leaflet', 'react-leaflet', 'react-leaflet-cluster'],
-          'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
+          'react-core': ['react', 'react-dom'],
+          'leaflet-core': ['leaflet'],
+          'leaflet-react': ['react-leaflet', 'react-leaflet-cluster'],
+          'radix-ui': [
+            '@radix-ui/react-select',
+            '@radix-ui/react-separator',
+            '@radix-ui/react-slider',
+            '@radix-ui/react-slot',
+          ],
+          'ui-utils': ['lucide-react', 'clsx', 'tailwind-merge', 'class-variance-authority'],
+          'virtualization': ['react-virtuoso'],
         },
       },
     },

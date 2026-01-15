@@ -49,7 +49,7 @@ function MapController({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
     return null;
 }
 
-export function MosqueMap({
+export function MosqueMapComponent({
     mosques,
     selectedMosque,
     userCoords,
@@ -178,3 +178,4 @@ export function MosqueMap({
     );
 }
 
+export default MosqueMapComponent;

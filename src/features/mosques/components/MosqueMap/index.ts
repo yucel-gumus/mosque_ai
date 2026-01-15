@@ -1,1 +1,1 @@
-export { MosqueMap } from './MosqueMap';
+export { MosqueMapComponent as MosqueMap } from './MosqueMap';
