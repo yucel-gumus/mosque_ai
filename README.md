@@ -1,57 +1,69 @@
-# 🕌 İstanbul Camileri Haritası
+# İstanbul Camileri Haritası (mosque_ai)
 
-İstanbul genelindeki 3000'den fazla camiyi harita üzerinde görüntüleyen, konum bazlı sıralama yapan ve detaylı bilgiler sunan modern bir web uygulamasıdır.
+OpenStreetMap tabanlı **3000+ İstanbul camisi** verisini Leaflet haritasında gösteren, kullanıcı konumuna göre sıralayan Vite + React 19 uygulaması.
 
-## 🚀 Özellikler
+**GitHub:** [yucel-gumus/mosque_ai](https://github.com/yucel-gumus/mosque_ai)
 
-- **Geniş Veri Tabanı:** OpenStreetMap verileriyle oluşturulmuş, İstanbul'daki tüm camileri kapsayan statik veri seti.
-- **İnteraktif Harita:** Leaflet.js tabanlı, kümeleme (clustering) özellikli performanslı harita.
-- **Konum Bazlı Sıralama:** Kullanıcı konumuna göre en yakın camileri otomatik listeleme.
-- **Detaylı Bilgiler:** Her cami için adres, ilçe, mahalle ve WikiData/OSM bağlantıları.
-- **Modern Arayüz:** Tailwind CSS ve shadcn/ui ile tasarlanmış, mobil uyumlu ve şık tasarım.
-- **Performans:** Statik JSON verisi kullanımı sayesinde API bağımlılığı olmadan anlık yükleme.
+---
 
-## 🛠 Teknolojiler
+## Özellikler
 
-- **Core:** [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), [Vite](https://vitejs.dev/)
-- **UI & Styling:** [Tailwind CSS](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/), [Lucide React](https://lucide.dev/)
-- **Harita:** [React Leaflet](https://react-leaflet.js.org/), [Leaflet](https://leafletjs.com/)
-- **Veri:** OpenStreetMap (Overpass API ile çekilmiş statik JSON)
+- Statik `mosques.json` — API gecikmesi yok, anında yükleme
+- **Marker clustering** (`react-leaflet-cluster`) — yoğun bölgelerde performans
+- Geolocation ile **en yakın camiler** listesi (`react-virtuoso` sanal liste)
+- Cami detayı: adres, ilçe, mahalle, OSM/Wikidata linkleri
+- **Tailwind CSS 4** + **shadcn/ui** (Radix) bileşenleri
+- Mobil uyumlu layout, hata sınırı (`ErrorBoundary`)
 
-## 📦 Kurulum
+---
 
-Projeyi yerel ortamınızda çalıştırmak için:
+## Teknoloji
 
-1.  **Repoyu klonlayın:**
-    ```bash
-    git clone https://github.com/kullaniciadi/istanbul-camileri.git
-    cd istanbul-camileri
-    ```
+| Katman | Kütüphane |
+|--------|-----------|
+| Build | Vite 7, TypeScript |
+| UI | React 19, shadcn/ui, Lucide |
+| Harita | Leaflet, react-leaflet 5 |
+| Veri | OSM / Overpass ile üretilmiş JSON |
 
-2.  **Bağımlılıkları yükleyin:**
-    ```bash
-    npm install
-    ```
+---
 
-3.  **Geliştirme sunucusunu başlatın:**
-    ```bash
-    npm run dev
-    ```
+## Kurulum
 
-4.  Tarayıcınızda `http://localhost:5173` adresine gidin.
+```bash
+git clone https://github.com/yucel-gumus/mosque_ai.git
+cd mosque_ai
+npm install
+npm run dev
+```
 
-## 🏗 Mimari
+`http://localhost:5173`
 
-Proje, "Feature-Based" (Özellik Tabanlı) klasör yapısını kullanır:
+```bash
+npm run build   # dist/
+npm run preview
+```
 
-- `src/data`: Statik cami verilerini içerir (`mosques.json`).
-- `src/features/mosques`: Cami listeleme ve harita özellikleri buradadır.
-  - `components`: UI bileşenleri (Harita, Liste, Detay).
-  - `hooks`: Logic (Konum, Sıralama).
-  - `types`: TypeScript tip tanımları.
-- `src/shared`: Paylaşılan bileşenler (Layout, ErrorBoundary).
-- `src/components/ui`: shadcn/ui taban bileşenleri.
+---
 
-## 📝 Lisans
+## Klasör yapısı
 
-Bu proje MIT lisansı ile lisanslanmıştır. Veriler [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanları tarafından sağlanmıştır.
+```
+src/
+├── data/mosques.json      # Toplu cami verisi
+├── features/mosques/      # Harita, liste, hook'lar
+├── shared/                # Layout, ErrorBoundary
+└── components/ui/         # shadcn primitives
+```
+
+---
+
+## Veri güncelleme
+
+Yeni OSM export alındığında `src/data/mosques.json` güncellenir; tip tanımları `features/mosques/types` ile uyumlu kalmalıdır.
+
+---
+
+## Lisans
+
+MIT. Harita verisi © [OpenStreetMap](https://www.openstreetmap.org/copyright) katkıda bulunanları.
