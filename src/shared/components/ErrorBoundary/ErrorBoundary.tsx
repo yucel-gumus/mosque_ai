@@ -12,15 +12,16 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
     hasError: boolean;
     error: Error | null;
+    retryCount: number;
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     constructor(props: ErrorBoundaryProps) {
         super(props);
-        this.state = { hasError: false, error: null };
+        this.state = { hasError: false, error: null, retryCount: 0 };
     }
 
-    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
         return { hasError: true, error };
     }
 
@@ -29,7 +30,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     handleReset = (): void => {
-        this.setState({ hasError: false, error: null });
+        if (this.state.retryCount >= 1) {
+            window.location.reload();
+            return;
+        }
+        this.setState((prev) => ({
+            hasError: false,
+            error: null,
+            retryCount: prev.retryCount + 1,
+        }));
     };
 
     render(): ReactNode {
@@ -61,7 +70,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                         <CardFooter className="justify-center">
                             <Button onClick={this.handleReset}>
                                 <RefreshCw className="mr-2 h-4 w-4" />
-                                Tekrar Dene
+                                {this.state.retryCount >= 1 ? 'Sayfayı Yenile' : 'Tekrar Dene'}
                             </Button>
                         </CardFooter>
                     </Card>

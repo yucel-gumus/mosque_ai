@@ -76,7 +76,8 @@
         "wikidata": "Q756189",
         "wikimedia_commons": "Category:Fatih Mosque",
         "wikipedia": "tr:Fatih Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Mehmet Tahir"
       },
       "geometry": {
         "type": "Point",
@@ -150,7 +151,8 @@
         "start_date": "1571",
         "type": "multipolygon",
         "wikidata": "Q1572472",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -380,7 +382,8 @@
         "wikidata": "Q1572395",
         "wikimedia_commons": "Category:Sinan Paşa Mosque",
         "wikipedia": "tr:Sinan Paşa Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -411,7 +414,8 @@
         "wikidata": "Q1581190",
         "wikimedia_commons": "Category:Mihrimah Mosque (Edirnekapı)",
         "wikipedia": "en:Mihrimah Sultan Mosque, Edirnekapı",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -463,7 +467,8 @@
         "type": "multipolygon",
         "wikidata": "Q1572049",
         "wikipedia": "tr:Gazi Ahmed Paşa Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -496,7 +501,8 @@
         "wikidata": "Q2334567",
         "wikimedia_commons": "Category:Yeni Valide Mosque",
         "wikipedia": "tr:Yeni Valide Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Kayserili Mehmed Ağa"
       },
       "geometry": {
         "type": "Point",
@@ -560,7 +566,8 @@
         "wikidata": "Q590900",
         "wikimedia_commons": "Category:Laleli Mosque (Istanbul)",
         "wikipedia": "tr:Laleli Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Mehmet Tahir"
       },
       "geometry": {
         "type": "Point",
@@ -1102,7 +1109,8 @@
         "wikidata": "Q2483550",
         "wikimedia_commons": "Category:Atik Valide Mosque",
         "wikipedia": "tr:Eski Valide Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -1187,7 +1195,8 @@
         "wikidata": "Q80541",
         "wikimedia_commons": "Category:Sultan Ahmed I Mosque",
         "wikipedia": "en:Blue Mosque, Istanbul",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Sedefkar Mehmed Ağa"
       },
       "geometry": {
         "type": "Point",
@@ -1210,7 +1219,8 @@
         "type": "multipolygon",
         "wikidata": "Q107442950",
         "wikipedia": "tr:Koca Sinan Paşa Külliyesi",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Davud Ağa"
       },
       "geometry": {
         "type": "Point",
@@ -1245,7 +1255,8 @@
         "wikidata": "Q1430090",
         "wikimedia_commons": "Category:Nuruosmaniye Mosque",
         "wikipedia": "en:Nuruosmaniye Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Simeon Kalfa"
       },
       "geometry": {
         "type": "Point",
@@ -1870,7 +1881,8 @@
         "wikidata": "Q1153320",
         "wikimedia_commons": "Category:Zeynep Sultan Mosque",
         "wikipedia": "tr:Zeynep Sultan Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Mehmet Tahir"
       },
       "geometry": {
         "type": "Point",
@@ -2215,7 +2227,8 @@
         "wikidata": "Q12506",
         "wikimedia_commons": "Category:Hagia Sophia",
         "wikipedia": "tr:Ayasofya",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Miletli İsidoros"
       },
       "geometry": {
         "type": "Point",
@@ -4611,7 +4624,8 @@
         "wikidata": "Q18515442",
         "wikimedia_commons": "Category:Çinili Mosque",
         "wikipedia": "tr:Çinili Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Koca Kasım Ağa"
       },
       "geometry": {
         "type": "Point",
@@ -7222,7 +7236,8 @@
         "wikidata": "Q123247735",
         "wikimedia_commons": "Category:Yeşilköy Mecidiye Mosque",
         "wikipedia": "tr:Yeşilköy Mecidiye Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Kemaleddin Bey"
       },
       "geometry": {
         "type": "Point",
@@ -13459,7 +13474,8 @@
         "wikidata": "Q5637873",
         "wikimedia_commons": "Category:Hadim Ibrahim Pasha Mosque",
         "wikipedia": "en:Hadim Ibrahim Pasha Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -19577,7 +19593,8 @@
         "wikidata": "Q2719785",
         "wikimedia_commons": "Category:Pertevniyal Valide Sultan Mosque",
         "wikipedia": "en:Pertevniyal Valide Sultan Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Pietro Montani"
       },
       "geometry": {
         "type": "Point",
@@ -22067,7 +22084,8 @@
         "wikidata": "Q109391500",
         "wikimedia_commons": "Category:Haci Evhad Mosque",
         "wikipedia": "tr:Hacı Evhadüddin Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -22387,7 +22405,8 @@
         "religion": "muslim",
         "wikidata": "Q6035727",
         "wikipedia": "tr:Çivizade Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -24085,7 +24104,8 @@
         "wikidata": "Q2537376",
         "wikimedia_commons": "Category:Mihrimah Sultan Mosque (Üsküdar)",
         "wikipedia": "en:Mihrimah Sultan Mosque, Üsküdar",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -24443,7 +24463,8 @@
         "wikidata": "Q21526905",
         "wikimedia_commons": "Category:Sancaklar Camii",
         "wikipedia": "en:Sancaklar Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Emre Arolat"
       },
       "geometry": {
         "type": "Point",
@@ -28112,7 +28133,8 @@
         "wikidata": "Q1573438",
         "wikimedia_commons": "Category:Yıldız Hamidiye Mosque",
         "wikipedia": "en:Yıldız Hamidiye Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Serkis Balyan"
       },
       "geometry": {
         "type": "Point",
@@ -29459,7 +29481,8 @@
         "wikidata": "Q6049801",
         "wikimedia_commons": "Category:Sokollu Mehmet Pasha Mosque (Büyükçekmece)",
         "wikipedia": "en:Sokollu Mehmed Pasha Mosque, Büyükçekmece",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -32059,7 +32082,8 @@
         "wikidata": "Q176380",
         "wikimedia_commons": "Category:Ortaköy Mosque",
         "wikipedia": "en:Ortaköy Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Garabet Balyan"
       },
       "geometry": {
         "type": "Point",
@@ -32083,7 +32107,8 @@
         "wikidata": "Q2719794",
         "wikimedia_commons": "Category:Küçük Mecidiye Mosque",
         "wikipedia": "en:Küçük Mecidiye Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Balyan ailesi"
       },
       "geometry": {
         "type": "Point",
@@ -32261,7 +32286,8 @@
         "wikidata": "Q6071846",
         "wikimedia_commons": "Category:Sokollu Mehmet Pasha Mosque (Azapkapı)",
         "wikipedia": "tr:Sokollu Mehmet Paşa Camii (Azapkapı)",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -32708,7 +32734,8 @@
         "wikidata": "Q6845681",
         "wikimedia_commons": "Category:Beylerbeyi Mosque",
         "wikipedia": "en:Beylerbeyi Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Mehmet Tahir"
       },
       "geometry": {
         "type": "Point",
@@ -46655,7 +46682,8 @@
         "wikidata": "Q6104328",
         "wikimedia_commons": "Category:İskender Pasha Mosque (Kanlıca)",
         "wikipedia": "en:İskender Pasha Mosque, Kanlıca",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Sinan"
       },
       "geometry": {
         "type": "Point",
@@ -47204,7 +47232,8 @@
         "religion": "muslim",
         "wikidata": "Q756189",
         "wikimedia_commons": "Category:Fatih Mosque",
-        "wikipedia": "en:Fatih Mosque, Istanbul"
+        "wikipedia": "en:Fatih Mosque, Istanbul",
+        "architect": "Mimar Mehmet Tahir"
       },
       "geometry": {
         "type": "Point",
@@ -52641,7 +52670,8 @@
         "wikidata": "Q127418469",
         "wikimedia_commons": "Category:Osman Reis Mosque",
         "wikipedia": "tr:Osman Reis Camii",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Aleksandre Vallaury"
       },
       "geometry": {
         "type": "Point",
@@ -55110,7 +55140,8 @@
         "wikidata": "Q6049880",
         "wikimedia_commons": "Category:Bebek Mosque",
         "wikipedia": "en:Bebek Mosque",
-        "@geometry": "center"
+        "@geometry": "center",
+        "architect": "Mimar Kemaleddin Bey"
       },
       "geometry": {
         "type": "Point",

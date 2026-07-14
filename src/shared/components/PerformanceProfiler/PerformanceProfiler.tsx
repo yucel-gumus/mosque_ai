@@ -6,6 +6,10 @@ interface PerformanceProfilerProps {
 }
 
 export function PerformanceProfiler({ id, children }: PerformanceProfilerProps) {
+    if (import.meta.env.PROD) {
+        return <>{children}</>;
+    }
+
     const onRenderCallback: ProfilerOnRenderCallback = (
         _id,
         phase,

@@ -2,38 +2,36 @@ import { useMemo } from 'react';
 import type { Mosque, Coordinates } from '../types/mosque.types';
 import { calculateDistance } from '../utils/geo.utils';
 
+export interface SortedMosque extends Mosque {
+    /** Kullanıcıya olan metre cinsinden mesafe. userCoords null ise undefined. */
+    distance?: number;
+}
+
 /**
  * Camileri kullanıcı konumuna göre mesafeye göre sıralar.
  *
- * @param mosques - Sıralanacak cami listesi
- * @param userCoords - Kullanıcı koordinatları (null ise orijinal sıra korunur)
- * @returns Mesafeye göre sıralanmış cami listesi
- *
- * @example
- * ```tsx
- * const { coords } = useGeolocation();
- * const sortedMosques = useDistanceSort(filteredMosques, coords);
- *
- * return <MosqueList mosques={sortedMosques} />;
- * ```
+ * Performance: Mesafeler, mosques array'inin referansı değişmediği sürece cache'lenir;
+ * userCoords değişiminde yalnızca yeniden sıralama yapılır, hesaplama tekrarlanmaz.
  */
 export function useDistanceSort(
     mosques: Mosque[],
     userCoords: Coordinates | null
-): Mosque[] {
-    return useMemo(() => {
-        // Boş liste veya koordinat yoksa orijinal sırayı koru
-        if (!mosques.length || !userCoords) {
-            return mosques;
+): SortedMosque[] {
+    // 1) Mesafe cache'i — mosques değişmediği sürece haversine tekrar hesaplanmaz.
+    const withDistance = useMemo<SortedMosque[]>(() => {
+        if (!userCoords) {
+            return mosques.map((m) => ({ ...m, distance: undefined }));
         }
-
         const [userLat, userLon] = userCoords;
-
-        // Yeni array oluştur (mutate etme) ve mesafeye göre sırala
-        return [...mosques].sort((a, b) => {
-            const distanceA = calculateDistance(a.lat, a.lon, userLat, userLon);
-            const distanceB = calculateDistance(b.lat, b.lon, userLat, userLon);
-            return distanceA - distanceB;
-        });
+        return mosques.map((m) => ({
+            ...m,
+            distance: calculateDistance(m.lat, m.lon, userLat, userLon),
+        }));
     }, [mosques, userCoords]);
+
+    // 2) Sıralama. userCoords olmadığında orijinal sırayı koru (alfabetik).
+    return useMemo(() => {
+        if (!userCoords) return withDistance;
+        return [...withDistance].sort((a, b) => (a.distance ?? 0) - (b.distance ?? 0));
+    }, [withDistance, userCoords]);
 }

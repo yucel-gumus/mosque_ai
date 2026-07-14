@@ -8,7 +8,8 @@ interface GeolocationState {
     isLoading: boolean;
 }
 
-const GEOLOCATION_SUPPORTED = typeof navigator !== 'undefined' && 'geolocation' in navigator;
+const GEOLOCATION_SUPPORTED =
+    typeof navigator !== 'undefined' && 'geolocation' in navigator;
 
 const getInitialState = (): GeolocationState => {
     if (!GEOLOCATION_SUPPORTED) {
@@ -32,6 +33,7 @@ export function useGeolocation(): GeolocationState {
         if (!GEOLOCATION_SUPPORTED) return;
 
         let isMounted = true;
+        let watchId: number | null = null;
 
         const handleSuccess = (position: GeolocationPosition) => {
             if (!isMounted) return;
@@ -44,23 +46,29 @@ export function useGeolocation(): GeolocationState {
 
         const handleError = (error: GeolocationPositionError) => {
             if (!isMounted) return;
-            setState({
-                coords: ISTANBUL_CENTER,
+            // Geolocation izni verilmediyse veya timeout olduysa İstanbul merkezine fallback yap.
+            setState((prev) => ({
+                coords: prev.coords ?? ISTANBUL_CENTER,
                 error: error.message || 'Konum alınamadı.',
                 isLoading: false,
-            });
+            }));
         };
 
-        navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+        // getCurrentPosition ve watchPosition'ı aynı anda çağırmak tarayıcılarda race condition
+        // ve timeout hatalarına sebep olabildiğinden sadece watchPosition kullanıyoruz.
+        watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
             enableHighAccuracy: GEOLOCATION_CONFIG.ENABLE_HIGH_ACCURACY,
             timeout: GEOLOCATION_CONFIG.TIMEOUT,
+            maximumAge: 30_000,
         });
 
         return () => {
             isMounted = false;
+            if (watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+            }
         };
     }, []);
 
     return state;
 }
-

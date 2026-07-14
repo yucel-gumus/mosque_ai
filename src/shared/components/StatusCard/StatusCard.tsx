@@ -1,9 +1,7 @@
 import type { ReactNode } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
-import RefreshCw from 'lucide-react/dist/esm/icons/refresh-cw';
-import Info from 'lucide-react/dist/esm/icons/info';
+import { AlertCircle, RefreshCw, Info } from 'lucide-react';
 
 interface StatusCardProps {
     children: ReactNode;

@@ -14,6 +14,7 @@ export interface Mosque {
     capacity?: string;
     wheelchair?: string;
 }
+
 export type Coordinates = [number, number];
 
 export interface GeoJSONProperties {
@@ -54,4 +55,38 @@ export interface GeoJSONFeatureCollection {
     copyright?: string;
     timestamp?: string;
     features: GeoJSONFeature[];
+}
+
+/** Map tile katman tanımı. */
+export type TileLayerId = 'voyager' | 'dark' | 'satellite';
+
+export interface MapLayer {
+    id: TileLayerId;
+    name: string;
+    url: string;
+    attribution: string;
+    maxZoom: number;
+}
+
+/** Namaz vakti kayıtları. */
+export interface PrayerTime {
+    name: string;
+    /** HH:mm formatında. */
+    time: string;
+}
+
+export interface PrayerTimings {
+    date: string;
+    fajr: string;
+    sunrise: string;
+    dhuhr: string;
+    asr: string;
+    maghrib: string;
+    isha: string;
+}
+
+export interface ChatMessage {
+    id: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
 }

@@ -1,27 +1,13 @@
-import { EARTH_RADIUS_METERS } from '../constants/mosque.constants';
+import { EARTH_RADIUS_METERS, KABAH_COORDINATES } from '../constants/mosque.constants';
+import type { Coordinates } from '../types/mosque.types';
 
 /**
  * Dereceyi radyana çevirir.
- *
- * @param degrees - Derece cinsinden açı
- * @returns Radyan cinsinden açı
  */
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 
 /**
- * Haversine formülü ile iki koordinat arasındaki mesafeyi hesaplar.
- *
- * @param lat1 - Birinci noktanın enlemi
- * @param lon1 - Birinci noktanın boylamı
- * @param lat2 - İkinci noktanın enlemi
- * @param lon2 - İkinci noktanın boylamı
- * @returns Mesafe (metre cinsinden)
- *
- * @example
- * ```typescript
- * const distance = calculateDistance(41.0082, 28.9784, 41.0136, 28.9550);
- * console.log(`Mesafe: ${distance.toFixed(0)} metre`);
- * ```
+ * Haversine formülü ile iki koordinat arasındaki mesafeyi hesaplar (metre).
  */
 export function calculateDistance(
     lat1: number,
@@ -45,11 +31,6 @@ export function calculateDistance(
 
 /**
  * Koordinatları formatlı string olarak döndürür.
- *
- * @param lat - Enlem
- * @param lon - Boylam
- * @param precision - Ondalık basamak sayısı (varsayılan: 4)
- * @returns Formatlanmış koordinat string'i
  */
 export function formatCoordinates(
     lat: number,
@@ -57,4 +38,113 @@ export function formatCoordinates(
     precision = 4
 ): string {
     return `${lat.toFixed(precision)}, ${lon.toFixed(precision)}`;
+}
+
+/**
+ * Metre cinsinden mesafeyi okunabilir formata çevirir.
+ *
+ * @example
+ * formatDistance(450)   // "450 m"
+ * formatDistance(1250)  // "1.2 km"
+ * formatDistance(7500)  // "7.5 km"
+ */
+export function formatDistance(meters: number, locale = 'tr-TR'): string {
+    if (meters < 1000) {
+        return `${Math.round(meters)} m`;
+    }
+    return `${(meters / 1000).toLocaleString(locale, { maximumFractionDigits: 1 })} km`;
+}
+
+/**
+ * Başlangıç noktasından Kabe'ye olan coğrafi bearing ( pusula yönü) hesaplar.
+ *
+ * @param lat - Başlangıç enlemi
+ * @param lon - Başlangıç boylamı
+ * @returns Kuzey=0, Doğu=90 olacak şekilde derece cinsinden bearing (0-360)
+ */
+export function calculateQiblaBearing(lat: number, lon: number): number {
+    const [kabahLat, kabahLon] = KABAH_COORDINATES;
+
+    const phi1 = toRadians(lat);
+    const phi2 = toRadians(kabahLat);
+    const deltaLambda = toRadians(kabahLon - lon);
+
+    const y = Math.sin(deltaLambda) * Math.cos(phi2);
+    const x =
+        Math.cos(phi1) * Math.sin(phi2) -
+        Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+    const theta = Math.atan2(y, x);
+
+    // atan2 returns radians; convert to degrees and normalize to 0-360
+    const degrees = (theta * 180) / Math.PI;
+    return (degrees + 360) % 360;
+}
+
+/**
+ * Bearing (derece) -> 16 yönlü pusula etiketi (Türkçe).
+ *
+ * Sıralama: K=0, KD=1, D=2, GD=3, G=4, GB=5, B=6, KB=7 (her 22.5° dilim).
+ */
+export function bearingToCompass(degrees: number): string {
+    const normalized = ((degrees % 360) + 360) % 360;
+    const dirs: string[] = [
+        'K',   // 0     (Kuzey)
+        'KKD', // 22.5
+        'KD',  // 45    (Kuzeydoğu)
+        'DKD', // 67.5
+        'D',   // 90    (Doğu)
+        'DGD', // 112.5
+        'GD',  // 135   (Güneydoğu)
+        'GGD', // 157.5
+        'G',   // 180   (Güney)
+        'GGB', // 202.5
+        'GB',  // 225   (Güneybatı)
+        'BGB', // 247.5
+        'B',   // 270   (Batı)
+        'BKB', // 292.5
+        'KB',  // 315   (Kuzeybatı)
+        'KKB', // 337.5
+    ];
+    const index = Math.round(normalized / 22.5) % 16;
+    return dirs[index];
+}
+
+/**
+ * Yol tarifi için Google Maps deep link'i üretir.
+ */
+export function buildDirectionsUrl(
+    fromLat: number,
+    fromLon: number,
+    toLat: number,
+    toLon: number
+): string {
+    return `https://www.google.com/maps/dir/?api=1&origin=${fromLat},${fromLon}&destination=${toLat},${toLon}&travelmode=driving`;
+}
+
+/**
+ * İki koordinat arasında OSRM servisinden araç rotası çeker.
+ */
+export async function fetchRoute(
+    from: Coordinates,
+    to: Coordinates
+): Promise<Coordinates[]> {
+    const [fromLat, fromLon] = from;
+    const [toLat, toLon] = to;
+
+    const url = `https://router.project-osrm.org/route/v1/driving/${fromLon},${fromLat};${toLon},${toLat}?overview=full&geometries=geojson`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error('Yol tarifi servisi şu an kullanılamıyor.');
+    }
+
+    const data = await response.json();
+    if (data.code !== 'Ok' || !data.routes?.[0]?.geometry?.coordinates) {
+        throw new Error('Yol tarifi için bir güzergah bulunamadı.');
+    }
+
+    // OSRM [lon, lat] formatında döner, Leaflet ise [lat, lon] bekler.
+    return data.routes[0].geometry.coordinates.map(
+        (coords: [number, number]): Coordinates => [coords[1], coords[0]]
+    );
 }

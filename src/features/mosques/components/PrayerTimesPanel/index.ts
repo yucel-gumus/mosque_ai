@@ -1,0 +1,1 @@
+export { PrayerTimesPanel } from './PrayerTimesPanel';

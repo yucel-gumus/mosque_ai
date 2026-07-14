@@ -25,3 +25,46 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files (contains API keys and secrets)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.production
+.env.test
+
+# Vite cache & builds
+.vite
+.tsbuildinfo
+*.tsbuildinfo
+
+# Lint & formatter cache
+.eslintcache
+.stylelintcache
+.prettiercache
+
+# Coverage & testing
+coverage/
+.nyc_output
+
+# Temp files
+*.tmp
+*.temp
+vite.config.ts.timestamp-*
+vite.config.js.timestamp-*
+
+# System Files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# AI Agent Configs & Skills
+.agents/
+skills-lock.json
