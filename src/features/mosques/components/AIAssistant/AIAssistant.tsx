@@ -137,31 +137,22 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                                     : 'bg-muted text-foreground'
                             }`}
                         >
-                            {msg.content}
+                            {msg.content || (
+                                <span className="inline-flex gap-1 py-1">
+                                    <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" />
+                                    <span
+                                        className="h-1.5 w-1.5 animate-bounce rounded-full bg-current"
+                                        style={{ animationDelay: '0.15s' }}
+                                    />
+                                    <span
+                                        className="h-1.5 w-1.5 animate-bounce rounded-full bg-current"
+                                        style={{ animationDelay: '0.3s' }}
+                                    />
+                                </span>
+                            )}
                         </div>
                     </div>
                 ))}
-
-                {isSending && (
-                    <div className="flex gap-2">
-                        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted">
-                            <Bot className="h-3 w-3" />
-                        </div>
-                        <div className="rounded-lg bg-muted p-2 text-xs text-muted-foreground">
-                            <span className="inline-flex gap-1">
-                                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" />
-                                <span
-                                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-current"
-                                    style={{ animationDelay: '0.15s' }}
-                                />
-                                <span
-                                    className="h-1.5 w-1.5 animate-bounce rounded-full bg-current"
-                                    style={{ animationDelay: '0.3s' }}
-                                />
-                            </span>
-                        </div>
-                    </div>
-                )}
 
                 {error && (
                     <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-2 text-[11px] text-destructive">
