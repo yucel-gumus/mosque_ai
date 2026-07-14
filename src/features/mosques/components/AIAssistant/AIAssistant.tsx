@@ -62,7 +62,7 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
             </Button>
 
             <Card
-                className={`fixed bottom-4 left-4 z-[1100] flex h-[500px] w-[calc(100vw-2rem)] max-w-sm flex-col shadow-2xl transition-all duration-300 ease-out origin-bottom-left sm:left-4 sm:w-96 ${
+                className={`fixed bottom-4 left-4 z-[1100] flex h-[500px] w-[calc(100vw-2rem)] max-w-[340px] flex-col shadow-2xl transition-all duration-300 ease-out origin-bottom-left sm:left-4 sm:w-[340px] ${
                     open
                         ? 'pointer-events-auto scale-100 opacity-100'
                         : 'pointer-events-none scale-95 opacity-0'
