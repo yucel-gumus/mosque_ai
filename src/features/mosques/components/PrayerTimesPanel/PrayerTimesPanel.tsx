@@ -36,7 +36,7 @@ const getNextPrayerIndex = (timings: PrayerTimings | null, now: Date): number =>
         const prayerMinutes = h * 60 + m;
         if (prayerMinutes > currentMinutes) return i;
     }
-    return 0; // After yatsı, next prayer is Fajr tomorrow
+    return 0;
 };
 
 export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selectedMosque }: PrayerTimesPanelProps) {
@@ -48,7 +48,7 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
-        }, 30000); // update every 30 seconds
+        }, 30000);
         return () => clearInterval(timer);
     }, []);
 
@@ -61,42 +61,44 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
           : 'İstanbul merkezi';
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardContent className="space-y-1.5 p-2 sm:p-2.5">
-                <div className="flex items-center justify-between">
-                    <h3 className="flex items-center gap-1.5 text-xs font-semibold sm:text-sm">
-                        <Clock className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
+        <Card className="h-full flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl">
+            <CardContent className="space-y-2 p-3 sm:p-3.5">
+                <div className="flex items-center justify-between border-b border-[#FFB6A6]/30 pb-1.5">
+                    <h3 className="flex items-center gap-2 text-xs font-bold text-[#4A2B20] sm:text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#9BCEC1] text-[#1A4036]">
+                            <Clock className="h-3.5 w-3.5" />
+                        </div>
                         Ezan Vakitleri
                     </h3>
                     {timings && (
-                        <span className="text-[9px] text-muted-foreground sm:text-[10px]">
+                        <span className="text-[10px] font-bold text-[#8C5E50] bg-[#FFEBD3] px-2 py-0.5 rounded-full border border-[#FFB6A6]">
                             {timings.date}
                         </span>
                     )}
                 </div>
 
-                <p className="flex items-center gap-1 text-[9px] text-muted-foreground sm:text-[10px]">
-                    <Compass className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                <p className="flex items-center gap-1.5 text-[10px] font-bold text-[#8C5E50]">
+                    <Compass className="h-3 w-3 text-[#4A2B20]" />
                     {locationLabel}
                 </p>
 
                 {isLoading && (
-                    <div className="grid grid-cols-3 gap-1.5" aria-busy="true">
+                    <div className="grid grid-cols-2 gap-2" aria-busy="true">
                         {[...Array(6)].map((_, i) => (
-                            <Skeleton key={i} className="h-10 w-full rounded-lg sm:h-12" />
+                            <Skeleton key={i} className="h-12 w-full rounded-2xl bg-[#FFEBD3]" />
                         ))}
                     </div>
                 )}
 
                 {error && !isLoading && (
-                    <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-2 text-[11px] text-destructive sm:text-xs">
-                        <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    <div className="flex items-start gap-2 rounded-2xl border border-[#E06C62]/30 bg-[#E06C62]/10 p-2.5 text-xs font-bold text-[#E06C62]">
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                         <span>Ezan vakitleri alınamadı: {error}</span>
                     </div>
                 )}
 
                 {!isLoading && !error && timings && (
-                    <div className="grid grid-cols-3 gap-1.5">
+                    <div className="grid grid-cols-2 gap-2">
                         {PRAYERS.map(({ key, label, Icon }, idx) => {
                             const time = timings[key];
                             const [h, m] = time.split(':').map(Number);
@@ -104,27 +106,27 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
                             return (
                                 <div
                                     key={key}
-                                    className={`flex flex-col items-center justify-center gap-0.5 rounded-lg border p-1 h-[46px] sm:h-[50px] transition-all duration-300 ${
+                                    className={`flex flex-col items-center justify-center gap-0.5 rounded-2xl border p-2 h-[52px] sm:h-[56px] transition-all duration-300 ${
                                         isNext
-                                            ? 'active-prayer-box scale-[1.02]'
-                                            : 'border-border/60 bg-card/45 hover:bg-card hover:border-border hover:shadow-xs'
+                                            ? 'bg-[#9BCEC1] border-[#7CB8AA] shadow-md text-[#1A4036] scale-[1.02]'
+                                            : 'bg-[#FFEBD3]/60 border-[#FFB6A6]/50 text-[#4A2B20] hover:bg-[#FFEBD3]'
                                     }`}
                                 >
-                                    <div className="flex items-center gap-1">
-                                        <Icon className={`h-2.5 w-2.5 sm:h-3 sm:w-3 ${isNext ? 'text-primary' : 'text-muted-foreground'}`} />
-                                        <span className={`text-[9px] font-medium sm:text-[10px] ${isNext ? 'text-foreground' : 'text-muted-foreground'}`}>{label}</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <Icon className={`h-3.5 w-3.5 ${isNext ? 'text-[#1A4036]' : 'text-[#8C5E50]'}`} />
+                                        <span className={`text-xs font-bold ${isNext ? 'text-[#1A4036]' : 'text-[#8C5E50]'}`}>{label}</span>
                                     </div>
-                                    <span className={`font-mono text-[11px] font-bold sm:text-xs ${isNext ? 'text-primary' : 'text-foreground'}`}>
+                                    <span className={`font-mono text-xs sm:text-sm font-black ${isNext ? 'text-[#1A4036]' : 'text-[#4A2B20]'}`}>
                                         {time}
                                     </span>
                                     {isNext && (
-                                        <span className="text-[9px] font-medium text-primary sm:text-[10px] animate-pulse">
+                                        <span className="text-[9px] font-black text-[#1A4036] uppercase tracking-wider animate-pulse">
                                             Sıradaki
                                         </span>
                                     )}
                                     {isCurrentPrayer(currentTime, h, m) && !isNext && (
-                                        <span className="text-[9px] font-medium text-primary sm:text-[10px]">
-                                            Şimdi
+                                        <span className="text-[9px] font-bold text-[#4A2B20]">
+                                            Vakit Girdi
                                         </span>
                                     )}
                                 </div>
@@ -134,8 +136,8 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
                 )}
 
                 {tileLayer === 'satellite' && (
-                    <p className="text-[9px] text-muted-foreground">
-                        Uydu görüntüsü için Esri World Imagery kullanılmıştır.
+                    <p className="text-[9px] font-semibold text-[#8C5E50]">
+                        Uydu görüntüsü Esri World Imagery servisi ile sunulmaktadır.
                     </p>
                 )}
             </CardContent>

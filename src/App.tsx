@@ -3,15 +3,12 @@ import { AppShell } from './shared/components/Layout';
 import { ErrorBoundary } from './shared/components/ErrorBoundary';
 import { MosquesFeature } from './features/mosques';
 import { setupLeafletIcons } from './features/mosques/utils/leaflet.utils';
-import { useDarkMode } from './shared/hooks/useDarkMode';
 
 import 'leaflet/dist/leaflet.css';
 import 'react-leaflet-cluster/dist/assets/MarkerCluster.css';
 import 'react-leaflet-cluster/dist/assets/MarkerCluster.Default.css';
 
 function App() {
-  useDarkMode();
-
   useEffect(() => {
     setupLeafletIcons();
   }, []);

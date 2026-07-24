@@ -82,6 +82,15 @@ export default defineConfig({
         }),
     ],
     base: '/mosque_ai/',
+    server: {
+        proxy: {
+            '/api': {
+                target: 'https://pages-bff.vercel.app',
+                changeOrigin: true,
+                secure: true,
+            },
+        },
+    },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),

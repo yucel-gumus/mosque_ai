@@ -17,7 +17,6 @@ import { Accessibility, MapPin, Ruler, RotateCcw } from 'lucide-react';
 
 interface FilterPanelProps {
     districts: string[];
-    /** Toplam filtre uygulandıktan sonra kaç sonuç var (bilgi amaçlı). */
     resultCount: number;
 }
 
@@ -36,11 +35,13 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
     );
 
     return (
-        <Card className="flex flex-col">
-            <CardContent className="space-y-2 p-2 sm:p-2.5">
-                <div className="flex items-center justify-between">
-                    <h3 className="flex items-center gap-1.5 text-xs font-semibold sm:text-sm">
-                        <MapPin className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
+        <Card className="flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl">
+            <CardContent className="space-y-3 p-3.5 sm:p-4">
+                <div className="flex items-center justify-between border-b border-[#FFB6A6]/30 pb-2">
+                    <h3 className="flex items-center gap-2 text-xs font-bold text-[#4A2B20] sm:text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFB6A6]">
+                            <MapPin className="h-3.5 w-3.5 text-[#4A2B20]" />
+                        </div>
                         Filtreler
                     </h3>
                     {isActive && (
@@ -48,7 +49,7 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                             variant="ghost"
                             size="sm"
                             onClick={resetFilters}
-                            className="h-6 text-[10px] px-2"
+                            className="h-6 px-2 text-[10px] font-bold text-[#4A2B20] hover:bg-[#FFB6A6]/30 rounded-full"
                         >
                             <RotateCcw className="mr-1 h-3 w-3" />
                             Sıfırla
@@ -58,8 +59,8 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
 
                 {/* İlçe */}
                 <div className="space-y-1">
-                    <Label htmlFor="district-select" className="text-[10px] sm:text-xs">
-                        İlçe
+                    <Label htmlFor="district-select" className="text-[11px] font-bold text-[#4A2B20] sm:text-xs">
+                        İlçe Seçimi
                     </Label>
                     <Select
                         value={filters.district ?? ALL_DISTRICTS}
@@ -67,13 +68,13 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                             setDistrict(value === ALL_DISTRICTS ? null : value)
                         }
                     >
-                        <SelectTrigger id="district-select" className="h-8 text-xs">
+                        <SelectTrigger id="district-select" className="h-9 rounded-2xl border-[#FFB6A6] bg-[#FFEBD3]/60 text-xs font-semibold text-[#4A2B20]">
                             <SelectValue placeholder="Tüm ilçeler" />
                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value={ALL_DISTRICTS}>Tüm ilçeler</SelectItem>
+                        <SelectContent className="rounded-2xl border-[#FFB6A6] bg-[#FFF6EC] text-[#4A2B20]">
+                            <SelectItem value={ALL_DISTRICTS} className="font-semibold">Tüm ilçeler</SelectItem>
                             {districts.map((d) => (
-                                <SelectItem key={d} value={d}>
+                                <SelectItem key={d} value={d} className="font-medium">
                                     {d}
                                 </SelectItem>
                             ))}
@@ -82,13 +83,13 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                 </div>
 
                 {/* Mesafe */}
-                <div className="space-y-1">
+                <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                        <Label className="flex items-center gap-1 text-[10px] sm:text-xs">
-                            <Ruler className="h-3 w-3" />
-                            Yarıçap
+                        <Label className="flex items-center gap-1.5 text-[11px] font-bold text-[#4A2B20] sm:text-xs">
+                            <Ruler className="h-3.5 w-3.5 text-[#4A2B20]" />
+                            Mesafe Yarıçapı
                         </Label>
-                        <span className="text-[10px] font-medium text-muted-foreground sm:text-xs">
+                        <span className="text-[11px] font-extrabold text-[#1A4036] bg-[#9BCEC1] px-2 py-0.5 rounded-full">
                             {filters.radius ? `${(filters.radius / 1000).toFixed(1)} km` : 'Sınırsız'}
                         </span>
                     </div>
@@ -100,6 +101,7 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                         onValueChange={([v]) =>
                             setRadius(v >= RADIUS_LIMITS.MAX ? null : v)
                         }
+                        className="py-1"
                     />
                 </div>
 
@@ -108,37 +110,37 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                     <button
                         type="button"
                         onClick={() => setWheelchairOnly(!filters.wheelchairOnly)}
-                        className={`flex w-full items-center justify-between rounded-lg border p-1.5 transition-all duration-300 ${
+                        className={`flex w-full items-center justify-between rounded-2xl border p-2 transition-all duration-300 ${
                             filters.wheelchairOnly
-                                ? 'border-primary/20 bg-primary/5 shadow-xs'
-                                : 'border-border/60 bg-card/45 hover:bg-card hover:border-border'
+                                ? 'border-[#9BCEC1] bg-[#9BCEC1]/30 shadow-sm'
+                                : 'border-[#FFB6A6] bg-[#FFEBD3]/50 hover:bg-[#FFEBD3]'
                         }`}
                         aria-pressed={filters.wheelchairOnly}
                     >
-                        <span className="flex items-center gap-1.5 text-[11px] sm:text-xs font-medium">
-                            <Accessibility className="h-3.5 w-3.5 text-primary sm:h-4 sm:w-4" />
+                        <span className="flex items-center gap-2 text-[11px] font-bold text-[#4A2B20] sm:text-xs">
+                            <Accessibility className="h-4 w-4 text-[#4A2B20]" />
                             Engelli / Tekerlekli Sandalye
                         </span>
                         <span
                             className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 inline-block ${
-                                filters.wheelchairOnly ? 'bg-primary' : 'bg-muted-foreground/30'
+                                filters.wheelchairOnly ? 'bg-[#9BCEC1]' : 'bg-[#FFB6A6]'
                             }`}
                         >
                             <span
-                                className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200 ${
+                                className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
                                     filters.wheelchairOnly ? 'translate-x-4' : 'translate-x-0'
                                 }`}
                             />
                         </span>
                     </button>
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground leading-normal px-1">
-                        Giriş rampası veya tekerlekli sandalye erişimine uygun düz girişi bulunan camileri filtreler.
+                    <p className="text-[9px] font-medium text-[#8C5E50] leading-tight px-1">
+                        Giriş rampası veya engelli erişimine uygun camileri filtreler.
                     </p>
                 </div>
 
-                <div className="flex items-center justify-between border-t pt-2.5">
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">Sonuç</span>
-                    <Badge variant="secondary" className="text-[10px]">
+                <div className="flex items-center justify-between border-t border-[#FFB6A6]/40 pt-2.5">
+                    <span className="text-[11px] font-bold text-[#8C5E50]">Listelenen Cami</span>
+                    <Badge className="bg-[#9BCEC1] text-[#1A4036] text-[11px] font-extrabold px-2.5 py-0.5 rounded-full border border-[#7CB8AA]">
                         {resultCount} cami
                     </Badge>
                 </div>

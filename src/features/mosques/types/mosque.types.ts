@@ -58,7 +58,7 @@ export interface GeoJSONFeatureCollection {
 }
 
 /** Map tile katman tanımı. */
-export type TileLayerId = 'voyager' | 'dark' | 'satellite';
+export type TileLayerId = 'voyager' | 'satellite';
 
 export interface MapLayer {
     id: TileLayerId;

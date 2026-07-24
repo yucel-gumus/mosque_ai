@@ -5,14 +5,13 @@ import type { SortedMosque } from './useDistanceSort';
 import { useMosqueStore } from '../store/mosqueStore';
 import { fetchRoute } from '../utils/geo.utils';
 
-interface UseOpenAIChatOptions {
+interface UseMosqueChatOptions {
     selectedMosque: Mosque | null;
     userCoords: Coordinates | null;
     closestMosques: SortedMosque[];
-    apiKey?: string; // Left for compatibility
 }
 
-interface UseOpenAIChatResult {
+interface UseMosqueChatResult {
     messages: ChatMessage[];
     isSending: boolean;
     error: string | null;
@@ -20,7 +19,7 @@ interface UseOpenAIChatResult {
     clear: () => void;
 }
 
-export function useOpenAIChat({ selectedMosque, userCoords, closestMosques }: UseOpenAIChatOptions): UseOpenAIChatResult {
+export function useMosqueChat({ selectedMosque, userCoords, closestMosques }: UseMosqueChatOptions): UseMosqueChatResult {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isSending, setIsSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -67,9 +66,11 @@ export function useOpenAIChat({ selectedMosque, userCoords, closestMosques }: Us
             setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
             try {
-                const bffUrl = `${
-                    (import.meta.env.VITE_BFF_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://pages-bff.vercel.app'
-                }/api/mosque/chat`;
+                let baseUrl = (import.meta.env.VITE_BFF_API_URL as string | undefined)?.replace(/\/$/, '') || '';
+                if (import.meta.env.DEV && (baseUrl === '' || baseUrl.includes('pages-bff.vercel.app'))) {
+                    baseUrl = '';
+                }
+                const bffUrl = `${baseUrl}/api/mosque/chat`;
 
                 const response = await fetch(bffUrl, {
                     method: 'POST',
@@ -161,9 +162,9 @@ export function useOpenAIChat({ selectedMosque, userCoords, closestMosques }: Us
                             } else if (payload.type === 'function_call') {
                                 const { name, args } = payload;
                                 
-                                if (name === 'select_mosque' && args.id) {
+                                if (name === 'select_mosque' && args?.id) {
                                     selectMosqueStore(args.id);
-                                } else if (name === 'show_route_to_mosque' && args.id) {
+                                } else if (name === 'show_route_to_mosque' && args?.id) {
                                     const mosqueId = args.id;
                                     if (!userCoords) {
                                         setError('Yol tarifi için konum izni gereklidir.');
@@ -191,7 +192,15 @@ export function useOpenAIChat({ selectedMosque, userCoords, closestMosques }: Us
                                     }
                                 }
                             } else if (payload.type === 'error') {
-                                throw new Error(payload.message || 'Bilinmeyen asistan hatası.');
+                                const errMsg = payload.message || 'Bilinmeyen asistan hatası.';
+                                setError(errMsg);
+                                setMessages((prev) =>
+                                    prev.map((msg) =>
+                                        msg.id === assistantMsgId
+                                            ? { ...msg, content: `Üzgünüm, bir sorun oluştu: ${errMsg}` }
+                                            : msg
+                                    )
+                                );
                             }
                         } catch (e) {
                             console.error('SSE parser error:', e, cleanLine);

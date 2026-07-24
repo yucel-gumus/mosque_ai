@@ -12,7 +12,6 @@ interface MosqueListProps {
     mosques: SortedMosque[];
     selectedId: number | null;
     onSelect: (id: number) => void;
-    /** Tüm sonuçlar filtreye rağmen değişti mi — listede "X sonuç" rozeti için */
     totalAfterFilter: number;
 }
 
@@ -39,13 +38,13 @@ const MosqueItem = memo(
         const distance = mosque.distance;
 
         return (
-            <div className="px-1 py-0.5 sm:px-1.5 sm:py-0.5">
+            <div className="px-1.5 py-1">
                 <div
                     className={cn(
-                        'group flex w-full items-center gap-1.5 rounded-lg border px-2.5 py-2 transition-all duration-300 hover:bg-card hover:border-border hover:shadow-sm sm:gap-2.5 sm:px-3 sm:py-2.5 cursor-pointer',
+                        'group flex w-full items-center gap-2 rounded-2xl border p-2.5 transition-all duration-300 shadow-sm cursor-pointer',
                         isActive
-                            ? 'active-mosque-item'
-                            : 'bg-card/50 border-border/50'
+                            ? 'bg-[#9BCEC1]/30 border-[#9BCEC1] border-l-4 border-l-[#1A4036] shadow-md'
+                            : 'bg-[#FFF6EC] border-[#FFB6A6]/60 hover:bg-[#FFEBD3] hover:border-[#FFB6A6]'
                     )}
                 >
                     <button
@@ -55,16 +54,16 @@ const MosqueItem = memo(
                         aria-pressed={isActive}
                         aria-current={isActive ? 'true' : undefined}
                     >
-                        <p className="truncate text-xs font-medium text-foreground sm:text-sm">
+                        <p className="truncate text-xs font-bold text-[#4A2B20] sm:text-sm">
                             {mosque.name}
                         </p>
-                        <p className="flex items-center gap-1.5 truncate text-[9px] text-muted-foreground sm:text-[10px]">
+                        <p className="flex items-center gap-1.5 truncate text-[10px] font-semibold text-[#8C5E50]">
                             <span className="truncate">
                                 {district}
                                 {neighborhood}
                             </span>
                             {showDistance && distance !== undefined && (
-                                <span className="inline-flex shrink-0 items-center gap-0.5 rounded bg-muted px-1 py-0.5 text-[9px] font-mono sm:text-[10px]">
+                                <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-[#9BCEC1]/40 px-2 py-0.5 text-[9px] font-extrabold text-[#1A4036]">
                                     <Ruler className="h-2.5 w-2.5" />
                                     {distance < 1000
                                         ? `${Math.round(distance)} m`
@@ -79,14 +78,14 @@ const MosqueItem = memo(
                             e.stopPropagation();
                             onToggleFavorite(mosque.id);
                         }}
-                        className="shrink-0 p-1 text-muted-foreground transition-colors hover:text-red-500"
+                        className="shrink-0 p-1 text-[#8C5E50] transition-transform hover:scale-110"
                         aria-label={isFavorite ? 'Favorilerden kaldır' : 'Favorilere ekle'}
                         title={isFavorite ? 'Favorilerden kaldır' : 'Favorilere ekle'}
                     >
                         <Heart
                             className={cn(
-                                'h-3.5 w-3.5 sm:h-4 sm:w-4',
-                                isFavorite && 'fill-red-500 text-red-500'
+                                'h-4 w-4',
+                                isFavorite && 'fill-[#E06C62] text-[#E06C62]'
                             )}
                         />
                     </button>
@@ -117,7 +116,6 @@ export function MosqueList({
         setSearchQuery(q);
     }, 200);
 
-    // Sync local state when store changes (e.g. from shortcut)
     useEffect(() => {
         setLocalQuery(searchQuery);
     }, [searchQuery]);
@@ -131,10 +129,10 @@ export function MosqueList({
     };
 
     return (
-        <Card className="overflow-hidden h-[220px] sm:h-[260px] lg:h-full lg:min-h-[300px] flex flex-col">
-            <div className="p-2 border-b shrink-0">
+        <Card className="overflow-hidden h-[240px] sm:h-[280px] lg:h-full lg:min-h-[320px] flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl">
+            <div className="p-3 border-b border-[#FFB6A6]/40 shrink-0 bg-[#FFEBD3]/50">
                 <div className="relative">
-                    <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8C5E50] pointer-events-none" />
                     <Input
                         ref={inputRef}
                         id="mosque-search"
@@ -145,26 +143,26 @@ export function MosqueList({
                             setLocalQuery(e.target.value);
                             debouncedSetSearchQuery(e.target.value);
                         }}
-                        className="pl-8 pr-8 h-8 text-xs"
+                        className="pl-9 pr-9 h-9 text-xs font-semibold rounded-2xl border-[#FFB6A6] bg-[#FFF6EC] text-[#4A2B20] focus-visible:ring-[#9BCEC1]"
                     />
                     {localQuery && (
                         <button
                             type="button"
                             onClick={handleClear}
-                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C5E50] hover:text-[#4A2B20] transition-colors"
                             aria-label="Aramayı temizle"
                         >
                             <X className="h-4 w-4" />
                         </button>
                     )}
                 </div>
-                <p className="mt-1 text-[9px] text-muted-foreground sm:text-[10px]">
+                <p className="mt-1.5 text-[10px] font-bold text-[#8C5E50]">
                     {localQuery
                         ? `${mosques.length} / ${totalAfterFilter} sonuç`
                         : `Toplam ${totalAfterFilter} cami`}
                 </p>
             </div>
-            <CardContent className="p-0 flex-1 min-h-0">
+            <CardContent className="p-1 flex-1 min-h-0 bg-[#FFEBD3]/30">
                 {mosques.length > 0 ? (
                     <Virtuoso
                         style={{ height: '100%', width: '100%' }}
@@ -181,12 +179,12 @@ export function MosqueList({
                         )}
                     />
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-full gap-2 p-4 text-center text-sm text-muted-foreground">
+                    <div className="flex flex-col items-center justify-center h-full gap-2 p-4 text-center text-xs font-semibold text-[#8C5E50]">
                         <p>"{localQuery}" için sonuç bulunamadı</p>
                         <button
                             type="button"
                             onClick={handleClear}
-                            className="text-xs text-primary hover:underline"
+                            className="text-xs font-bold text-[#1A4036] bg-[#9BCEC1] px-3 py-1 rounded-full shadow-sm hover:underline"
                         >
                             Aramayı temizle
                         </button>
