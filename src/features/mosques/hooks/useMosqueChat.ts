@@ -66,8 +66,8 @@ export function useMosqueChat({ selectedMosque, userCoords, closestMosques }: Us
             setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
             try {
-                let baseUrl = (import.meta.env.VITE_BFF_API_URL as string | undefined)?.replace(/\/$/, '') || '';
-                if (import.meta.env.DEV && (baseUrl === '' || baseUrl.includes('pages-bff.vercel.app'))) {
+                let baseUrl = (import.meta.env.VITE_BFF_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://pages-bff.vercel.app';
+                if (import.meta.env.DEV) {
                     baseUrl = '';
                 }
                 const bffUrl = `${baseUrl}/api/mosque/chat`;
