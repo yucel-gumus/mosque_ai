@@ -26,7 +26,7 @@ interface HeaderProps {
     children?: ReactNode;
 }
 
-export function Header({ eyebrow, title, lead, children }: HeaderProps) {
+export function Header({ eyebrow, title, children }: HeaderProps) {
     return (
         <header className="mb-3 flex flex-wrap items-center justify-between gap-2.5 sm:mb-4">
             <div className="flex flex-wrap items-center gap-2.5">
