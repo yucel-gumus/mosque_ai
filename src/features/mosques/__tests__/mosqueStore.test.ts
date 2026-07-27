@@ -7,13 +7,14 @@ describe('mosqueStore', () => {
         // Reset between tests
         useMosqueStore.setState({
             selectedId: null,
-            filters: { district: null, radius: null, wheelchairOnly: false },
+            filters: { district: 'Üsküdar', radius: null, wheelchairOnly: false, hasParking: false, hasWomenArea: false },
             searchQuery: '',
             favorites: [],
             ui: {
                 sidebarOpen: true,
                 assistantOpen: false,
-                tileLayer: 'voyager',
+                ramadanMode: true,
+                tileLayer: 'roadmap',
             },
         });
     });
@@ -45,7 +46,7 @@ describe('mosqueStore', () => {
         expect(useMosqueStore.getState().favorites).not.toContain(7);
     });
 
-    it('resetFilters tüm filtreleri temizler', () => {
+    it('resetFilters tüm filtreleri varsayılana çevirir', () => {
         act(() => {
             useMosqueStore.getState().setDistrict('Kadıköy');
             useMosqueStore.getState().setRadius(1500);
@@ -55,7 +56,7 @@ describe('mosqueStore', () => {
             useMosqueStore.getState().resetFilters();
         });
         const f = useMosqueStore.getState().filters;
-        expect(f.district).toBeNull();
+        expect(f.district).toBe('Üsküdar');
         expect(f.radius).toBeNull();
         expect(f.wheelchairOnly).toBe(false);
     });

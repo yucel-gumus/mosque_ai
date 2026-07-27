@@ -101,8 +101,7 @@ export default defineConfig({
             output: {
                 manualChunks: {
                     'react-core': ['react', 'react-dom'],
-                    'leaflet-core': ['leaflet'],
-                    'leaflet-react': ['react-leaflet', 'react-leaflet-cluster'],
+                    'google-maps': ['@vis.gl/react-google-maps'],
                     'radix-ui': [
                         '@radix-ui/react-select',
                         '@radix-ui/react-separator',

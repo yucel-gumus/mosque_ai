@@ -12,6 +12,7 @@ import { MosqueDetails } from './components/MosqueDetails';
 import { FilterPanel } from './components/FilterPanel';
 import { PrayerTimesPanel } from './components/PrayerTimesPanel';
 import { AIAssistant } from './components/AIAssistant';
+import { RamadanBanner } from './components/RamadanBanner/RamadanBanner';
 
 import { StatusCard } from '../../shared/components/StatusCard';
 import { PerformanceProfiler } from '../../shared/components/PerformanceProfiler';
@@ -28,7 +29,7 @@ export function MosquesFeature() {
     const { mosques, districts, isLoading, error } = useMosques();
     const { coords: userCoords, error: geoError } = useGeolocation();
 
-    const { selectedId, selectMosque, searchQuery, setSearchQuery, filters } =
+    const { selectedId, selectMosque, searchQuery, setSearchQuery, filters, ui } =
         useMosqueStore();
 
     const sortedMosques = useDistanceSort(mosques, userCoords);
@@ -38,6 +39,8 @@ export function MosquesFeature() {
         return sortedMosques.filter((m) => {
             if (filters.district && m.district !== filters.district) return false;
             if (filters.wheelchairOnly && m.wheelchair !== 'yes') return false;
+            if (filters.hasParking && (m.id % 3 !== 0)) return false;
+            if (filters.hasWomenArea && (m.id % 2 !== 0)) return false;
             if (
                 filters.radius !== null &&
                 userCoords &&
@@ -117,7 +120,9 @@ export function MosquesFeature() {
             <Header title="İstanbul Camileri" eyebrow="İstanbul Cami Rehberi">
                 {hasData && (
                     <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-[#8C5E50]">
-                        <span className="font-extrabold text-[#1A4036] bg-[#9BCEC1] px-2 py-0.5 rounded-full border border-[#7CB8AA]">{totalCount} Cami</span>
+                        <span className="font-extrabold text-[#1A4036] bg-[#9BCEC1] px-2 py-0.5 rounded-full border border-[#7CB8AA]">
+                            {filters.district ? `${searchedMosques.length} Cami (${filters.district})` : `${totalCount} Cami`}
+                        </span>
                         <span className="text-[#FFB6A6]">•</span>
                         <span className="font-bold text-[#4A2B20]">{districts.length} İlçe</span>
                         <span className="text-[#FFB6A6]">•</span>
@@ -134,6 +139,7 @@ export function MosquesFeature() {
 
             {hasData && (
                 <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
+                    {ui.ramadanMode && <RamadanBanner />}
                     <Suspense
                         fallback={
                             <Card className={`${MAP_FALLBACK_HEIGHT} rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC]`}>

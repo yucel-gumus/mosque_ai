@@ -1,18 +1,21 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { TileLayerId, Coordinates } from '../types/mosque.types';
+import type { GoogleMapTypeId, Coordinates } from '../types/mosque.types';
 import { RADIUS_LIMITS } from '../constants/mosque.constants';
 
 interface FilterState {
     district: string | null;
     radius: number | null;
     wheelchairOnly: boolean;
+    hasParking: boolean;
+    hasWomenArea: boolean;
 }
 
 interface UiState {
     sidebarOpen: boolean;
     assistantOpen: boolean;
-    tileLayer: TileLayerId;
+    ramadanMode: boolean;
+    tileLayer: GoogleMapTypeId;
 }
 
 interface MosqueStoreState {
@@ -25,6 +28,8 @@ interface MosqueStoreState {
     setDistrict: (district: string | null) => void;
     setRadius: (radius: number | null) => void;
     setWheelchairOnly: (value: boolean) => void;
+    setHasParking: (value: boolean) => void;
+    setHasWomenArea: (value: boolean) => void;
     resetFilters: () => void;
 
     // Search
@@ -40,7 +45,8 @@ interface MosqueStoreState {
     ui: UiState;
     toggleSidebar: () => void;
     toggleAssistant: () => void;
-    setTileLayer: (layer: TileLayerId) => void;
+    toggleRamadanMode: () => void;
+    setTileLayer: (layer: GoogleMapTypeId) => void;
 
     // Route
     route: Coordinates[] | null;
@@ -52,15 +58,18 @@ interface MosqueStoreState {
 }
 
 const defaultFilters: FilterState = {
-    district: null,
+    district: 'Üsküdar',
     radius: null,
     wheelchairOnly: false,
+    hasParking: false,
+    hasWomenArea: false,
 };
 
 const defaultUi: UiState = {
     sidebarOpen: true,
     assistantOpen: false,
-    tileLayer: 'voyager',
+    ramadanMode: true, // Ramadan mode enabled by default for feature showcase!
+    tileLayer: 'roadmap',
 };
 
 export const useMosqueStore = create<MosqueStoreState>()(
@@ -76,6 +85,10 @@ export const useMosqueStore = create<MosqueStoreState>()(
                 set((state) => ({ filters: { ...state.filters, radius }, route: null, routeError: null })),
             setWheelchairOnly: (value) =>
                 set((state) => ({ filters: { ...state.filters, wheelchairOnly: value }, route: null, routeError: null })),
+            setHasParking: (value) =>
+                set((state) => ({ filters: { ...state.filters, hasParking: value }, route: null, routeError: null })),
+            setHasWomenArea: (value) =>
+                set((state) => ({ filters: { ...state.filters, hasWomenArea: value }, route: null, routeError: null })),
             resetFilters: () => set({ filters: { ...defaultFilters }, route: null, routeError: null }),
 
             route: null,
@@ -105,6 +118,8 @@ export const useMosqueStore = create<MosqueStoreState>()(
                 set((state) => ({ ui: { ...state.ui, sidebarOpen: !state.ui.sidebarOpen } })),
             toggleAssistant: () =>
                 set((state) => ({ ui: { ...state.ui, assistantOpen: !state.ui.assistantOpen } })),
+            toggleRamadanMode: () =>
+                set((state) => ({ ui: { ...state.ui, ramadanMode: !state.ui.ramadanMode } })),
             setTileLayer: (layer) =>
                 set((state) => ({ ui: { ...state.ui, tileLayer: layer } })),
         }),
@@ -113,9 +128,17 @@ export const useMosqueStore = create<MosqueStoreState>()(
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 favorites: state.favorites,
-                ui: { tileLayer: state.ui.tileLayer },
-                filters: state.filters,
+                ui: { tileLayer: state.ui.tileLayer, ramadanMode: state.ui.ramadanMode },
+                filters: {
+                    ...state.filters,
+                    district: state.filters.district || 'Üsküdar',
+                },
             }),
+            onRehydrateStorage: () => (state) => {
+                if (state && (!state.filters || !state.filters.district)) {
+                    state.setDistrict('Üsküdar');
+                }
+            },
         }
     )
 );

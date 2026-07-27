@@ -122,7 +122,7 @@ export function buildDirectionsUrl(
 }
 
 /**
- * İki koordinat arasında OSRM servisinden araç rotası çeker.
+ * İki koordinat arasında Google Maps Directions servisinden rota çeker.
  */
 export async function fetchRoute(
     from: Coordinates,
@@ -131,20 +131,29 @@ export async function fetchRoute(
     const [fromLat, fromLon] = from;
     const [toLat, toLon] = to;
 
-    const url = `https://router.project-osrm.org/route/v1/driving/${fromLon},${fromLat};${toLon},${toLat}?overview=full&geometries=geojson`;
-
-    const response = await fetch(url);
-    if (!response.ok) {
-        throw new Error('Yol tarifi servisi şu an kullanılamıyor.');
+    if (typeof window !== 'undefined' && (window as any).google?.maps?.DirectionsService) {
+        return new Promise((resolve, reject) => {
+            const google = (window as any).google;
+            const directionsService = new google.maps.DirectionsService();
+            directionsService.route(
+                {
+                    origin: { lat: fromLat, lng: fromLon },
+                    destination: { lat: toLat, lng: toLon },
+                    travelMode: google.maps.TravelMode.DRIVING,
+                },
+                (result: any, status: string) => {
+                    if (status === 'OK' && result?.routes?.[0]?.overview_path) {
+                        const path = result.routes[0].overview_path.map(
+                            (point: any) => [point.lat(), point.lng()] as Coordinates
+                        );
+                        resolve(path);
+                    } else {
+                        reject(new Error(`Google Maps yol tarifi alınamadı (${status}).`));
+                    }
+                }
+            );
+        });
     }
 
-    const data = await response.json();
-    if (data.code !== 'Ok' || !data.routes?.[0]?.geometry?.coordinates) {
-        throw new Error('Yol tarifi için bir güzergah bulunamadı.');
-    }
-
-    // OSRM [lon, lat] formatında döner, Leaflet ise [lat, lon] bekler.
-    return data.routes[0].geometry.coordinates.map(
-        (coords: [number, number]): Coordinates => [coords[1], coords[0]]
-    );
+    return [from, to];
 }

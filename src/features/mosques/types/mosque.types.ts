@@ -13,6 +13,11 @@ export interface Mosque {
     website?: string;
     capacity?: string;
     wheelchair?: string;
+    hasParking?: boolean;
+    hasWomenArea?: boolean;
+    hasAC?: boolean;
+    densityStatus?: 'low' | 'medium' | 'high';
+    densityPercentage?: number;
 }
 
 export type Coordinates = [number, number];
@@ -57,15 +62,12 @@ export interface GeoJSONFeatureCollection {
     features: GeoJSONFeature[];
 }
 
-/** Map tile katman tanımı. */
-export type TileLayerId = 'voyager' | 'satellite';
+/** Google Maps katman türleri. */
+export type GoogleMapTypeId = 'roadmap' | 'satellite' | 'hybrid' | 'terrain';
 
 export interface MapLayer {
-    id: TileLayerId;
+    id: GoogleMapTypeId;
     name: string;
-    url: string;
-    attribution: string;
-    maxZoom: number;
 }
 
 /** Namaz vakti kayıtları. */

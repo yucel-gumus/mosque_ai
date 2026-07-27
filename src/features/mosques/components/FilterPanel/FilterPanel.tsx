@@ -13,7 +13,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Accessibility, MapPin, Ruler, RotateCcw } from 'lucide-react';
+import { Accessibility, MapPin, Ruler, RotateCcw, Car, Users, Moon } from 'lucide-react';
 
 interface FilterPanelProps {
     districts: string[];
@@ -23,14 +23,25 @@ interface FilterPanelProps {
 const ALL_DISTRICTS = '__all__';
 
 export const FilterPanel = memo(function FilterPanel({ districts, resultCount }: FilterPanelProps) {
-    const { filters, setDistrict, setRadius, setWheelchairOnly, resetFilters } =
-        useMosqueStore();
+    const {
+        filters,
+        setDistrict,
+        setRadius,
+        setWheelchairOnly,
+        setHasParking,
+        setHasWomenArea,
+        resetFilters,
+        ui,
+        toggleRamadanMode,
+    } = useMosqueStore();
 
     const isActive = useMemo(
         () =>
             filters.district !== null ||
             filters.radius !== null ||
-            filters.wheelchairOnly,
+            filters.wheelchairOnly ||
+            filters.hasParking ||
+            filters.hasWomenArea,
         [filters]
     );
 
@@ -42,7 +53,7 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFB6A6]">
                             <MapPin className="h-3.5 w-3.5 text-[#4A2B20]" />
                         </div>
-                        Filtreler
+                        Filtreler & Olanaklar
                     </h3>
                     {isActive && (
                         <Button
@@ -55,6 +66,27 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                             Sıfırla
                         </Button>
                     )}
+                </div>
+
+                {/* Ramazan Modu Hızlı Geçiş */}
+                <div className="flex items-center justify-between p-2 rounded-2xl bg-[#1A4036] text-[#FFEBD3]">
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold">
+                        <Moon className="h-3.5 w-3.5 text-[#FFB6A6] fill-[#FFB6A6]" />
+                        Ramazan Modu Paneli
+                    </span>
+                    <button
+                        type="button"
+                        onClick={toggleRamadanMode}
+                        className={`h-5 w-9 rounded-full transition-colors relative ${
+                            ui.ramadanMode ? 'bg-[#9BCEC1]' : 'bg-gray-600'
+                        }`}
+                    >
+                        <span
+                            className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
+                                ui.ramadanMode ? 'translate-x-4' : 'translate-x-0'
+                            }`}
+                        />
+                    </button>
                 </div>
 
                 {/* İlçe */}
@@ -105,37 +137,93 @@ export const FilterPanel = memo(function FilterPanel({ districts, resultCount }:
                     />
                 </div>
 
-                {/* Erişilebilir */}
-                <div className="space-y-1">
-                    <button
-                        type="button"
-                        onClick={() => setWheelchairOnly(!filters.wheelchairOnly)}
-                        className={`flex w-full items-center justify-between rounded-2xl border p-2 transition-all duration-300 ${
-                            filters.wheelchairOnly
-                                ? 'border-[#9BCEC1] bg-[#9BCEC1]/30 shadow-sm'
-                                : 'border-[#FFB6A6] bg-[#FFEBD3]/50 hover:bg-[#FFEBD3]'
-                        }`}
-                        aria-pressed={filters.wheelchairOnly}
-                    >
-                        <span className="flex items-center gap-2 text-[11px] font-bold text-[#4A2B20] sm:text-xs">
-                            <Accessibility className="h-4 w-4 text-[#4A2B20]" />
-                            Engelli / Tekerlekli Sandalye
-                        </span>
-                        <span
-                            className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 inline-block ${
-                                filters.wheelchairOnly ? 'bg-[#9BCEC1]' : 'bg-[#FFB6A6]'
+                {/* Tesis & Olanak Filtreleri */}
+                <div className="space-y-1.5 pt-1">
+                    <Label className="text-[11px] font-bold text-[#4A2B20] sm:text-xs">
+                        Özel Olanaklar
+                    </Label>
+                    <div className="grid grid-cols-1 gap-1.5">
+                        {/* Erişilebilir */}
+                        <button
+                            type="button"
+                            onClick={() => setWheelchairOnly(!filters.wheelchairOnly)}
+                            className={`flex w-full items-center justify-between rounded-2xl border p-2 transition-all duration-300 ${
+                                filters.wheelchairOnly
+                                    ? 'border-[#9BCEC1] bg-[#9BCEC1]/30 shadow-sm'
+                                    : 'border-[#FFB6A6] bg-[#FFEBD3]/50 hover:bg-[#FFEBD3]'
                             }`}
                         >
+                            <span className="flex items-center gap-2 text-[11px] font-bold text-[#4A2B20]">
+                                <Accessibility className="h-3.5 w-3.5 text-[#4A2B20]" />
+                                Engelli Erişimi / Rampa
+                            </span>
                             <span
-                                className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
-                                    filters.wheelchairOnly ? 'translate-x-4' : 'translate-x-0'
+                                className={`relative h-4 w-7 shrink-0 rounded-full transition-colors duration-200 inline-block ${
+                                    filters.wheelchairOnly ? 'bg-[#9BCEC1]' : 'bg-[#FFB6A6]'
                                 }`}
-                            />
-                        </span>
-                    </button>
-                    <p className="text-[9px] font-medium text-[#8C5E50] leading-tight px-1">
-                        Giriş rampası veya engelli erişimine uygun camileri filtreler.
-                    </p>
+                            >
+                                <span
+                                    className={`absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
+                                        filters.wheelchairOnly ? 'translate-x-3' : 'translate-x-0'
+                                    }`}
+                                />
+                            </span>
+                        </button>
+
+                        {/* Otopark */}
+                        <button
+                            type="button"
+                            onClick={() => setHasParking(!filters.hasParking)}
+                            className={`flex w-full items-center justify-between rounded-2xl border p-2 transition-all duration-300 ${
+                                filters.hasParking
+                                    ? 'border-[#9BCEC1] bg-[#9BCEC1]/30 shadow-sm'
+                                    : 'border-[#FFB6A6] bg-[#FFEBD3]/50 hover:bg-[#FFEBD3]'
+                            }`}
+                        >
+                            <span className="flex items-center gap-2 text-[11px] font-bold text-[#4A2B20]">
+                                <Car className="h-3.5 w-3.5 text-[#4A2B20]" />
+                                Otopark Olanadığı
+                            </span>
+                            <span
+                                className={`relative h-4 w-7 shrink-0 rounded-full transition-colors duration-200 inline-block ${
+                                    filters.hasParking ? 'bg-[#9BCEC1]' : 'bg-[#FFB6A6]'
+                                }`}
+                            >
+                                <span
+                                    className={`absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
+                                        filters.hasParking ? 'translate-x-3' : 'translate-x-0'
+                                    }`}
+                                />
+                            </span>
+                        </button>
+
+                        {/* Kadınlar Bölümü */}
+                        <button
+                            type="button"
+                            onClick={() => setHasWomenArea(!filters.hasWomenArea)}
+                            className={`flex w-full items-center justify-between rounded-2xl border p-2 transition-all duration-300 ${
+                                filters.hasWomenArea
+                                    ? 'border-[#9BCEC1] bg-[#9BCEC1]/30 shadow-sm'
+                                    : 'border-[#FFB6A6] bg-[#FFEBD3]/50 hover:bg-[#FFEBD3]'
+                            }`}
+                        >
+                            <span className="flex items-center gap-2 text-[11px] font-bold text-[#4A2B20]">
+                                <Users className="h-3.5 w-3.5 text-[#4A2B20]" />
+                                Kadınlar Bölümü
+                            </span>
+                            <span
+                                className={`relative h-4 w-7 shrink-0 rounded-full transition-colors duration-200 inline-block ${
+                                    filters.hasWomenArea ? 'bg-[#9BCEC1]' : 'bg-[#FFB6A6]'
+                                }`}
+                            >
+                                <span
+                                    className={`absolute top-0.5 left-0.5 h-3 w-3 rounded-full bg-[#FFF6EC] shadow transition-transform duration-200 ${
+                                        filters.hasWomenArea ? 'translate-x-3' : 'translate-x-0'
+                                    }`}
+                                />
+                            </span>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-[#FFB6A6]/40 pt-2.5">

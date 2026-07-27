@@ -40,6 +40,9 @@ jobs:
         run: npm run test
 
       - name: Build
+        env:
+          VITE_GOOGLE_MAPS_API_KEY: ${{ secrets.VITE_GOOGLE_MAPS_API_KEY || vars.VITE_GOOGLE_MAPS_API_KEY }}
+          VITE_BFF_API_URL: 'https://pages-bff.vercel.app'
         run: npm run build
 
       - name: Setup Pages

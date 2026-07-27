@@ -1,16 +1,15 @@
-import { useEffect, useMemo, useRef, useCallback, memo } from 'react';
-import { MapContainer, Marker, Popup, TileLayer, useMap, Polyline } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-cluster';
-import L from 'leaflet';
+import { useEffect, useMemo, useState, useCallback, memo } from 'react';
+import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import type { Mosque, Coordinates } from '../../types/mosque.types';
-import { MAP_CONFIG, ISTANBUL_CENTER } from '../../constants/mosque.constants';
+import { MAP_CONFIG, USKUDAR_CENTER, ISTANBUL_BOUNDS } from '../../constants/mosque.constants';
 import {
-    createMosqueIcon,
-    createUserIcon,
-    createClusterIcon,
-} from '../../utils/leaflet.utils';
-import { formatCoordinates } from '../../utils/geo.utils';
-import { getLayerById } from '../../utils/mapLayers';
+    calculateDistance,
+    formatDistance,
+    calculateQiblaBearing,
+    buildDirectionsUrl,
+    fetchRoute,
+} from '../../utils/geo.utils';
+import { calculateMosqueDensity } from '../../utils/density.utils';
 import { useMosqueStore } from '../../store/mosqueStore';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,36 +23,49 @@ interface MosqueMapProps {
     onMosqueSelect: (id: number) => void;
 }
 
-function FlyToLocation({ position }: { position: Coordinates }) {
+function GooglePolyline({ path }: { path: Coordinates[] }) {
     const map = useMap();
 
     useEffect(() => {
-        const currentZoom = map.getZoom();
-        const targetZoom = Math.max(currentZoom, MAP_CONFIG.FLY_TO_ZOOM);
-        map.flyTo(position, targetZoom, { duration: MAP_CONFIG.FLY_DURATION });
-    }, [map, position]);
+        if (!map || !path || path.length < 2) return;
+
+        const polyline = new google.maps.Polyline({
+            path: path.map(([lat, lng]) => ({ lat, lng })),
+            geodesic: true,
+            strokeColor: '#0ea5e9',
+            strokeOpacity: 0.9,
+            strokeWeight: 5,
+        });
+
+        polyline.setMap(map);
+
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach(([lat, lng]) => bounds.extend({ lat, lng }));
+        map.fitBounds(bounds, 50);
+
+        return () => {
+            polyline.setMap(null);
+        };
+    }, [map, path]);
 
     return null;
 }
 
-function FitRouteBounds({ route }: { route: Coordinates[] | null }) {
+function MapController({
+    selectedMosque,
+}: {
+    selectedMosque: Mosque | null;
+}) {
     const map = useMap();
 
     useEffect(() => {
-        if (route && route.length > 0) {
-            const bounds = L.latLngBounds(route);
-            map.fitBounds(bounds, { padding: [40, 40] });
+        if (!map) return;
+        if (selectedMosque) {
+            map.panTo({ lat: selectedMosque.lat, lng: selectedMosque.lon });
+            map.setZoom(MAP_CONFIG.FLY_TO_ZOOM);
         }
-    }, [map, route]);
+    }, [map, selectedMosque]);
 
-    return null;
-}
-
-function MapController({ onMapReady }: { onMapReady: (map: L.Map) => void }) {
-    const map = useMap();
-    useEffect(() => {
-        onMapReady(map);
-    }, [map, onMapReady]);
     return null;
 }
 
@@ -63,149 +75,203 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     userCoords,
     onMosqueSelect,
 }: MosqueMapProps) {
-    const defaultMosqueIcon = useMemo(() => createMosqueIcon(false), []);
-    const selectedMosqueIcon = useMemo(() => createMosqueIcon(true), []);
-    const userIcon = useMemo(() => createUserIcon(), []);
-    const mapRef = useRef<L.Map | null>(null);
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
     const tileLayer = useMosqueStore((s) => s.ui.tileLayer);
     const route = useMosqueStore((s) => s.route);
+    const setRoute = useMosqueStore((s) => s.setRoute);
+    const setIsLoadingRoute = useMosqueStore((s) => s.setIsLoadingRoute);
+    const setRouteError = useMosqueStore((s) => s.setRouteError);
 
-    const currentLayer = useMemo(() => getLayerById(tileLayer), [tileLayer]);
+    const [infoWindowMosque, setInfoWindowMosque] = useState<Mosque | null>(null);
 
-    const bounds = useMemo(() => {
-        if (!mosques.length) return null;
-        return L.latLngBounds(mosques.map((m) => [m.lat, m.lon]));
-    }, [mosques]);
+    const infoWindowDensity = useMemo(
+        () => (infoWindowMosque ? calculateMosqueDensity(infoWindowMosque) : null),
+        [infoWindowMosque]
+    );
 
-    const handleMapReady = useCallback((map: L.Map) => {
-        mapRef.current = map;
-    }, []);
+    useEffect(() => {
+        if (selectedMosque) {
+            setInfoWindowMosque(selectedMosque);
+        }
+    }, [selectedMosque]);
+
+    const initialCenter = useMemo(() => {
+        if (selectedMosque) return { lat: selectedMosque.lat, lng: selectedMosque.lon };
+        if (userCoords) return { lat: userCoords[0], lng: userCoords[1] };
+        return { lat: USKUDAR_CENTER[0], lng: USKUDAR_CENTER[1] };
+    }, [selectedMosque, userCoords]);
 
     const handleCenterOnUser = useCallback(() => {
-        if (mapRef.current && userCoords) {
-            mapRef.current.flyTo(userCoords, MAP_CONFIG.FLY_TO_ZOOM, {
-                duration: MAP_CONFIG.FLY_DURATION,
-            });
+        if (userCoords) {
+            setInfoWindowMosque(null);
         }
     }, [userCoords]);
-
-
 
     return (
         <Card
             className="relative h-[200px] overflow-hidden sm:h-[280px] md:h-[350px] lg:h-[450px] xl:h-[500px] no-float"
             role="application"
-            aria-label="İstanbul cami haritası - haritada gezinmek için ok tuşlarını kullanın"
+            aria-label="İstanbul cami haritası - Google Maps"
         >
-            <MapContainer
-                className="h-full w-full"
-                center={selectedMosque ? [selectedMosque.lat, selectedMosque.lon] : (userCoords ?? ISTANBUL_CENTER)}
-                bounds={bounds ?? undefined}
-                scrollWheelZoom
-                zoom={MAP_CONFIG.DEFAULT_ZOOM}
-                minZoom={MAP_CONFIG.MIN_ZOOM}
-                maxZoom={MAP_CONFIG.MAX_ZOOM}
-                preferCanvas
-                attributionControl={false}
-            >
-                <TileLayer
-                    key={tileLayer}
-                    attribution={currentLayer.attribution}
-                    url={currentLayer.url}
-                    maxZoom={currentLayer.maxZoom}
-                />
-                <MapController onMapReady={handleMapReady} />
-                {!route && selectedMosque && <FlyToLocation position={[selectedMosque.lat, selectedMosque.lon]} />}
-
-                {route && route.length > 0 && (
-                    <>
-                        <Polyline
-                            positions={route}
-                            color="#0ea5e9"
-                            weight={5}
-                            opacity={0.8}
-                            lineJoin="round"
-                        />
-                        <FitRouteBounds route={route} />
-                    </>
-                )}
-
-                {userCoords && (
-                    <Marker position={userCoords} icon={userIcon} zIndexOffset={1000}>
-                        <Popup>
-                            <div className="space-y-1 text-center">
-                                <h3 className="text-sm font-semibold text-foreground">📍 Konumunuz</h3>
-                                <p className="font-mono text-xs text-muted-foreground">
-                                    {formatCoordinates(userCoords[0], userCoords[1])}
-                                </p>
-                            </div>
-                        </Popup>
-                    </Marker>
-                )}
-
-                <MarkerClusterGroup
-                    chunkedLoading
-                    iconCreateFunction={createClusterIcon}
-                    spiderfyOnMaxZoom
-                    showCoverageOnHover={false}
-                    disableClusteringAtZoom={18}
-                    maxClusterRadius={40}
-                    polygonOptions={{ color: '#4338ca', weight: 1, opacity: 0.6 }}
+            <APIProvider apiKey={apiKey} libraries={['places', 'geometry']}>
+                <Map
+                    className="h-full w-full"
+                    mapId={import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID') : undefined}
+                    defaultCenter={initialCenter}
+                    defaultZoom={MAP_CONFIG.DEFAULT_ZOOM}
+                    minZoom={MAP_CONFIG.MIN_ZOOM}
+                    maxZoom={MAP_CONFIG.MAX_ZOOM}
+                    mapTypeId={tileLayer}
+                    restriction={{
+                        latLngBounds: ISTANBUL_BOUNDS,
+                        strictBounds: true,
+                    }}
+                    disableDefaultUI
+                    gestureHandling="greedy"
                 >
+                    <MapController selectedMosque={selectedMosque} />
+
+                    {route && route.length > 0 && <GooglePolyline path={route} />}
+
+                    {/* Kullanıcı Konumu İşaretçisi */}
+                    {userCoords && (
+                        <AdvancedMarker position={{ lat: userCoords[0], lng: userCoords[1] }}>
+                            <div className="user-pin">
+                                <div className="user-marker">
+                                    <Locate className="h-4 w-4 text-[#1A4036]" />
+                                </div>
+                            </div>
+                        </AdvancedMarker>
+                    )}
+
+                    {/* Cami İşaretçileri */}
                     {mosques.map((mosque) => {
-                        const isSelected = selectedMosque ? selectedMosque.id === mosque.id : false;
+                        const isSelected = selectedMosque?.id === mosque.id;
                         return (
-                            <Marker
+                            <AdvancedMarker
                                 key={mosque.id}
-                                position={[mosque.lat, mosque.lon]}
-                                icon={isSelected ? selectedMosqueIcon : defaultMosqueIcon}
-                                zIndexOffset={isSelected ? 1000 : 0}
-                                eventHandlers={{
-                                    click: () => onMosqueSelect(mosque.id),
+                                position={{ lat: mosque.lat, lng: mosque.lon }}
+                                onClick={() => {
+                                    onMosqueSelect(mosque.id);
+                                    setInfoWindowMosque(mosque);
                                 }}
                             >
-                                <Popup>
-                                    <div className="space-y-2">
-                                        <h3 className="text-base font-semibold leading-none tracking-tight text-foreground">
-                                            {mosque.name}
-                                        </h3>
-                                        <div className="space-y-1 text-sm text-muted-foreground">
-                                            {mosque.district && (
-                                                <div className="flex items-center gap-1.5">
-                                                    <span className="font-medium text-foreground">{mosque.district}</span>
-                                                </div>
-                                            )}
-                                            {mosque.neighborhood && (
-                                                <div className="text-xs">{mosque.neighborhood}</div>
-                                            )}
-                                            <div className="flex items-center gap-1.5 pt-1 text-xs">
-                                                <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px]">
-                                                    {formatCoordinates(mosque.lat, mosque.lon)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Popup>
-                            </Marker>
+                                <div className={`mosque-pin ${isSelected ? 'selected' : ''}`}>
+                                    <span className="pin-body"></span>
+                                </div>
+                            </AdvancedMarker>
                         );
                     })}
-                </MarkerClusterGroup>
-            </MapContainer>
 
-            <MapLayerSwitcher />
+                    {/* Zenginleştirilmiş Cami Detay Baloncuğu (InfoWindow) */}
+                    {infoWindowMosque && (
+                        <InfoWindow
+                            position={{ lat: infoWindowMosque.lat, lng: infoWindowMosque.lon }}
+                            onCloseClick={() => setInfoWindowMosque(null)}
+                        >
+                            <div className="max-w-[260px] space-y-2 p-1 text-foreground">
+                                {/* Google Street View Fotoğraf Önizlemesi */}
+                                {apiKey && (
+                                    <div className="relative h-24 w-full overflow-hidden rounded-xl bg-muted shadow-xs">
+                                        <img
+                                            src={`https://maps.googleapis.com/maps/api/streetview?size=300x120&location=${infoWindowMosque.lat},${infoWindowMosque.lon}&fov=90&heading=200&pitch=5&key=${apiKey}`}
+                                            alt={infoWindowMosque.name}
+                                            className="h-full w-full object-cover"
+                                            onError={(e) => {
+                                                (e.target as HTMLElement).style.display = 'none';
+                                            }}
+                                        />
+                                    </div>
+                                )}
 
-            {userCoords && (
-                <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute bottom-4 right-4 z-[1000] h-10 w-10 rounded-full shadow-lg"
-                    onClick={handleCenterOnUser}
-                    title="Konumuma dön"
-                    aria-label="Konumuma dön"
-                >
-                    <Locate className="h-5 w-5" />
-                </Button>
-            )}
+                                {/* Başlık & Adres */}
+                                <div>
+                                    <h3 className="text-sm font-extrabold text-[#4A2B20] leading-tight">
+                                        {infoWindowMosque.name}
+                                    </h3>
+                                    <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
+                                        {infoWindowMosque.district ? `${infoWindowMosque.district}, ` : ''}{infoWindowMosque.neighborhood || ''}
+                                    </p>
+                                </div>
+
+                                {/* Bilgi Rozetleri (Mesafe, Kıble, Kapasite) */}
+                                <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                                    {userCoords && (
+                                        <span className="rounded-full bg-[#9BCEC1] px-2 py-0.5 font-black text-[#1A4036]">
+                                            📍 {formatDistance(calculateDistance(userCoords[0], userCoords[1], infoWindowMosque.lat, infoWindowMosque.lon))}
+                                        </span>
+                                    )}
+                                    <span className="rounded-full bg-[#FFEBD3] border border-[#FFB6A6] px-2 py-0.5 font-extrabold text-[#4A2B20]">
+                                        🧭 Kıble: {Math.round(calculateQiblaBearing(infoWindowMosque.lat, infoWindowMosque.lon))}°
+                                    </span>
+                                    {infoWindowDensity && (
+                                        <span className={`rounded-full px-2 py-0.5 font-black border text-[9px] ${infoWindowDensity.badgeClass}`}>
+                                            {infoWindowDensity.label} (%{infoWindowDensity.percentage})
+                                        </span>
+                                    )}
+                                    {infoWindowMosque.capacity && (
+                                        <span className="rounded-full bg-[#FFB6A6]/40 px-2 py-0.5 font-bold text-[#4A2B20]">
+                                            👥 {infoWindowMosque.capacity} kişi
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Hızlı Eylem Butonları */}
+                                <div className="pt-1.5 flex items-center gap-1.5">
+                                    {userCoords && (
+                                        <button
+                                            type="button"
+                                            onClick={async () => {
+                                                setIsLoadingRoute(true);
+                                                setRouteError(null);
+                                                try {
+                                                    const coords = await fetchRoute(userCoords, [infoWindowMosque.lat, infoWindowMosque.lon]);
+                                                    setRoute(coords);
+                                                } catch (err) {
+                                                    setRouteError(err instanceof Error ? err.message : 'Yol tarifi alınamadı');
+                                                } finally {
+                                                    setIsLoadingRoute(false);
+                                                }
+                                            }}
+                                            className="flex-1 rounded-xl bg-[#9BCEC1] px-2 py-1.5 text-[10px] font-bold text-[#1A4036] hover:bg-[#9BCEC1]/80 shadow-xs text-center transition-all cursor-pointer"
+                                        >
+                                            🚀 Rota Çiz
+                                        </button>
+                                    )}
+                                    <a
+                                        href={buildDirectionsUrl(
+                                            userCoords ? userCoords[0] : USKUDAR_CENTER[0],
+                                            userCoords ? userCoords[1] : USKUDAR_CENTER[1],
+                                            infoWindowMosque.lat,
+                                            infoWindowMosque.lon
+                                        )}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex-1 rounded-xl bg-[#FFB6A6] px-2 py-1.5 text-[10px] font-bold text-[#4A2B20] hover:bg-[#FFB6A6]/80 shadow-xs text-center transition-all"
+                                    >
+                                        🗺️ Navigasyon
+                                    </a>
+                                </div>
+                            </div>
+                        </InfoWindow>
+                    )}
+
+                    <MapLayerSwitcher />
+                </Map>
+
+                {userCoords && (
+                    <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute bottom-4 right-4 z-[10] h-10 w-10 rounded-full shadow-lg"
+                        onClick={handleCenterOnUser}
+                        title="Konumuma dön"
+                        aria-label="Konumuma dön"
+                    >
+                        <Locate className="h-5 w-5" />
+                    </Button>
+                )}
+            </APIProvider>
         </Card>
     );
 });

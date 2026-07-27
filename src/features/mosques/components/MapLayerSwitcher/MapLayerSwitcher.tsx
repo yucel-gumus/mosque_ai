@@ -1,12 +1,14 @@
 import { useMosqueStore } from '../../store/mosqueStore';
 import { MAP_LAYERS } from '../../utils/mapLayers';
 import { cn } from '@/lib/utils';
-import { Map, Satellite } from 'lucide-react';
-import type { TileLayerId } from '../../types/mosque.types';
+import { Map, Satellite, Layers, Mountain } from 'lucide-react';
+import type { GoogleMapTypeId } from '../../types/mosque.types';
 
-const ICONS: Record<TileLayerId, typeof Map> = {
-    voyager: Map,
+const ICONS: Record<GoogleMapTypeId, typeof Map> = {
+    roadmap: Map,
     satellite: Satellite,
+    hybrid: Layers,
+    terrain: Mountain,
 };
 
 export function MapLayerSwitcher() {
@@ -14,7 +16,7 @@ export function MapLayerSwitcher() {
     const setTileLayer = useMosqueStore((s) => s.setTileLayer);
 
     return (
-        <div className="absolute right-3 top-3 z-[1000] flex gap-1 rounded-full border-2 border-[#FFB6A6] bg-[#FFF6EC] p-1 shadow-xl">
+        <div className="absolute right-3 top-3 z-[10] flex gap-1 rounded-full border-2 border-[#FFB6A6] bg-[#FFF6EC] p-1 shadow-xl">
             {MAP_LAYERS.map((layer) => {
                 const Icon = ICONS[layer.id];
                 const active = tileLayer === layer.id;

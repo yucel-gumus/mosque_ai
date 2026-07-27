@@ -1,9 +1,14 @@
-import L from 'leaflet';
 import type { Coordinates } from '../types/mosque.types';
 
+export const USKUDAR_CENTER: Coordinates = [41.0264, 29.0153];
 export const ISTANBUL_CENTER: Coordinates = [41.0082, 28.9784];
 
-export const ISTANBUL_BOUNDS = L.latLngBounds([40.802, 28.209], [41.376, 29.513]);
+export const ISTANBUL_BOUNDS = {
+    south: 40.802,
+    west: 28.209,
+    north: 41.376,
+    east: 29.513,
+};
 
 export const MAP_CONFIG = {
     DEFAULT_ZOOM: 13,
