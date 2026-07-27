@@ -131,20 +131,20 @@ export async function fetchRoute(
     const [fromLat, fromLon] = from;
     const [toLat, toLon] = to;
 
-    if (typeof window !== 'undefined' && (window as any).google?.maps?.DirectionsService) {
+    if (typeof window !== 'undefined' && 'google' in window && (window as unknown as { google: typeof google }).google?.maps?.DirectionsService) {
         return new Promise((resolve, reject) => {
-            const google = (window as any).google;
-            const directionsService = new google.maps.DirectionsService();
+            const googleObj = (window as unknown as { google: typeof google }).google;
+            const directionsService = new googleObj.maps.DirectionsService();
             directionsService.route(
                 {
                     origin: { lat: fromLat, lng: fromLon },
                     destination: { lat: toLat, lng: toLon },
-                    travelMode: google.maps.TravelMode.DRIVING,
+                    travelMode: googleObj.maps.TravelMode.DRIVING,
                 },
-                (result: any, status: string) => {
-                    if (status === 'OK' && result?.routes?.[0]?.overview_path) {
+                (result, status) => {
+                    if (status === googleObj.maps.DirectionsStatus.OK && result?.routes?.[0]?.overview_path) {
                         const path = result.routes[0].overview_path.map(
-                            (point: any) => [point.lat(), point.lng()] as Coordinates
+                            (point) => [point.lat(), point.lng()] as Coordinates
                         );
                         resolve(path);
                     } else {
