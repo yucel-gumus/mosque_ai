@@ -12,6 +12,12 @@ export function useMosqueImage(mosque: Mosque | null, _apiKey?: string) {
         source: 'Pattern',
     });
     const [isLoading, setIsLoading] = useState<boolean>(Boolean(mosque));
+    const [prevMosqueId, setPrevMosqueId] = useState<number | string | null>(mosque?.id ?? null);
+
+    if (mosque?.id !== prevMosqueId) {
+        setPrevMosqueId(mosque?.id ?? null);
+        setIsLoading(Boolean(mosque));
+    }
 
     useEffect(() => {
         if (!mosque) {
@@ -19,7 +25,6 @@ export function useMosqueImage(mosque: Mosque | null, _apiKey?: string) {
         }
 
         let isMounted = true;
-        setIsLoading(true);
 
         getMosqueImage(mosque)
             .then((res) => {

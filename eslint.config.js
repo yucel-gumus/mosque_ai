@@ -21,6 +21,14 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
       // Geçerli data syncing use-case'leri için warning seviyesine düşür
       'react-hooks/set-state-in-effect': 'warn',
     },
