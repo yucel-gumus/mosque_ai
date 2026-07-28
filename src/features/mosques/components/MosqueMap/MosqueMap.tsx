@@ -81,7 +81,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
 }: MosqueMapProps) {
     const [apiKey, setApiKey] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '');
     const [mapId, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
-    const [isLoaded, setIsLoaded] = useState<boolean>(!!window.google?.maps);
+    const [, setIsLoaded] = useState<boolean>(!!window.google?.maps);
 
     useEffect(() => {
         if (window.google?.maps) {
