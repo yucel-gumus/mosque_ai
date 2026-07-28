@@ -1,0 +1,1 @@
+export { MosqueImage } from './MosqueImage';

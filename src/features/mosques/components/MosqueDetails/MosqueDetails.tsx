@@ -11,6 +11,8 @@ import {
 } from '../../utils/geo.utils';
 import { calculateMosqueDensity } from '../../utils/density.utils';
 import { useMosqueStore } from '../../store/mosqueStore';
+import { MosqueImage } from '../MosqueImage';
+
 import { useShallow } from 'zustand/react/shallow';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -111,29 +113,9 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
 
     const wheelchairInfo = mosque.wheelchair ? wheelchairLabels[mosque.wheelchair] : null;
 
-    const streetViewUrl = useMemo(() => {
-        const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-        if (!apiKey) return null;
-        return `https://maps.googleapis.com/maps/api/streetview?size=400x160&location=${mosque.lat},${mosque.lon}&fov=90&heading=200&pitch=5&key=${apiKey}`;
-    }, [mosque.lat, mosque.lon]);
-
     return (
         <Card className="flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl overflow-hidden">
-            {streetViewUrl && (
-                <div className="relative h-28 w-full overflow-hidden bg-muted">
-                    <img
-                        src={streetViewUrl}
-                        alt={`${mosque.name} Google Street View`}
-                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                        onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                        }}
-                    />
-                    <Badge className="absolute bottom-2 right-2 bg-black/60 text-white backdrop-blur-xs text-[9px] font-bold">
-                        Google Street View
-                    </Badge>
-                </div>
-            )}
+            <MosqueImage mosque={mosque} className="rounded-none rounded-t-[22px]" />
 
             <CardHeader className="p-3.5 pb-2 sm:p-4 sm:pb-2">
                 <div className="flex items-start justify-between gap-2">

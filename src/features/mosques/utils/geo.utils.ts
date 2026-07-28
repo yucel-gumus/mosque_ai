@@ -157,3 +157,27 @@ export async function fetchRoute(
 
     return [from, to];
 }
+
+/**
+ * İki koordinat arasındaki yön açısını (bearing / heading) derece (0-360) cinsinden hesaplar.
+ */
+export function calculateBearing(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+): number {
+    const phi1 = toRadians(lat1);
+    const phi2 = toRadians(lat2);
+    const deltaLambda = toRadians(lon2 - lon1);
+
+    const y = Math.sin(deltaLambda) * Math.cos(phi2);
+    const x =
+        Math.cos(phi1) * Math.sin(phi2) -
+        Math.sin(phi1) * Math.cos(phi2) * Math.cos(deltaLambda);
+    const theta = Math.atan2(y, x);
+
+    const degrees = (theta * 180) / Math.PI;
+    return (degrees + 360) % 360;
+}
+

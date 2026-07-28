@@ -5,6 +5,7 @@ import {
     calculateQiblaBearing,
     bearingToCompass,
     buildDirectionsUrl,
+    calculateBearing,
 } from '../geo.utils';
 
 describe('calculateDistance (Haversine)', () => {
@@ -80,3 +81,26 @@ describe('buildDirectionsUrl', () => {
         expect(url).toContain('travelmode=driving');
     });
 });
+
+describe('calculateBearing', () => {
+    it('Kuzey yönü için ~0° döner', () => {
+        const bearing = calculateBearing(41.0, 29.0, 41.1, 29.0);
+        expect(bearing).toBeCloseTo(0, 0);
+    });
+
+    it('Doğu yönü için ~90° döner', () => {
+        const bearing = calculateBearing(41.0, 29.0, 41.0, 29.1);
+        expect(bearing).toBeCloseTo(90, 0);
+    });
+
+    it('Güney yönü için ~180° döner', () => {
+        const bearing = calculateBearing(41.1, 29.0, 41.0, 29.0);
+        expect(bearing).toBeCloseTo(180, 0);
+    });
+
+    it('Batı yönü için ~270° döner', () => {
+        const bearing = calculateBearing(41.0, 29.1, 41.0, 29.0);
+        expect(bearing).toBeCloseTo(270, 0);
+    });
+});
+

@@ -15,6 +15,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Locate } from 'lucide-react';
 import { MapLayerSwitcher } from '../MapLayerSwitcher';
+import { MosqueImage } from '../MosqueImage';
+
+const MAP_LIBRARIES: ('places' | 'marker')[] = ['places', 'marker'];
+
 
 interface MosqueMapProps {
     mosques: Mosque[];
@@ -113,7 +117,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
             role="application"
             aria-label="İstanbul cami haritası - Google Maps"
         >
-            <APIProvider apiKey={apiKey} libraries={['places', 'geometry']}>
+            <APIProvider apiKey={apiKey} libraries={MAP_LIBRARIES}>
                 <Map
                     className="h-full w-full"
                     mapId={import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID') : undefined}
@@ -170,19 +174,9 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                             onCloseClick={() => setInfoWindowMosque(null)}
                         >
                             <div className="max-w-[260px] space-y-2 p-1 text-foreground">
-                                {/* Google Street View Fotoğraf Önizlemesi */}
-                                {apiKey && (
-                                    <div className="relative h-24 w-full overflow-hidden rounded-xl bg-muted shadow-xs">
-                                        <img
-                                            src={`https://maps.googleapis.com/maps/api/streetview?size=300x120&location=${infoWindowMosque.lat},${infoWindowMosque.lon}&fov=90&heading=200&pitch=5&key=${apiKey}`}
-                                            alt={infoWindowMosque.name}
-                                            className="h-full w-full object-cover"
-                                            onError={(e) => {
-                                                (e.target as HTMLElement).style.display = 'none';
-                                            }}
-                                        />
-                                    </div>
-                                )}
+                                {/* Google Places / Multi-Tiered Fotoğraf Önizlemesi */}
+                                <MosqueImage mosque={infoWindowMosque} compact />
+
 
                                 {/* Başlık & Adres */}
                                 <div>
