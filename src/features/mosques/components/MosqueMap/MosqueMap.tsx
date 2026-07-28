@@ -151,7 +151,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
             <APIProvider apiKey={apiKey} libraries={MAP_LIBRARIES}>
                 <Map
                     className="h-full w-full"
-                    mapId={apiKey ? mapId : undefined}
+                    mapId={mapId || 'DEMO_MAP_ID'}
                     defaultCenter={initialCenter}
                     defaultZoom={MAP_CONFIG.DEFAULT_ZOOM}
                     minZoom={MAP_CONFIG.MIN_ZOOM}
