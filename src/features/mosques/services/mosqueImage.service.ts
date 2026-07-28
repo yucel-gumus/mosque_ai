@@ -1,29 +1,67 @@
-import { calculateBearing } from '../utils/geo.utils';
 import type { Mosque } from '../types/mosque.types';
 
 export interface MosqueImageResult {
     url: string | null;
-    source: 'Google Places' | 'Wikipedia' | 'Google Street View' | 'Custom' | 'Pattern';
+    source: 'Google Places' | 'Wikipedia' | 'Google Street View' | 'Custom' | 'Pattern' | 'BFF Proxy';
 }
 
 const memoryCache = new Map<string, MosqueImageResult>();
+const inflight = new Map<string, Promise<MosqueImageResult>>();
+
+const BFF_BASE = (
+    (import.meta.env.VITE_BFF_API_URL as string | undefined) ||
+    (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '')
+).replace(/\/$/, '');
 
 export function clearMosqueImageCache() {
     memoryCache.clear();
+    inflight.clear();
+}
+
+/**
+ * True if URL is a Google Maps/Places/Static/Street View URL that may embed key=
+ */
+function isGoogleMapsKeyBearingUrl(url: string): boolean {
+    try {
+        const u = new URL(url);
+        if (!u.hostname.endsWith('googleapis.com') && !u.hostname.endsWith('google.com')) {
+            return false;
+        }
+        return (
+            u.pathname.includes('/maps/') ||
+            u.pathname.includes('/place/') ||
+            u.searchParams.has('key')
+        );
+    } catch {
+        return false;
+    }
+}
+
+function testImageLoad(url: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        let settled = false;
+        const done = (ok: boolean) => {
+            if (settled) return;
+            settled = true;
+            resolve(ok);
+        };
+        const img = new Image();
+        img.onload = () => done(true);
+        img.onerror = () => done(false);
+        img.src = url;
+        setTimeout(() => done(false), 8000);
+    });
 }
 
 /**
  * Cami isminden arama anahtar kelimelerini temizler.
-
  */
 function cleanMosqueNameForWiki(name: string): string {
-    return name
-        .trim()
-        .replace(/\s+/g, ' ');
+    return name.trim().replace(/\s+/g, ' ');
 }
 
 /**
- * Wikipedia TR API'sinden cami fotoğrafı çeker.
+ * Wikipedia TR API'sinden cami fotoğrafı çeker (public, no secrets).
  */
 export async function fetchWikipediaMosqueImage(mosqueName: string): Promise<string | null> {
     try {
@@ -32,13 +70,13 @@ export async function fetchWikipediaMosqueImage(mosqueName: string): Promise<str
         const res = await fetch(endpoint);
         if (!res.ok) return null;
         const data = await res.json();
-        
+
         const pages = data?.query?.pages;
         if (!pages) return null;
-        
+
         const pageId = Object.keys(pages)[0];
         if (!pageId || pageId === '-1') return null;
-        
+
         const thumbnail = pages[pageId]?.thumbnail?.source;
         return thumbnail || null;
     } catch {
@@ -47,88 +85,73 @@ export async function fetchWikipediaMosqueImage(mosqueName: string): Promise<str
 }
 
 /**
- * Google Street View Metadata API kullanarak en yakın panoramadan camiye doğru açı (heading) hesaplar.
+ * Same-origin / BFF photo stream URL.
+ * Edge fetches Google Places / directed Street View server-side — no key in browser.
+ */
+export function buildMosquePhotoStreamUrl(mosque: Mosque): string {
+    const params = new URLSearchParams({
+        name: mosque.name,
+        mode: 'image',
+        lat: String(mosque.lat),
+        lng: String(mosque.lon),
+    });
+    if (mosque.district) {
+        params.set('district', mosque.district);
+    }
+    params.set('city', 'İstanbul');
+
+    // Dev: vite proxy /api → pages-bff; Prod: absolute BFF or relative if same host
+    if (BFF_BASE) {
+        return `${BFF_BASE}/api/mosque/photo?${params.toString()}`;
+    }
+    return `/api/mosque/photo?${params.toString()}`;
+}
+
+/**
+ * @deprecated Client-side Street View with API key is removed for security.
+ * Kept as no-op export so older tests/imports fail loudly if misused.
  */
 export async function fetchDirectedStreetView(
-    lat: number,
-    lon: number,
-    apiKey: string
+    _lat: number,
+    _lon: number,
+    _apiKey: string
 ): Promise<{ url: string; heading: number } | null> {
-    if (!apiKey) return null;
-    try {
-        const metaUrl = `https://maps.googleapis.com/maps/api/streetview/metadata?location=${lat},${lon}&key=${apiKey}`;
-        const res = await fetch(metaUrl);
-        if (!res.ok) return null;
-        const data = await res.json();
-
-        if (data.status === 'OK' && data.location) {
-            const panoLat = data.location.lat;
-            const panoLng = data.location.lng;
-            
-            // Panoramanın çekildiği noktadan caminin koordinatına açı hesapla
-            const heading = Math.round(calculateBearing(panoLat, panoLng, lat, lon));
-            // Cami kubbelerini ve minarelerini görmek için pitch açısını 12° yukarı kaldırıyoruz
-            const svUrl = `https://maps.googleapis.com/maps/api/streetview?size=600x320&location=${panoLat},${panoLng}&heading=${heading}&pitch=12&fov=80&key=${apiKey}`;
-            return { url: svUrl, heading };
-        }
-        return null;
-    } catch {
-        return null;
-    }
+    // Security: never build maps.googleapis.com URLs with key= in the browser.
+    return null;
 }
 
 /**
- * Google Places Service kullanarak caminin gerçek Google harita fotoğrafını arar.
+ * @deprecated Places JS photo URLs embed browser keys; use BFF stream instead.
  */
 export function fetchGooglePlacesMosqueImage(
-    mosque: Mosque,
-    placesLib: typeof google.maps.places
+    _mosque: Mosque,
+    _placesLib: typeof google.maps.places
 ): Promise<string | null> {
-    return new Promise((resolve) => {
-        try {
-            const container = document.createElement('div');
-            const service = new placesLib.PlacesService(container);
-            const query = `${mosque.name} ${mosque.district || ''} İstanbul`;
+    return Promise.resolve(null);
+}
 
-            service.findPlaceFromQuery(
-                {
-                    query,
-                    fields: ['photos', 'name', 'place_id'],
-                },
-                (results, status) => {
-                    if (
-                        status === placesLib.PlacesServiceStatus.OK &&
-                        results &&
-                        results[0]?.photos &&
-                        results[0].photos.length > 0
-                    ) {
-                        const photoUrl = results[0].photos[0].getUrl({
-                            maxWidth: 800,
-                            maxHeight: 600,
-                        });
-                        resolve(photoUrl);
-                    } else {
-                        resolve(null);
-                    }
-                }
-            );
-        } catch {
-            resolve(null);
-        }
-    });
+function persistResult(cacheKey: string, result: MosqueImageResult): MosqueImageResult {
+    memoryCache.set(cacheKey, result);
+    try {
+        sessionStorage.setItem(cacheKey, JSON.stringify(result));
+    } catch {
+        // ignore quota / private mode
+    }
+    return result;
 }
 
 /**
- * Cami için çok katmanlı görsel çözümleme ana fonksiyonu.
+ * Cami için güvenli görsel çözümleme:
+ * Custom → BFF photo stream (Places + directed SV) → Wikipedia → Pattern
+ * Google API keys never appear in image URLs.
  */
 export async function getMosqueImage(
     mosque: Mosque,
-    apiKey: string,
-    placesLib?: typeof google.maps.places | null
+    _apiKey?: string,
+    _placesLib?: typeof google.maps.places | null
 ): Promise<MosqueImageResult> {
-    const cacheKey = `mosque_img_v2_${mosque.id}`;
+    const cacheKey = `mosque_img_v3_${mosque.id}`;
 
-    // 0. Bellek içi veya SessionStorage Önbellek Kontrolü
     if (memoryCache.has(cacheKey)) {
         return memoryCache.get(cacheKey)!;
     }
@@ -137,53 +160,57 @@ export async function getMosqueImage(
         const cachedRaw = sessionStorage.getItem(cacheKey);
         if (cachedRaw) {
             const parsed: MosqueImageResult = JSON.parse(cachedRaw);
-            memoryCache.set(cacheKey, parsed);
-            return parsed;
+            // Invalidate legacy cache entries that embedded Google keys
+            if (parsed.url && isGoogleMapsKeyBearingUrl(parsed.url)) {
+                sessionStorage.removeItem(cacheKey);
+            } else {
+                memoryCache.set(cacheKey, parsed);
+                return parsed;
+            }
         }
-    } catch (e) {
-        void e;
+    } catch {
+        // ignore
     }
 
-
-    // 1. Özel / GeoJSON içinde tanımlı görsel varsa
-    if (mosque.image && (mosque.image.startsWith('http://') || mosque.image.startsWith('https://'))) {
-        const result: MosqueImageResult = { url: mosque.image, source: 'Custom' };
-        memoryCache.set(cacheKey, result);
-        return result;
+    if (inflight.has(cacheKey)) {
+        return inflight.get(cacheKey)!;
     }
 
-    // 2. Google Places API Fotoğrafı (Eğer JS SDK yüklüyse)
-    if (placesLib) {
-        const placesUrl = await fetchGooglePlacesMosqueImage(mosque, placesLib);
-        if (placesUrl) {
-            const result: MosqueImageResult = { url: placesUrl, source: 'Google Places' };
-            memoryCache.set(cacheKey, result);
-            try { sessionStorage.setItem(cacheKey, JSON.stringify(result)); } catch (e) { void e; }
-            return result;
+    const work = (async (): Promise<MosqueImageResult> => {
+        // 1. Custom / GeoJSON image (reject Google key-bearing URLs)
+        if (
+            mosque.image &&
+            (mosque.image.startsWith('http://') || mosque.image.startsWith('https://')) &&
+            !isGoogleMapsKeyBearingUrl(mosque.image)
+        ) {
+            return persistResult(cacheKey, { url: mosque.image, source: 'Custom' });
         }
+
+        // 2. BFF stream: Places photo → directed Street View → Static (server-side keys only)
+        try {
+            const streamUrl = buildMosquePhotoStreamUrl(mosque);
+            const ok = await testImageLoad(streamUrl);
+            if (ok) {
+                return persistResult(cacheKey, { url: streamUrl, source: 'BFF Proxy' });
+            }
+        } catch (err) {
+            console.warn('BFF mosque photo stream failed:', err);
+        }
+
+        // 3. Wikipedia TR (public)
+        const wikiUrl = await fetchWikipediaMosqueImage(mosque.name);
+        if (wikiUrl) {
+            return persistResult(cacheKey, { url: wikiUrl, source: 'Wikipedia' });
+        }
+
+        // 4. Pattern fallback
+        return persistResult(cacheKey, { url: null, source: 'Pattern' });
+    })();
+
+    inflight.set(cacheKey, work);
+    try {
+        return await work;
+    } finally {
+        inflight.delete(cacheKey);
     }
-
-    // 3. Wikipedia TR Görseli (Tarihi Camiler için)
-    const wikiUrl = await fetchWikipediaMosqueImage(mosque.name);
-    if (wikiUrl) {
-        const result: MosqueImageResult = { url: wikiUrl, source: 'Wikipedia' };
-        memoryCache.set(cacheKey, result);
-        try { sessionStorage.setItem(cacheKey, JSON.stringify(result)); } catch (e) { void e; }
-        return result;
-    }
-
-    // 4. Akıllı Yönlendirilmiş Google Street View (Hesaplanmış Heading + Pitch)
-    const sv = await fetchDirectedStreetView(mosque.lat, mosque.lon, apiKey);
-    if (sv) {
-        const result: MosqueImageResult = { url: sv.url, source: 'Google Street View' };
-        memoryCache.set(cacheKey, result);
-        try { sessionStorage.setItem(cacheKey, JSON.stringify(result)); } catch (e) { void e; }
-        return result;
-    }
-
-
-    // 5. Fallback Desen
-    const fallbackResult: MosqueImageResult = { url: null, source: 'Pattern' };
-    memoryCache.set(cacheKey, fallbackResult);
-    return fallbackResult;
 }

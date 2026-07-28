@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import type { Mosque } from '../types/mosque.types';
 import { getMosqueImage, type MosqueImageResult } from '../services/mosqueImage.service';
-import { useMapsLibrary } from '@vis.gl/react-google-maps';
 
-export function useMosqueImage(mosque: Mosque | null, apiKey?: string) {
+/**
+ * Resolves mosque photos via secure BFF image stream + Wikipedia.
+ * Does not require Google Maps API key (map still uses VITE key separately).
+ */
+export function useMosqueImage(mosque: Mosque | null, _apiKey?: string) {
     const [imageResult, setImageResult] = useState<MosqueImageResult>({
         url: null,
         source: 'Pattern',
     });
     const [isLoading, setIsLoading] = useState<boolean>(Boolean(mosque));
-
-    const key = apiKey || import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
-    const placesLib = useMapsLibrary('places');
 
     useEffect(() => {
         if (!mosque) {
@@ -19,8 +19,9 @@ export function useMosqueImage(mosque: Mosque | null, apiKey?: string) {
         }
 
         let isMounted = true;
+        setIsLoading(true);
 
-        getMosqueImage(mosque, key, placesLib)
+        getMosqueImage(mosque)
             .then((res) => {
                 if (isMounted) {
                     setImageResult(res);
@@ -37,7 +38,7 @@ export function useMosqueImage(mosque: Mosque | null, apiKey?: string) {
         return () => {
             isMounted = false;
         };
-    }, [mosque, key, placesLib]);
+    }, [mosque]);
 
     return {
         imageUrl: mosque ? imageResult.url : null,
@@ -45,4 +46,3 @@ export function useMosqueImage(mosque: Mosque | null, apiKey?: string) {
         isLoading: mosque ? isLoading : false,
     };
 }
-
