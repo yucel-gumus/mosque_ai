@@ -94,6 +94,7 @@ export const MosqueImage = memo(function MosqueImage({
                     )}
                 >
                     {source === 'Google Places' && '📍 Google Places'}
+                    {source === 'BFF Proxy' && '📷 Fotoğraf'}
                     {source === 'Wikipedia' && '📚 Wikipedia'}
                     {source === 'Google Street View' && '📷 Google Street View'}
                     {source === 'Custom' && '🖼️ Özel Fotoğraf'}
