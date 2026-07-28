@@ -79,7 +79,23 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     userCoords,
     onMosqueSelect,
 }: MosqueMapProps) {
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+    const [apiKey, setApiKey] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '');
+    const [mapId, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
+
+    useEffect(() => {
+        if (!apiKey) {
+            const bffBase = (import.meta.env.VITE_BFF_API_URL as string | undefined) || 
+                            (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '');
+            fetch(`${bffBase}/api/maps/config`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data?.mapsApiKey) setApiKey(data.mapsApiKey);
+                    if (data?.mapId) setMapId(data.mapId);
+                })
+                .catch(() => {});
+        }
+    }, [apiKey]);
+
     const tileLayer = useMosqueStore((s) => s.ui.tileLayer);
     const route = useMosqueStore((s) => s.route);
     const setRoute = useMosqueStore((s) => s.setRoute);
@@ -120,7 +136,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
             <APIProvider apiKey={apiKey} libraries={MAP_LIBRARIES}>
                 <Map
                     className="h-full w-full"
-                    mapId={import.meta.env.VITE_GOOGLE_MAPS_API_KEY ? (import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID') : undefined}
+                    mapId={apiKey ? mapId : undefined}
                     defaultCenter={initialCenter}
                     defaultZoom={MAP_CONFIG.DEFAULT_ZOOM}
                     minZoom={MAP_CONFIG.MIN_ZOOM}
