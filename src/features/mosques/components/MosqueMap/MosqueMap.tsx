@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, useCallback, memo } from 'react';
-import { APIProvider, Map, AdvancedMarker, InfoWindow, useMap } from '@vis.gl/react-google-maps';
+import { createPortal } from 'react-dom';
+import { APIProvider, Map, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 import type { Mosque, Coordinates } from '../../types/mosque.types';
 import { MAP_CONFIG, USKUDAR_CENTER, ISTANBUL_BOUNDS } from '../../constants/mosque.constants';
 import {
@@ -18,6 +19,61 @@ import { MapLayerSwitcher } from '../MapLayerSwitcher';
 import { MosqueImage } from '../MosqueImage';
 
 const MAP_LIBRARIES: ('places' | 'marker')[] = ['places', 'marker'];
+
+function OverlayMarker({
+    position,
+    onClick,
+    children,
+}: {
+    position: { lat: number; lng: number };
+    onClick?: () => void;
+    children: React.ReactNode;
+}) {
+    const map = useMap();
+    const [container] = useState(() => document.createElement('div'));
+
+    useEffect(() => {
+        if (!map) return;
+        container.style.position = 'absolute';
+        container.style.cursor = 'pointer';
+
+        class HTMLOverlay extends google.maps.OverlayView {
+            onAdd() {
+                const panes = this.getPanes();
+                panes?.overlayMouseTarget.appendChild(container);
+            }
+            draw() {
+                const projection = this.getProjection();
+                if (!projection) return;
+                const point = projection.fromLatLngToDivPixel(
+                    new google.maps.LatLng(position.lat, position.lng)
+                );
+                if (point) {
+                    container.style.left = `${point.x}px`;
+                    container.style.top = `${point.y}px`;
+                    container.style.transform = 'translate(-50%, -100%)';
+                }
+            }
+            onRemove() {
+                container.remove();
+            }
+        }
+
+        const overlay = new HTMLOverlay();
+        overlay.setMap(map);
+
+        return () => {
+            overlay.setMap(null);
+        };
+    }, [map, position.lat, position.lng, container]);
+
+    return createPortal(
+        <div onClick={onClick} style={{ display: 'inline-block' }}>
+            {children}
+        </div>,
+        container
+    );
+}
 
 
 interface MosqueMapProps {
@@ -80,7 +136,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     onMosqueSelect,
 }: MosqueMapProps) {
     const [apiKey, setApiKey] = useState<string>('');
-    const [mapId, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
+    const [, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
     const [, setIsLoaded] = useState<boolean>(!!window.google?.maps);
 
     useEffect(() => {
@@ -151,7 +207,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
             <APIProvider apiKey={apiKey} libraries={MAP_LIBRARIES}>
                 <Map
                     className="h-full w-full"
-                    mapId={mapId || 'DEMO_MAP_ID'}
+                    mapId={undefined}
                     defaultCenter={initialCenter}
                     defaultZoom={MAP_CONFIG.DEFAULT_ZOOM}
                     minZoom={MAP_CONFIG.MIN_ZOOM}
@@ -170,20 +226,20 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
 
                     {/* Kullanıcı Konumu İşaretçisi */}
                     {userCoords && (
-                        <AdvancedMarker position={{ lat: userCoords[0], lng: userCoords[1] }}>
+                        <OverlayMarker position={{ lat: userCoords[0], lng: userCoords[1] }}>
                             <div className="user-pin">
                                 <div className="user-marker">
                                     <Locate className="h-4 w-4 text-[#1A4036]" />
                                 </div>
                             </div>
-                        </AdvancedMarker>
+                        </OverlayMarker>
                     )}
 
                     {/* Cami İşaretçileri */}
                     {mosques.map((mosque) => {
                         const isSelected = selectedMosque?.id === mosque.id;
                         return (
-                            <AdvancedMarker
+                            <OverlayMarker
                                 key={mosque.id}
                                 position={{ lat: mosque.lat, lng: mosque.lon }}
                                 onClick={() => {
@@ -194,7 +250,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                                 <div className={`mosque-pin ${isSelected ? 'selected' : ''}`}>
                                     <span className="pin-body"></span>
                                 </div>
-                            </AdvancedMarker>
+                            </OverlayMarker>
                         );
                     })}
 
