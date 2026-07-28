@@ -136,35 +136,20 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     onMosqueSelect,
 }: MosqueMapProps) {
     const [apiKey, setApiKey] = useState<string>('');
-    const [, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
-    const [, setIsLoaded] = useState<boolean>(!!window.google?.maps);
+    const [isLoadingKey, setIsLoadingKey] = useState<boolean>(true);
 
     useEffect(() => {
-        if (window.google?.maps) {
-            setIsLoaded(true);
-            return;
-        }
-
         const bffBase = (import.meta.env.VITE_BFF_API_URL as string | undefined) || 
                         (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '');
-        const proxyScriptUrl = `${bffBase.replace(/\/$/, '')}/api/maps/proxy/js?libraries=places,geometry`;
-
-        const script = document.createElement('script');
-        script.src = proxyScriptUrl;
-        script.async = true;
-        script.onload = () => setIsLoaded(true);
-        script.onerror = () => {
-            // Fallback to config fetch if proxy script load fails
-            fetch(`${bffBase}/api/maps/config`)
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data?.mapsApiKey) setApiKey(data.mapsApiKey);
-                    if (data?.mapId) setMapId(data.mapId);
-                    setIsLoaded(true);
-                })
-                .catch(() => setIsLoaded(true));
-        };
-        document.head.appendChild(script);
+        fetch(`${bffBase.replace(/\/$/, '')}/api/maps/config`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data?.mapsApiKey) {
+                    setApiKey(data.mapsApiKey);
+                }
+                setIsLoadingKey(false);
+            })
+            .catch(() => setIsLoadingKey(false));
     }, []);
 
     const tileLayer = useMosqueStore((s) => s.ui.tileLayer);
@@ -197,6 +182,20 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
             setInfoWindowMosque(null);
         }
     }, [userCoords]);
+
+    if (isLoadingKey || !apiKey) {
+        return (
+            <Card
+                className="relative h-[200px] flex items-center justify-center bg-muted/20 sm:h-[280px] md:h-[350px] lg:h-[450px] xl:h-[500px]"
+                role="application"
+                aria-label="İstanbul cami haritası yükleniyor"
+            >
+                <div className="text-sm font-medium text-muted-foreground animate-pulse">
+                    Harita yükleniyor...
+                </div>
+            </Card>
+        );
+    }
 
     return (
         <Card
