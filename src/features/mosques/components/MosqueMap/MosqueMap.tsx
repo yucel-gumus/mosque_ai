@@ -81,20 +81,35 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
 }: MosqueMapProps) {
     const [apiKey, setApiKey] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '');
     const [mapId, setMapId] = useState<string>(import.meta.env.VITE_GOOGLE_MAPS_MAP_ID || 'DEMO_MAP_ID');
+    const [isLoaded, setIsLoaded] = useState<boolean>(!!window.google?.maps);
 
     useEffect(() => {
-        if (!apiKey) {
-            const bffBase = (import.meta.env.VITE_BFF_API_URL as string | undefined) || 
-                            (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '');
+        if (window.google?.maps) {
+            setIsLoaded(true);
+            return;
+        }
+
+        const bffBase = (import.meta.env.VITE_BFF_API_URL as string | undefined) || 
+                        (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '');
+        const proxyScriptUrl = `${bffBase.replace(/\/$/, '')}/api/maps/proxy/js?libraries=places,geometry`;
+
+        const script = document.createElement('script');
+        script.src = proxyScriptUrl;
+        script.async = true;
+        script.onload = () => setIsLoaded(true);
+        script.onerror = () => {
+            // Fallback to config fetch if proxy script load fails
             fetch(`${bffBase}/api/maps/config`)
                 .then((res) => res.json())
                 .then((data) => {
                     if (data?.mapsApiKey) setApiKey(data.mapsApiKey);
                     if (data?.mapId) setMapId(data.mapId);
+                    setIsLoaded(true);
                 })
-                .catch(() => {});
-        }
-    }, [apiKey]);
+                .catch(() => setIsLoaded(true));
+        };
+        document.head.appendChild(script);
+    }, []);
 
     const tileLayer = useMosqueStore((s) => s.ui.tileLayer);
     const route = useMosqueStore((s) => s.route);
