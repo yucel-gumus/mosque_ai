@@ -49,7 +49,8 @@ function testImageLoad(url: string): Promise<boolean> {
         img.onload = () => done(true);
         img.onerror = () => done(false);
         img.src = url;
-        setTimeout(() => done(false), 8000);
+        // 10s timeout — BFF may need to call Places API + stream bytes
+        setTimeout(() => done(false), 10000);
     });
 }
 
@@ -61,27 +62,30 @@ function cleanMosqueNameForWiki(name: string): string {
 }
 
 /**
- * Wikipedia TR API'sinden cami fotoğrafı çeker (public, no secrets).
+ * Wikipedia TR → EN API'sinden cami fotoğrafı çeker (public, no secrets).
  */
 export async function fetchWikipediaMosqueImage(mosqueName: string): Promise<string | null> {
-    try {
-        const cleanName = cleanMosqueNameForWiki(mosqueName);
-        const endpoint = `https://tr.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(cleanName)}&prop=pageimages&format=json&pithumbsize=800&origin=*`;
-        const res = await fetch(endpoint);
-        if (!res.ok) return null;
-        const data = await res.json();
-
-        const pages = data?.query?.pages;
-        if (!pages) return null;
-
-        const pageId = Object.keys(pages)[0];
-        if (!pageId || pageId === '-1') return null;
-
-        const thumbnail = pages[pageId]?.thumbnail?.source;
-        return thumbnail || null;
-    } catch {
-        return null;
+    const cleanName = cleanMosqueNameForWiki(mosqueName);
+    for (const lang of ['tr', 'en'] as const) {
+        try {
+            const endpoint =
+                `https://${lang}.wikipedia.org/w/api.php?action=query` +
+                `&titles=${encodeURIComponent(cleanName)}` +
+                `&prop=pageimages&format=json&pithumbsize=800&origin=*`;
+            const res = await fetch(endpoint);
+            if (!res.ok) continue;
+            const data = await res.json();
+            const pages = data?.query?.pages;
+            if (!pages) continue;
+            const pageId = Object.keys(pages)[0];
+            if (!pageId || pageId === '-1') continue;
+            const thumbnail = pages[pageId]?.thumbnail?.source;
+            if (thumbnail) return thumbnail;
+        } catch {
+            // try next lang
+        }
     }
+    return null;
 }
 
 /**
@@ -186,15 +190,17 @@ export async function getMosqueImage(
             return persistResult(cacheKey, { url: mosque.image, source: 'Custom' });
         }
 
-        // 2. BFF stream: Places photo → directed Street View → Static (server-side keys only)
+        // 2. BFF stream: Places Photo API v1 → Street View → Wikipedia (server-side keys only)
         try {
             const streamUrl = buildMosquePhotoStreamUrl(mosque);
             const ok = await testImageLoad(streamUrl);
             if (ok) {
                 return persistResult(cacheKey, { url: streamUrl, source: 'BFF Proxy' });
+            } else {
+                console.warn(`[mosque-img] BFF stream returned no image for "${mosque.name}" (${streamUrl})`);
             }
         } catch (err) {
-            console.warn('BFF mosque photo stream failed:', err);
+            console.warn('[mosque-img] BFF mosque photo stream failed:', err);
         }
 
         // 3. Wikipedia TR (public)
