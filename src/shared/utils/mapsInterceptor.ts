@@ -70,6 +70,14 @@ export function setupMapsNetworkInterceptor() {
   const originalOpen = XMLHttpRequest.prototype.open;
   const originalSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
 
+  /**
+   * Track whether each XHR instance is a pass-through request.
+   * Pass-through requests ($rpc, maps-api-v3, gen_204, maps/api/js)
+   * must keep their x-goog-api-key header so Google can authenticate them.
+   * Only proxied requests (routed through pages-bff) should have the header stripped.
+   */
+  const xhrUrlMap = new WeakMap<XMLHttpRequest, string>();
+
   XMLHttpRequest.prototype.open = function (
     this: XMLHttpRequest,
     method: string,
@@ -79,6 +87,7 @@ export function setupMapsNetworkInterceptor() {
     password?: string | null
   ) {
     let urlStr = typeof url === 'string' ? url : url.toString();
+    xhrUrlMap.set(this, urlStr);
 
     if (urlStr.includes('maps.googleapis.com')) {
       if (
@@ -102,10 +111,20 @@ export function setupMapsNetworkInterceptor() {
     header: string,
     value: string
   ) {
-    if (header.toLowerCase() === 'x-goog-api-key') {
-      // Strip x-goog-api-key header from browser network calls
+    const url = xhrUrlMap.get(this) || '';
+    const isPassThrough =
+      url.includes('/maps/api/js') ||
+      url.includes('/maps-api-v3/') ||
+      url.includes('gstatic.com') ||
+      url.includes('$rpc') ||
+      url.includes('gen_204');
+
+    // Only strip x-goog-api-key for proxied requests.
+    // Pass-through requests ($rpc, maps-api-v3, etc.) need the key for Google auth.
+    if (header.toLowerCase() === 'x-goog-api-key' && !isPassThrough) {
       return;
     }
     return originalSetRequestHeader.call(this, header, value);
   };
 }
+
