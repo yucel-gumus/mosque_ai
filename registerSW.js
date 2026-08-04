@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/mosque_ai/sw.js', { scope: '/mosque_ai/' })})}
