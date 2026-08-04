@@ -12,8 +12,13 @@ export function AppShell({ children }: AppShellProps) {
                 <div className="absolute -top-[30%] -left-[10%] h-[70%] w-[50%] rounded-full bg-[#FFB6A6]/20 blur-[120px]" />
                 <div className="absolute -right-[10%] top-[10%] h-[60%] w-[40%] rounded-full bg-[#9BCEC1]/25 blur-[100px]" />
             </div>
-            <div id="main-content" className="container mx-auto max-w-7xl px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6 xl:px-8">
-                {children}
+            <div id="main-content" className="container mx-auto max-w-7xl px-3 py-4 sm:px-4 sm:py-5 lg:px-6 lg:py-6 xl:px-8 flex flex-col min-h-screen">
+                <div className="flex-1">
+                    {children}
+                </div>
+                <footer className="mt-8 py-3 text-center text-xs opacity-75 border-t border-[#4A2B20]/10">
+                    <p>Geliştirici: <a href="https://www.yucelgumus.dev/" target="_blank" rel="noopener noreferrer" className="font-semibold underline hover:opacity-100">Yücel Gümüş</a></p>
+                </footer>
             </div>
         </div>
     );
