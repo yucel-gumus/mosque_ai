@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { GoogleMapTypeId, Coordinates } from '../types/mosque.types';
 import { RADIUS_LIMITS } from '../constants/mosque.constants';
+import { isRamadanActive } from '../utils/ramadan.utils';
 
 interface FilterState {
     district: string | null;
@@ -68,7 +69,7 @@ const defaultFilters: FilterState = {
 const defaultUi: UiState = {
     sidebarOpen: true,
     assistantOpen: false,
-    ramadanMode: true, // Ramadan mode enabled by default for feature showcase!
+    ramadanMode: isRamadanActive(),
     tileLayer: 'roadmap',
 };
 
@@ -128,7 +129,7 @@ export const useMosqueStore = create<MosqueStoreState>()(
             storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 favorites: state.favorites,
-                ui: { tileLayer: state.ui.tileLayer, ramadanMode: state.ui.ramadanMode },
+                ui: { tileLayer: state.ui.tileLayer },
                 filters: {
                     ...state.filters,
                     district: state.filters.district || 'Üsküdar',

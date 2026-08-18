@@ -75,4 +75,17 @@ describe('mosqueStore', () => {
         expect(useMosqueStore.getState().isFavorite(11)).toBe(true);
         expect(useMosqueStore.getState().isFavorite(12)).toBe(false);
     });
+
+    it('toggleRamadanMode ramadanMode değerini tersine çevirir', () => {
+        const initial = useMosqueStore.getState().ui.ramadanMode;
+        act(() => {
+            useMosqueStore.getState().toggleRamadanMode();
+        });
+        expect(useMosqueStore.getState().ui.ramadanMode).toBe(!initial);
+        act(() => {
+            useMosqueStore.getState().toggleRamadanMode();
+        });
+        expect(useMosqueStore.getState().ui.ramadanMode).toBe(initial);
+    });
 });
+
