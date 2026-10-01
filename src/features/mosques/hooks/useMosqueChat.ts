@@ -66,17 +66,23 @@ export function useMosqueChat({ selectedMosque, userCoords, closestMosques }: Us
             setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
             try {
-                let baseUrl = (import.meta.env.VITE_BFF_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://pages-bff.vercel.app';
-                if (import.meta.env.DEV) {
+                let baseUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://api.yucelgumus.dev';
+                if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
                     baseUrl = '';
                 }
-                const bffUrl = `${baseUrl}/api/mosque/chat`;
+                const chatUrl = `${baseUrl}/api/mosque/chat`;
 
-                const response = await fetch(bffUrl, {
+                const headers: Record<string, string> = {
+                    'Content-Type': 'application/json',
+                };
+                const clientApiKey = (import.meta.env.VITE_API_KEY as string | undefined) || '';
+                if (clientApiKey) {
+                    headers['X-API-Key'] = clientApiKey;
+                }
+
+                const response = await fetch(chatUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers,
                     body: JSON.stringify({
                         message: trimmed,
                         session_id: sessionIdRef.current,

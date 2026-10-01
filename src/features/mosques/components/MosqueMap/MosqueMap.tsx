@@ -139,9 +139,15 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     const [isLoadingKey, setIsLoadingKey] = useState<boolean>(true);
 
     useEffect(() => {
-        const bffBase = (import.meta.env.VITE_BFF_API_URL as string | undefined) || 
-                        (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '');
-        fetch(`${bffBase.replace(/\/$/, '')}/api/maps/config`)
+        const apiBase = (import.meta.env.VITE_API_URL as string | undefined) || 
+                        (import.meta.env.PROD ? 'https://api.yucelgumus.dev' : '');
+        const apiKeyHeader = (import.meta.env.VITE_API_KEY as string | undefined) || '';
+        const headers: Record<string, string> = {};
+        if (apiKeyHeader) {
+            headers['X-API-Key'] = apiKeyHeader;
+        }
+
+        fetch(`${apiBase.replace(/\/$/, '')}/api/maps/config`, { headers })
             .then((res) => res.json())
             .then((data) => {
                 if (data?.mapsApiKey) {

@@ -8,9 +8,9 @@ export interface MosqueImageResult {
 const memoryCache = new Map<string, MosqueImageResult>();
 const inflight = new Map<string, Promise<MosqueImageResult>>();
 
-const BFF_BASE = (
-    (import.meta.env.VITE_BFF_API_URL as string | undefined) ||
-    (import.meta.env.PROD ? 'https://pages-bff.vercel.app' : '')
+const API_BASE = (
+    (import.meta.env.VITE_API_URL as string | undefined) ||
+    (import.meta.env.PROD ? 'https://api.yucelgumus.dev' : '')
 ).replace(/\/$/, '');
 
 export function clearMosqueImageCache() {
@@ -104,9 +104,9 @@ export function buildMosquePhotoStreamUrl(mosque: Mosque): string {
     }
     params.set('city', 'İstanbul');
 
-    // Dev: vite proxy /api → pages-bff; Prod: absolute BFF or relative if same host
-    if (BFF_BASE) {
-        return `${BFF_BASE}/api/mosque/photo?${params.toString()}`;
+    // Dev: vite proxy /api → python_backend; Prod: absolute backend or relative if same host
+    if (API_BASE) {
+        return `${API_BASE}/api/mosque/photo?${params.toString()}`;
     }
     return `/api/mosque/photo?${params.toString()}`;
 }
