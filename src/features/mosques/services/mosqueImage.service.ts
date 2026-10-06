@@ -10,7 +10,7 @@ const inflight = new Map<string, Promise<MosqueImageResult>>();
 
 const API_BASE = (
     (import.meta.env.VITE_API_URL as string | undefined) ||
-    (import.meta.env.PROD ? 'https://api.yucelgumus.dev' : '')
+    (import.meta.env.PROD ? 'https://python-backend-270384591051.europe-west3.run.app' : '')
 ).replace(/\/$/, '');
 
 export function clearMosqueImageCache() {

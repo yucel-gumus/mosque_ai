@@ -66,7 +66,7 @@ export function useMosqueChat({ selectedMosque, userCoords, closestMosques }: Us
             setMessages((prev) => [...prev, { id: assistantMsgId, role: 'assistant', content: '' }]);
 
             try {
-                let baseUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://api.yucelgumus.dev';
+                let baseUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, '') || 'https://python-backend-270384591051.europe-west3.run.app';
                 if (import.meta.env.DEV && !import.meta.env.VITE_API_URL) {
                     baseUrl = '';
                 }

@@ -140,7 +140,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
 
     useEffect(() => {
         const apiBase = (import.meta.env.VITE_API_URL as string | undefined) || 
-                        (import.meta.env.PROD ? 'https://api.yucelgumus.dev' : '');
+                        (import.meta.env.PROD ? 'https://python-backend-270384591051.europe-west3.run.app' : '');
         const apiKeyHeader = (import.meta.env.VITE_API_KEY as string | undefined) || '';
         const headers: Record<string, string> = {};
         if (apiKeyHeader) {
