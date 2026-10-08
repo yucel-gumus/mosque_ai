@@ -71033,6 +71033,240 @@
           41.2538717
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "id": "way/572371926",
+      "properties": {
+        "@id": "way/572371926",
+        "name": "Cezayirli Gazi Hasan Paşa Camii",
+        "name:tr": null,
+        "addr:district": "Beyoğlu",
+        "addr:neighbourhood": "Camiikebir",
+        "addr:street": "Cezayirli Mektebi Sokağı",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": "Q122094589",
+        "wikipedia": "tr:Cezayirli Gazi Hasan Paşa Camii",
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.96828,
+          41.0325428
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1204360116",
+      "properties": {
+        "@id": "way/1204360116",
+        "name": "Bedrettin Camii",
+        "name:tr": null,
+        "addr:district": "Beyoğlu",
+        "addr:neighbourhood": "Bedrettin",
+        "addr:street": "Dr. Bedii Gorbon Sokağı",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": "Q119649946",
+        "wikipedia": "tr:Bedrettin Camii",
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.9702181,
+          41.029033
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/572338347",
+      "properties": {
+        "@id": "way/572338347",
+        "name": "Yusuf Ağah Camii",
+        "name:tr": null,
+        "addr:district": "Beyoğlu",
+        "addr:neighbourhood": "Camiikebir",
+        "addr:street": "Turabi Baba Caddesi",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": "Q119729028",
+        "wikipedia": "tr:Yusuf Agah Camii",
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.9667694,
+          41.0316036
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/1383837755",
+      "properties": {
+        "@id": "way/1383837755",
+        "name": "Maltepe Merkez Cumhuriyet Camii",
+        "name:tr": null,
+        "addr:district": "Maltepe",
+        "addr:neighbourhood": "Feyzullah",
+        "addr:street": "Havuzlar Sokağı",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.1305506,
+          40.9246143
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "way/159256124",
+      "properties": {
+        "@id": "way/159256124",
+        "name": "Kadıköy Rıhtım Camii",
+        "name:tr": null,
+        "addr:district": "Kadıköy",
+        "addr:neighbourhood": "Caferağa",
+        "addr:street": null,
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.0185334,
+          40.9901277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "local/1",
+      "properties": {
+        "@id": "local/1",
+        "name": "Ahizade Leblebici Camii",
+        "name:tr": null,
+        "addr:district": "Fatih",
+        "addr:neighbourhood": "Ali Kuşçu",
+        "addr:street": "Mükkerir Sokak",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.9483356,
+          41.0233226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "local/2",
+      "properties": {
+        "@id": "local/2",
+        "name": "Mumcuzade Camii",
+        "name:tr": null,
+        "addr:district": "Beyoğlu",
+        "addr:neighbourhood": "Küçük Piyale",
+        "addr:street": "Pişmaniye Sokak",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.9678627,
+          41.037807
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "local/3",
+      "properties": {
+        "@id": "local/3",
+        "name": "Kızılmescit Camii",
+        "name:tr": null,
+        "addr:district": "Eyüpsultan",
+        "addr:neighbourhood": "Nişanca",
+        "addr:street": "Balcı Yokuşu",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.9347008,
+          41.045999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "local/4",
+      "properties": {
+        "@id": "local/4",
+        "name": "Akfırat Merkez Camii",
+        "name:tr": null,
+        "addr:district": "Tuzla",
+        "addr:neighbourhood": "Akfırat",
+        "addr:street": "16. Sokak",
+        "architect": null,
+        "image": null,
+        "website": null,
+        "wikidata": null,
+        "wikipedia": null,
+        "capacity": null,
+        "wheelchair": null
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          29.4160342,
+          40.92418
+        ]
+      }
     }
   ]
 }

@@ -15,32 +15,47 @@ const normalizeDistrict = (district: string | undefined): string | undefined => 
     return trimmed.charAt(0).toLocaleUpperCase('tr-TR') + trimmed.slice(1).toLocaleLowerCase('tr-TR');
 };
 
+const OSM_ID = /^(node|way|relation)\/(\d+)$/;
+
 const extractId = (osmId: string): number => {
-    const match = osmId.match(/(node|way|relation)\/(\d+)/);
-    if (!match) return 0;
-    const typeOffset = { node: 0, way: 1_000_000_000, relation: 2_000_000_000 };
-    return (typeOffset[match[1] as keyof typeof typeOffset] ?? 0) + parseInt(match[2], 10);
+    const match = osmId.match(OSM_ID);
+    if (match) {
+        const typeOffset = { node: 0, way: 1_000_000_000, relation: 2_000_000_000 };
+        return (typeOffset[match[1] as keyof typeof typeOffset] ?? 0) + parseInt(match[2], 10);
+    }
+    const local = osmId.match(/^local\/(\d+)$/);
+    if (local) return 3_000_000_000 + parseInt(local[1], 10);
+    return 0;
+};
+
+const osmUrlFor = (osmId: string, lat: number, lon: number): string => {
+    if (OSM_ID.test(osmId)) return `https://www.openstreetmap.org/${osmId}`;
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=18/${lat}/${lon}`;
 };
 
 const processGeoJSON = (data: GeoJSONFeatureCollection): Mosque[] => {
     return data.features
         .filter((f) => f.properties.name)
-        .map((f) => ({
-            id: extractId(f.properties['@id']),
-            name: f.properties.name ?? f.properties['name:tr'] ?? 'İsimsiz Cami',
-            lat: f.geometry.coordinates[1],
-            lon: f.geometry.coordinates[0],
-            district: normalizeDistrict(f.properties['addr:district']),
-            neighborhood: f.properties['addr:neighbourhood'],
-            wikidata: f.properties.wikidata,
-            wikipedia: f.properties.wikipedia,
-            osmUrl: `https://www.openstreetmap.org/${f.properties['@id']}`,
-            architect: f.properties.architect,
-            image: f.properties.image,
-            website: f.properties.website,
-            capacity: f.properties.capacity,
-            wheelchair: f.properties.wheelchair,
-        }))
+        .map((f) => {
+            const lat = f.geometry.coordinates[1];
+            const lon = f.geometry.coordinates[0];
+            return {
+                id: extractId(f.properties['@id']),
+                name: f.properties.name ?? f.properties['name:tr'] ?? 'İsimsiz Cami',
+                lat,
+                lon,
+                district: normalizeDistrict(f.properties['addr:district']),
+                neighborhood: f.properties['addr:neighbourhood'],
+                wikidata: f.properties.wikidata,
+                wikipedia: f.properties.wikipedia,
+                osmUrl: osmUrlFor(f.properties['@id'], lat, lon),
+                architect: f.properties.architect,
+                image: f.properties.image,
+                website: f.properties.website,
+                capacity: f.properties.capacity,
+                wheelchair: f.properties.wheelchair,
+            };
+        })
         .sort((a, b) => a.name.localeCompare(b.name, 'tr'));
 };
 
