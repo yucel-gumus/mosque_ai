@@ -113,8 +113,12 @@ function GooglePolyline({ path }: { path: Coordinates[] }) {
 
 function MapController({
     selectedMosque,
+    userCoords,
+    centerUserTrigger,
 }: {
     selectedMosque: Mosque | null;
+    userCoords: [number, number] | null;
+    centerUserTrigger: number;
 }) {
     const map = useMap();
 
@@ -125,6 +129,12 @@ function MapController({
             map.setZoom(MAP_CONFIG.FLY_TO_ZOOM);
         }
     }, [map, selectedMosque]);
+
+    useEffect(() => {
+        if (!map || centerUserTrigger === 0 || !userCoords) return;
+        map.panTo({ lat: userCoords[0], lng: userCoords[1] });
+        map.setZoom(MAP_CONFIG.FLY_TO_ZOOM);
+    }, [map, userCoords, centerUserTrigger]);
 
     return null;
 }
@@ -165,6 +175,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     const setRouteError = useMosqueStore((s) => s.setRouteError);
 
     const [infoWindowMosque, setInfoWindowMosque] = useState<Mosque | null>(null);
+    const [centerUserTrigger, setCenterUserTrigger] = useState<number>(0);
 
     const infoWindowDensity = useMemo(
         () => (infoWindowMosque ? calculateMosqueDensity(infoWindowMosque) : null),
@@ -186,6 +197,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
     const handleCenterOnUser = useCallback(() => {
         if (userCoords) {
             setInfoWindowMosque(null);
+            setCenterUserTrigger((prev) => prev + 1);
         }
     }, [userCoords]);
 
@@ -225,7 +237,11 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                     disableDefaultUI
                     gestureHandling="greedy"
                 >
-                    <MapController selectedMosque={selectedMosque} />
+                    <MapController
+                        selectedMosque={selectedMosque}
+                        userCoords={userCoords}
+                        centerUserTrigger={centerUserTrigger}
+                    />
 
                     {route && route.length > 0 && <GooglePolyline path={route} />}
 
