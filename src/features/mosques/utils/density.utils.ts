@@ -51,8 +51,8 @@ export function calculateMosqueDensity(mosque: Mosque): MosqueDensityInfo {
             status: 'high',
             percentage: finalPercentage,
             label: isFridayPrayerTime ? '🔴 Cuma Yoğun (Kapasite Dolu)' : '🔴 Yoğun',
-            badgeClass: 'bg-[#E06C62] text-[#FFF6EC] border-[#E06C62]',
-            bgClass: 'bg-[#E06C62]/20',
+            badgeClass: 'bg-[#AB421C] text-[#F5F9F5] border-[#AB421C]',
+            bgClass: 'bg-[#AB421C]/15',
             isFriday,
             isFridayPrayerTime,
         };
@@ -61,8 +61,8 @@ export function calculateMosqueDensity(mosque: Mosque): MosqueDensityInfo {
             status: 'medium',
             percentage: finalPercentage,
             label: '🟡 Orta Yoğunluk',
-            badgeClass: 'bg-[#FFB6A6] text-[#4A2B20] border-[#E89B8C]',
-            bgClass: 'bg-[#FFB6A6]/20',
+            badgeClass: 'bg-[#F2A488] text-[#253341] border-[#EC7D55]',
+            bgClass: 'bg-[#F2A488]/25',
             isFriday,
             isFridayPrayerTime,
         };
@@ -71,8 +71,8 @@ export function calculateMosqueDensity(mosque: Mosque): MosqueDensityInfo {
             status: 'low',
             percentage: finalPercentage,
             label: '🟢 Sakin',
-            badgeClass: 'bg-[#9BCEC1] text-[#1A4036] border-[#7CB8AA]',
-            bgClass: 'bg-[#9BCEC1]/20',
+            badgeClass: 'bg-[#DBE6DD] text-[#253341] border-[#BCC7D2]',
+            bgClass: 'bg-[#DBE6DD]/60',
             isFriday,
             isFridayPrayerTime,
         };

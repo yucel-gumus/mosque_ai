@@ -16,7 +16,7 @@ export function MapLayerSwitcher() {
     const setTileLayer = useMosqueStore((s) => s.setTileLayer);
 
     return (
-        <div className="absolute right-3 top-3 z-[10] flex gap-1 rounded-full border-2 border-[#FFB6A6] bg-[#FFF6EC] p-1 shadow-xl">
+        <div className="absolute right-3 top-3 z-[10] flex gap-1 rounded-full border-2 border-[#BCC7D2] bg-[#DCE3EA] p-1 shadow-xl">
             {MAP_LAYERS.map((layer) => {
                 const Icon = ICONS[layer.id];
                 const active = tileLayer === layer.id;
@@ -26,10 +26,10 @@ export function MapLayerSwitcher() {
                         type="button"
                         onClick={() => setTileLayer(layer.id)}
                         className={cn(
-                            'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold transition-all sm:px-3 sm:text-xs',
+                            'flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold transition-all duration-200 sm:px-3 sm:text-xs',
                             active
-                                ? 'bg-[#9BCEC1] text-[#1A4036] shadow-sm scale-105'
-                                : 'text-[#4A2B20] hover:bg-[#FFB6A6]/30'
+                                ? 'bg-[#EC7D55] text-[#253341] shadow-sm scale-105'
+                                : 'text-[#253341] hover:bg-[#DBE6DD]'
                         )}
                         title={layer.name}
                     >

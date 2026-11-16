@@ -92,7 +92,7 @@ function GooglePolyline({ path }: { path: Coordinates[] }) {
         const polyline = new google.maps.Polyline({
             path: path.map(([lat, lng]) => ({ lat, lng })),
             geodesic: true,
-            strokeColor: '#0ea5e9',
+            strokeColor: '#AB421C',
             strokeOpacity: 0.9,
             strokeWeight: 5,
         });
@@ -250,7 +250,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                         <OverlayMarker position={{ lat: userCoords[0], lng: userCoords[1] }}>
                             <div className="user-pin">
                                 <div className="user-marker">
-                                    <Locate className="h-4 w-4 text-[#1A4036]" />
+                                    <Locate className="h-4 w-4 text-[#253341]" />
                                 </div>
                             </div>
                         </OverlayMarker>
@@ -281,17 +281,17 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                             position={{ lat: infoWindowMosque.lat, lng: infoWindowMosque.lon }}
                             onCloseClick={() => setInfoWindowMosque(null)}
                         >
-                            <div className="max-w-[260px] space-y-2 p-1 text-foreground">
+                            <div className="max-w-[260px] space-y-2 p-1 text-[#253341]">
                                 {/* Google Places / Multi-Tiered Fotoğraf Önizlemesi */}
                                 <MosqueImage mosque={infoWindowMosque} compact />
 
 
                                 {/* Başlık & Adres */}
                                 <div>
-                                    <h3 className="text-sm font-extrabold text-[#4A2B20] leading-tight">
+                                    <h3 className="text-sm font-extrabold text-[#253341] leading-tight">
                                         {infoWindowMosque.name}
                                     </h3>
-                                    <p className="text-[11px] font-semibold text-muted-foreground mt-0.5">
+                                    <p className="text-[11px] font-semibold text-[#3E5164] mt-0.5">
                                         {infoWindowMosque.district ? `${infoWindowMosque.district}, ` : ''}{infoWindowMosque.neighborhood || ''}
                                     </p>
                                 </div>
@@ -299,11 +299,11 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                                 {/* Bilgi Rozetleri (Mesafe, Kıble, Kapasite) */}
                                 <div className="flex flex-wrap items-center gap-1 text-[10px]">
                                     {userCoords && (
-                                        <span className="rounded-full bg-[#9BCEC1] px-2 py-0.5 font-black text-[#1A4036]">
+                                        <span className="rounded-full bg-[#DBE6DD] border border-[#BCC7D2] px-2 py-0.5 font-black text-[#253341]">
                                             📍 {formatDistance(calculateDistance(userCoords[0], userCoords[1], infoWindowMosque.lat, infoWindowMosque.lon))}
                                         </span>
                                     )}
-                                    <span className="rounded-full bg-[#FFEBD3] border border-[#FFB6A6] px-2 py-0.5 font-extrabold text-[#4A2B20]">
+                                    <span className="rounded-full bg-[#EDF3EE] border border-[#BCC7D2] px-2 py-0.5 font-extrabold text-[#253341]">
                                         🧭 Kıble: {Math.round(calculateQiblaBearing(infoWindowMosque.lat, infoWindowMosque.lon))}°
                                     </span>
                                     {infoWindowDensity && (
@@ -312,7 +312,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                                         </span>
                                     )}
                                     {infoWindowMosque.capacity && (
-                                        <span className="rounded-full bg-[#FFB6A6]/40 px-2 py-0.5 font-bold text-[#4A2B20]">
+                                        <span className="rounded-full bg-[#F2A488]/60 px-2 py-0.5 font-bold text-[#253341]">
                                             👥 {infoWindowMosque.capacity} kişi
                                         </span>
                                     )}
@@ -335,7 +335,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                                                     setIsLoadingRoute(false);
                                                 }
                                             }}
-                                            className="flex-1 rounded-xl bg-[#9BCEC1] px-2 py-1.5 text-[10px] font-bold text-[#1A4036] hover:bg-[#9BCEC1]/80 shadow-xs text-center transition-all cursor-pointer"
+                                            className="flex-1 rounded-xl bg-[#EC7D55] px-2 py-1.5 text-[10px] font-bold text-[#253341] hover:bg-[#AB421C] hover:text-[#F5F9F5] shadow-xs text-center transition-colors duration-200 cursor-pointer"
                                         >
                                             🚀 Rota Çiz
                                         </button>
@@ -349,7 +349,7 @@ export const MosqueMapComponent = memo(function MosqueMapComponent({
                                         )}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex-1 rounded-xl bg-[#FFB6A6] px-2 py-1.5 text-[10px] font-bold text-[#4A2B20] hover:bg-[#FFB6A6]/80 shadow-xs text-center transition-all"
+                                        className="flex-1 rounded-xl bg-[#DCE3EA] border border-[#BCC7D2] px-2 py-1.5 text-[10px] font-bold text-[#253341] hover:bg-[#DBE6DD] shadow-xs text-center transition-colors duration-200"
                                     >
                                         🗺️ Navigasyon
                                     </a>

@@ -4,48 +4,48 @@
 
 @theme {
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --color-background: #FFEBD3;
-  --color-foreground: #4A2B20;
-  --color-card: #FFF6EC;
-  --color-card-foreground: #4A2B20;
-  --color-popover: #FFF6EC;
-  --color-popover-foreground: #4A2B20;
-  --color-primary: #9BCEC1;
-  --color-primary-foreground: #1A4036;
-  --color-secondary: #FFB6A6;
-  --color-secondary-foreground: #4A2B20;
-  --color-muted: #FCE6D2;
-  --color-muted-foreground: #8C5E50;
-  --color-accent: #9BCEC1;
-  --color-accent-foreground: #1A4036;
-  --color-destructive: #E06C62;
-  --color-destructive-foreground: #FFF6EC;
-  --color-border: #F5C9BC;
-  --color-input: #F5C9BC;
-  --color-ring: #9BCEC1;
+  --color-background: #EDF3EE;
+  --color-foreground: #253341;
+  --color-card: #DCE3EA;
+  --color-card-foreground: #253341;
+  --color-popover: #F5F9F5;
+  --color-popover-foreground: #253341;
+  --color-primary: #EC7D55;
+  --color-primary-foreground: #253341;
+  --color-secondary: #DBE6DD;
+  --color-secondary-foreground: #253341;
+  --color-muted: #DBE6DD;
+  --color-muted-foreground: #3E5164;
+  --color-accent: #DBE6DD;
+  --color-accent-foreground: #253341;
+  --color-destructive: #AB421C;
+  --color-destructive-foreground: #F5F9F5;
+  --color-border: #BCC7D2;
+  --color-input: #BCC7D2;
+  --color-ring: #EC7D55;
   --radius: 1rem;
 }
 
 .dark {
-  --color-background: #FFEBD3;
-  --color-foreground: #4A2B20;
-  --color-card: #FFF6EC;
-  --color-card-foreground: #4A2B20;
-  --color-popover: #FFF6EC;
-  --color-popover-foreground: #4A2B20;
-  --color-primary: #9BCEC1;
-  --color-primary-foreground: #1A4036;
-  --color-secondary: #FFB6A6;
-  --color-secondary-foreground: #4A2B20;
-  --color-muted: #FCE6D2;
-  --color-muted-foreground: #8C5E50;
-  --color-accent: #9BCEC1;
-  --color-accent-foreground: #1A4036;
-  --color-destructive: #E06C62;
-  --color-destructive-foreground: #FFF6EC;
-  --color-border: #F5C9BC;
-  --color-input: #F5C9BC;
-  --color-ring: #9BCEC1;
+  --color-background: #EDF3EE;
+  --color-foreground: #253341;
+  --color-card: #DCE3EA;
+  --color-card-foreground: #253341;
+  --color-popover: #F5F9F5;
+  --color-popover-foreground: #253341;
+  --color-primary: #EC7D55;
+  --color-primary-foreground: #253341;
+  --color-secondary: #DBE6DD;
+  --color-secondary-foreground: #253341;
+  --color-muted: #DBE6DD;
+  --color-muted-foreground: #3E5164;
+  --color-accent: #DBE6DD;
+  --color-accent-foreground: #253341;
+  --color-destructive: #AB421C;
+  --color-destructive-foreground: #F5F9F5;
+  --color-border: #BCC7D2;
+  --color-input: #BCC7D2;
+  --color-ring: #EC7D55;
 }
 
 * {
@@ -59,20 +59,21 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
-/* Custom scrollbar styling in palette */
+/* Custom scrollbar styling in İpek Küllü Arduvaz palette */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FFEBD3;
+  background: #EDF3EE;
 }
 ::-webkit-scrollbar-thumb {
-  background: #FFB6A6;
+  background: #BCC7D2;
   border-radius: 9999px;
+  transition: background-color 0.2s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9BCEC1;
+  background: #3E5164;
 }
 
 [data-radix-popper-content-wrapper] {
@@ -83,7 +84,7 @@ body {
   z-index: 800;
 }
 
-/* Custom Mosque Map Pin Styling with #FFB6A6 and #9BCEC1 */
+/* Custom Mosque Map Pin Styling (İpek Küllü Arduvaz) */
 .mosque-pin {
   display: flex;
   align-items: center;
@@ -91,20 +92,22 @@ body {
   width: 40px;
   height: 40px;
   position: relative;
-  filter: drop-shadow(0 4px 8px rgba(74, 43, 32, 0.25));
+  filter: drop-shadow(0 4px 8px rgba(37, 51, 65, 0.28));
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .mosque-pin .pin-body {
   position: absolute;
   width: 32px;
   height: 32px;
-  background: linear-gradient(180deg, #FFB6A6 0%, #E89B8C 100%);
-  border: 3px solid #FFF6EC;
+  background: linear-gradient(180deg, #F2A488 0%, #EC7D55 100%);
+  border: 3px solid #F5F9F5;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .mosque-pin .pin-body::before {
@@ -121,10 +124,10 @@ body {
 .mosque-pin.selected .pin-body {
   width: 44px;
   height: 44px;
-  background: linear-gradient(180deg, #9BCEC1 0%, #7CB8AA 100%);
+  background: linear-gradient(180deg, #EC7D55 0%, #AB421C 100%);
   border-width: 4px;
-  border-color: #FFF6EC;
-  filter: drop-shadow(0 0 15px rgba(155, 206, 193, 0.8));
+  border-color: #F5F9F5;
+  filter: drop-shadow(0 0 15px rgba(236, 125, 85, 0.85));
   animation: mosqueSelectedPulse 2s infinite ease-in-out;
 }
 
@@ -157,11 +160,11 @@ body {
   justify-content: center;
   width: 32px;
   height: 32px;
-  background-color: #9BCEC1;
+  background-color: #EC7D55;
   border-radius: 50%;
-  border: 3px solid #FFF6EC;
-  box-shadow: 0 4px 10px rgba(74, 43, 32, 0.2);
-  color: #1A4036;
+  border: 3px solid #F5F9F5;
+  box-shadow: 0 4px 10px rgba(37, 51, 65, 0.25);
+  color: #253341;
   z-index: 2;
 }
 
@@ -170,7 +173,7 @@ body {
   position: absolute;
   inset: -8px;
   border-radius: 50%;
-  background-color: #9BCEC1;
+  background-color: #EC7D55;
   z-index: -1;
   opacity: 0.4;
   animation: userPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -194,14 +197,15 @@ body {
   min-width: 40px;
   min-height: 40px;
   padding: 4px 8px;
-  background: linear-gradient(135deg, #FFB6A6 0%, #E89B8C 100%);
-  border: 2px solid #FFF6EC;
+  background: linear-gradient(135deg, #F2A488 0%, #EC7D55 100%);
+  border: 2px solid #F5F9F5;
   border-radius: 50%;
-  box-shadow: 0 4px 14px rgba(74, 43, 32, 0.2);
+  box-shadow: 0 4px 14px rgba(37, 51, 65, 0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .mosque-cluster .cluster-body span {
-  color: #4A2B20;
+  color: #253341;
   font-size: 13px;
   font-weight: 800;
 }
@@ -211,9 +215,9 @@ body {
   padding: 0 !important;
   border-radius: 16px !important;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(74, 43, 32, 0.2) !important;
-  border: 1px solid #F5C9BC;
-  background-color: #FFF6EC !important;
+  box-shadow: 0 12px 30px rgba(37, 51, 65, 0.2) !important;
+  border: 1px solid #BCC7D2;
+  background-color: #DCE3EA !important;
 }
 
 .leaflet-popup-content {
@@ -222,38 +226,44 @@ body {
   line-height: 1.5 !important;
   font-family: inherit !important;
   min-width: 220px;
-  color: #4A2B20 !important;
+  color: #253341 !important;
 }
 
 .leaflet-popup-tip {
-  background-color: #FFF6EC !important;
-  border: 1px solid #F5C9BC;
+  background-color: #DCE3EA !important;
+  border: 1px solid #BCC7D2;
 }
 
 /* Active Prayer Shimmer */
 .active-prayer-box {
-  border-color: #9BCEC1 !important;
-  background: linear-gradient(180deg, rgba(155, 206, 193, 0.3) 0%, rgba(155, 206, 193, 0.1) 100%) !important;
-  box-shadow: 0 0 16px rgba(155, 206, 193, 0.3) !important;
+  border-color: #EC7D55 !important;
+  background: linear-gradient(180deg, rgba(242, 164, 136, 0.35) 0%, rgba(236, 125, 85, 0.15) 100%) !important;
+  box-shadow: 0 0 16px rgba(236, 125, 85, 0.3) !important;
 }
 
 /* Active Mosque List Item */
 .active-mosque-item {
-  background: linear-gradient(90deg, rgba(255, 182, 166, 0.3) 0%, rgba(255, 235, 211, 0.2) 100%) !important;
-  border-color: #FFB6A6 !important;
-  border-left: 5px solid #9BCEC1 !important;
+  background: linear-gradient(90deg, rgba(242, 164, 136, 0.28) 0%, rgba(219, 230, 221, 0.35) 100%) !important;
+  border-color: #EC7D55 !important;
+  border-left: 5px solid #AB421C !important;
 }
 
 /* Floating AI Chat button pulsing glow */
 .ai-float-btn {
-  background-color: #9BCEC1 !important;
-  color: #1A4036 !important;
-  box-shadow: 0 6px 25px rgba(155, 206, 193, 0.6) !important;
+  background-color: #EC7D55 !important;
+  color: #253341 !important;
+  box-shadow: 0 6px 25px rgba(236, 125, 85, 0.55) !important;
   animation: float-pulse 2.5s infinite ease-in-out;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease, opacity 0.3s ease;
+}
+
+.ai-float-btn:hover {
+  background-color: #AB421C !important;
+  color: #F5F9F5 !important;
 }
 
 @keyframes float-pulse {
-  0% { transform: scale(1); box-shadow: 0 6px 25px rgba(155, 206, 193, 0.6); }
-  50% { transform: scale(1.08); box-shadow: 0 8px 32px rgba(155, 206, 193, 0.85); }
-  100% { transform: scale(1); box-shadow: 0 6px 25px rgba(155, 206, 193, 0.6); }
+  0% { transform: scale(1); box-shadow: 0 6px 25px rgba(236, 125, 85, 0.45); }
+  50% { transform: scale(1.08); box-shadow: 0 8px 32px rgba(236, 125, 85, 0.75); }
+  100% { transform: scale(1); box-shadow: 0 6px 25px rgba(236, 125, 85, 0.45); }
 }

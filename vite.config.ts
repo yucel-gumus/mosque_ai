@@ -16,8 +16,8 @@ export default defineConfig({
                 short_name: 'Camiler',
                 description:
                     "İstanbul'daki 3000'den fazla camiyi harita üzerinde keşfedin, en yakınınızı bulun.",
-                theme_color: '#0ea5e9',
-                background_color: '#0b1220',
+                theme_color: '#DCE3EA',
+                background_color: '#EDF3EE',
                 display: 'standalone',
                 orientation: 'portrait',
                 scope: '/mosque_ai/',

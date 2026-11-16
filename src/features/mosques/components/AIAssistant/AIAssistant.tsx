@@ -50,30 +50,30 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
             <Button
                 onClick={toggle}
                 size="icon"
-                className={`fixed bottom-4 left-4 z-[1100] h-13 w-13 rounded-full border-2 border-[#FFF6EC] shadow-2xl transition-all duration-300 ease-out ai-float-btn ${open
+                className={`fixed bottom-4 left-4 z-[1100] h-13 w-13 rounded-full border-2 border-[#F5F9F5] shadow-2xl transition-all duration-300 ease-out ai-float-btn ${open
                     ? 'pointer-events-none scale-50 opacity-0'
                     : 'pointer-events-auto scale-100 opacity-100'
                     }`}
                 title="KENSAI"
             >
-                <Sparkles className="h-6 w-6 text-[#1A4036]" />
+                <Sparkles className="h-6 w-6" />
             </Button>
 
             <Card
-                className={`fixed bottom-4 left-4 z-[1100] flex h-[520px] w-[calc(100vw-2rem)] max-w-[360px] flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-2xl transition-all duration-300 ease-out origin-bottom-left sm:left-4 sm:w-[360px] ${open
+                className={`fixed bottom-4 left-4 z-[1100] flex h-[520px] w-[calc(100vw-2rem)] max-w-[360px] flex-col rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA] shadow-2xl transition-all duration-300 ease-out origin-bottom-left sm:left-4 sm:w-[360px] ${open
                     ? 'pointer-events-auto scale-100 opacity-100'
                     : 'pointer-events-none scale-95 opacity-0'
                     }`}
                 aria-label="KENSAI sohbet paneli"
             >
-                <div className="flex items-center justify-between border-b border-[#FFB6A6]/40 bg-[#FFB6A6]/20 p-3.5 rounded-t-3xl">
+                <div className="flex items-center justify-between border-b border-[#BCC7D2] bg-[#DCE3EA] p-3.5 rounded-t-3xl">
                     <div className="flex items-center gap-2.5">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#9BCEC1] shadow-sm">
-                            <Sparkles className="h-4 w-4 text-[#1A4036]" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#EC7D55] shadow-sm">
+                            <Sparkles className="h-4 w-4 text-[#253341]" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-[#4A2B20]">KENSAI</h3>
-                            <p className="text-[10px] font-semibold text-[#8C5E50]">
+                            <h3 className="text-sm font-bold text-[#253341]">KENSAI</h3>
+                            <p className="text-[10px] font-semibold text-[#3E5164]">
                                 {selectedMosque ? `${selectedMosque.name} Odaklı` : 'Genel Rehber'}
                             </p>
                         </div>
@@ -84,7 +84,7 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                                 variant="ghost"
                                 size="sm"
                                 onClick={clear}
-                                className="h-7 text-xs font-bold text-[#4A2B20] hover:bg-[#FFB6A6]/30"
+                                className="h-7 text-xs font-bold text-[#253341] hover:bg-[#DBE6DD]"
                             >
                                 Temizle
                             </Button>
@@ -93,17 +93,17 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                             variant="ghost"
                             size="icon"
                             onClick={toggle}
-                            className="h-7 w-7 rounded-full text-[#4A2B20] hover:bg-[#FFB6A6]/30"
+                            className="h-7 w-7 rounded-full text-[#253341] hover:bg-[#DBE6DD]"
                         >
                             <X className="h-4 w-4" />
                         </Button>
                     </div>
                 </div>
 
-                <div ref={listRef} aria-live="polite" role="log" className="flex-1 space-y-3 overflow-y-auto p-3.5 bg-[#FFEBD3]/40">
+                <div ref={listRef} aria-live="polite" role="log" className="flex-1 space-y-3 overflow-y-auto p-3.5 bg-[#EDF3EE]">
                     {messages.length === 0 && (
                         <div className="space-y-3 p-1">
-                            <p className="text-xs font-medium text-[#4A2B20] leading-relaxed">
+                            <p className="text-xs font-medium text-[#253341] leading-relaxed">
                                 Merhaba! İstanbul camileri, namaz vakitleri veya camilerin tarihi hakkında sorularınızı yanıtlayabilirim.
                             </p>
                             <div className="space-y-2">
@@ -112,7 +112,7 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                                         key={q}
                                         type="button"
                                         onClick={() => send(q)}
-                                        className="block w-full rounded-2xl border border-[#FFB6A6] bg-[#FFF6EC] p-2.5 text-left text-xs font-semibold text-[#4A2B20] shadow-sm transition-all hover:bg-[#9BCEC1]/30 hover:border-[#9BCEC1]"
+                                        className="block w-full rounded-2xl border border-[#BCC7D2] bg-[#F5F9F5] p-2.5 text-left text-xs font-semibold text-[#253341] shadow-sm transition-all duration-200 hover:bg-[#DBE6DD] hover:border-[#EC7D55]"
                                     >
                                         {q}
                                     </button>
@@ -127,7 +127,7 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                             className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
                         >
                             <div
-                                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full shadow-sm ${msg.role === 'user' ? 'bg-[#9BCEC1] text-[#1A4036]' : 'bg-[#FFB6A6] text-[#4A2B20]'
+                                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full shadow-sm ${msg.role === 'user' ? 'bg-[#EC7D55] text-[#253341]' : 'bg-[#3E5164] text-[#F5F9F5]'
                                     }`}
                             >
                                 {msg.role === 'user' ? (
@@ -138,19 +138,19 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                             </div>
                             <div
                                 className={`max-w-[82%] rounded-2xl p-3 text-xs whitespace-pre-line leading-relaxed shadow-sm ${msg.role === 'user'
-                                    ? 'bg-[#9BCEC1] text-[#1A4036] font-semibold'
-                                    : 'bg-[#FFF6EC] text-[#4A2B20] border border-[#FFB6A6]/50 font-medium'
+                                    ? 'bg-[#EC7D55] text-[#253341] font-semibold'
+                                    : 'bg-[#F5F9F5] text-[#253341] border border-[#BCC7D2] font-medium'
                                     }`}
                             >
                                 {msg.content || (
                                     <span className="inline-flex gap-1.5 py-1">
-                                        <span className="h-2 w-2 animate-bounce rounded-full bg-[#1A4036]" />
+                                        <span className="h-2 w-2 animate-bounce rounded-full bg-[#253341]" />
                                         <span
-                                            className="h-2 w-2 animate-bounce rounded-full bg-[#1A4036]"
+                                            className="h-2 w-2 animate-bounce rounded-full bg-[#253341]"
                                             style={{ animationDelay: '0.15s' }}
                                         />
                                         <span
-                                            className="h-2 w-2 animate-bounce rounded-full bg-[#1A4036]"
+                                            className="h-2 w-2 animate-bounce rounded-full bg-[#253341]"
                                             style={{ animationDelay: '0.3s' }}
                                         />
                                     </span>
@@ -160,7 +160,7 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                     ))}
 
                     {error && (
-                        <div className="flex items-start gap-2 rounded-xl border border-[#E06C62]/40 bg-[#E06C62]/10 p-2.5 text-xs font-semibold text-[#E06C62]">
+                        <div className="flex items-start gap-2 rounded-xl border border-[#AB421C]/40 bg-[#AB421C]/10 p-2.5 text-xs font-semibold text-[#AB421C]">
                             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                             <span>{error}</span>
                         </div>
@@ -177,20 +177,20 @@ export function AIAssistant({ selectedMosque, userCoords, closestMosques }: AIAs
                             e.currentTarget.reset();
                         }
                     }}
-                    className="flex gap-2 border-t border-[#FFB6A6]/40 bg-[#FFF6EC] p-3 rounded-b-3xl"
+                    className="flex gap-2 border-t border-[#BCC7D2] bg-[#DCE3EA] p-3 rounded-b-3xl"
                 >
                     <Input
                         ref={inputRef}
                         name="message"
                         placeholder="Bir soru sorun..."
                         disabled={isSending}
-                        className="h-10 rounded-2xl border-[#FFB6A6] bg-[#FFEBD3]/50 text-xs font-medium text-[#4A2B20] focus-visible:ring-[#9BCEC1]"
+                        className="h-10 rounded-2xl border-[#BCC7D2] bg-[#F5F9F5] text-xs font-medium text-[#253341] focus-visible:ring-[#EC7D55]"
                     />
                     <Button
                         type="submit"
                         size="icon"
                         disabled={isSending}
-                        className="h-10 w-10 shrink-0 rounded-2xl bg-[#9BCEC1] text-[#1A4036] hover:bg-[#9BCEC1]/80 shadow-md"
+                        className="h-10 w-10 shrink-0 rounded-2xl bg-[#EC7D55] text-[#253341] hover:bg-[#AB421C] hover:text-[#F5F9F5] transition-colors duration-200 shadow-md"
                     >
                         <Send className="h-4 w-4" />
                     </Button>

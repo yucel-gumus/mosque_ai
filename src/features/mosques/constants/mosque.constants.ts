@@ -44,6 +44,6 @@ export const PRAYER_TIMES_ENDPOINT =
 export const PWA_CONFIG = {
     APP_NAME: 'İstanbul Camileri',
     SHORT_NAME: 'Camiler',
-    THEME_COLOR: '#0ea5e9',
-    BACKGROUND_COLOR: '#0b1220',
+    THEME_COLOR: '#DCE3EA',
+    BACKGROUND_COLOR: '#EDF3EE',
 } as const;

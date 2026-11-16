@@ -61,37 +61,37 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
           : 'İstanbul merkezi';
 
     return (
-        <Card className="h-full flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl">
+        <Card className="h-full flex flex-col rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA] shadow-xl">
             <CardContent className="space-y-2 p-3 sm:p-3.5">
-                <div className="flex items-center justify-between border-b border-[#FFB6A6]/30 pb-1.5">
-                    <h3 className="flex items-center gap-2 text-xs font-bold text-[#4A2B20] sm:text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#9BCEC1] text-[#1A4036]">
+                <div className="flex items-center justify-between border-b border-[#BCC7D2] pb-1.5">
+                    <h3 className="flex items-center gap-2 text-xs font-bold text-[#253341] sm:text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2A488] text-[#253341]">
                             <Clock className="h-3.5 w-3.5" />
                         </div>
                         Ezan Vakitleri
                     </h3>
                     {timings && (
-                        <span className="text-[10px] font-bold text-[#8C5E50] bg-[#FFEBD3] px-2 py-0.5 rounded-full border border-[#FFB6A6]">
+                        <span className="text-[10px] font-bold text-[#3E5164] bg-[#EDF3EE] px-2 py-0.5 rounded-full border border-[#BCC7D2]">
                             {timings.date}
                         </span>
                     )}
                 </div>
 
-                <p className="flex items-center gap-1.5 text-[10px] font-bold text-[#8C5E50]">
-                    <Compass className="h-3 w-3 text-[#4A2B20]" />
+                <p className="flex items-center gap-1.5 text-[10px] font-bold text-[#3E5164]">
+                    <Compass className="h-3 w-3 text-[#253341]" />
                     {locationLabel}
                 </p>
 
                 {isLoading && (
                     <div className="grid grid-cols-2 gap-2" aria-busy="true">
                         {[...Array(6)].map((_, i) => (
-                            <Skeleton key={i} className="h-12 w-full rounded-2xl bg-[#FFEBD3]" />
+                            <Skeleton key={i} className="h-12 w-full rounded-2xl bg-[#DBE6DD]" />
                         ))}
                     </div>
                 )}
 
                 {error && !isLoading && (
-                    <div className="flex items-start gap-2 rounded-2xl border border-[#E06C62]/30 bg-[#E06C62]/10 p-2.5 text-xs font-bold text-[#E06C62]">
+                    <div className="flex items-start gap-2 rounded-2xl border border-[#AB421C]/40 bg-[#AB421C]/10 p-2.5 text-xs font-bold text-[#AB421C]">
                         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
                         <span>Ezan vakitleri alınamadı: {error}</span>
                     </div>
@@ -108,24 +108,24 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
                                     key={key}
                                     className={`flex flex-col items-center justify-center gap-0.5 rounded-2xl border p-2 h-[52px] sm:h-[56px] transition-all duration-300 ${
                                         isNext
-                                            ? 'bg-[#9BCEC1] border-[#7CB8AA] shadow-md text-[#1A4036] scale-[1.02]'
-                                            : 'bg-[#FFEBD3]/60 border-[#FFB6A6]/50 text-[#4A2B20] hover:bg-[#FFEBD3]'
+                                            ? 'bg-[#EC7D55] border-[#AB421C] shadow-md text-[#253341] scale-[1.02]'
+                                            : 'bg-[#EDF3EE] border-[#BCC7D2] text-[#253341] hover:bg-[#DBE6DD]'
                                     }`}
                                 >
                                     <div className="flex items-center gap-1.5">
-                                        <Icon className={`h-3.5 w-3.5 ${isNext ? 'text-[#1A4036]' : 'text-[#8C5E50]'}`} />
-                                        <span className={`text-xs font-bold ${isNext ? 'text-[#1A4036]' : 'text-[#8C5E50]'}`}>{label}</span>
+                                        <Icon className={`h-3.5 w-3.5 ${isNext ? 'text-[#253341]' : 'text-[#3E5164]'}`} />
+                                        <span className={`text-xs font-bold ${isNext ? 'text-[#253341]' : 'text-[#3E5164]'}`}>{label}</span>
                                     </div>
-                                    <span className={`font-mono text-xs sm:text-sm font-black ${isNext ? 'text-[#1A4036]' : 'text-[#4A2B20]'}`}>
+                                    <span className="font-mono text-xs sm:text-sm font-black text-[#253341]">
                                         {time}
                                     </span>
                                     {isNext && (
-                                        <span className="text-[9px] font-black text-[#1A4036] uppercase tracking-wider animate-pulse">
+                                        <span className="text-[9px] font-black text-[#253341] uppercase tracking-wider animate-pulse">
                                             Sıradaki
                                         </span>
                                     )}
                                     {isCurrentPrayer(currentTime, h, m) && !isNext && (
-                                        <span className="text-[9px] font-bold text-[#4A2B20]">
+                                        <span className="text-[9px] font-bold text-[#AB421C]">
                                             Vakit Girdi
                                         </span>
                                     )}
@@ -136,7 +136,7 @@ export const PrayerTimesPanel = memo(function PrayerTimesPanel({ coords, selecte
                 )}
 
                 {tileLayer === 'satellite' && (
-                    <p className="text-[9px] font-semibold text-[#8C5E50]">
+                    <p className="text-[9px] font-semibold text-[#3E5164]">
                         Uydu görüntüsü Esri World Imagery servisi ile sunulmaktadır.
                     </p>
                 )}

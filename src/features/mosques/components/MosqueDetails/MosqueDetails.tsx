@@ -114,14 +114,14 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
     const wheelchairInfo = mosque.wheelchair ? wheelchairLabels[mosque.wheelchair] : null;
 
     return (
-        <Card className="flex flex-col rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC] shadow-xl overflow-hidden">
+        <Card className="flex flex-col rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA] shadow-xl overflow-hidden">
             <MosqueImage mosque={mosque} className="rounded-none rounded-t-[22px]" />
 
             <CardHeader className="p-3.5 pb-2 sm:p-4 sm:pb-2">
                 <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="flex items-center gap-2 text-xs font-bold text-[#4A2B20] sm:text-sm">
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#FFB6A6] shrink-0">
-                            <Building2 className="h-3.5 w-3.5 text-[#4A2B20]" />
+                    <CardTitle className="flex items-center gap-2 text-xs font-bold text-[#253341] sm:text-sm">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F2A488] shrink-0">
+                            <Building2 className="h-3.5 w-3.5 text-[#253341]" />
                         </div>
                         <span className="line-clamp-2">{mosque.name}</span>
                     </CardTitle>
@@ -129,46 +129,46 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 shrink-0 rounded-full hover:bg-[#FFB6A6]/30 text-[#4A2B20]"
+                        className="h-7 w-7 shrink-0 rounded-full hover:bg-[#DBE6DD] text-[#253341] transition-colors duration-200"
                         onClick={() => toggleFavorite(mosque.id)}
                         aria-label={isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}
                     >
                         <Heart
-                            className={`h-4 w-4 transition-colors ${
+                            className={`h-4 w-4 transition-colors duration-200 ${
                                 isFavorite
-                                    ? 'fill-[#E06C62] text-[#E06C62]'
-                                    : 'text-[#8C5E50]'
+                                    ? 'fill-[#AB421C] text-[#AB421C]'
+                                    : 'text-[#3E5164]'
                             }`}
                         />
                     </Button>
                 </div>
 
                 {formattedDist && (
-                    <div className="mt-1 flex items-center gap-1 text-[11px] font-extrabold text-[#1A4036] bg-[#9BCEC1] px-2 py-0.5 rounded-full w-fit">
+                    <div className="mt-1 flex items-center gap-1 text-[11px] font-extrabold text-[#253341] bg-[#DBE6DD] border border-[#BCC7D2] px-2 py-0.5 rounded-full w-fit">
                         <Ruler className="h-3 w-3" />
                         <span>Mesafe: {formattedDist}</span>
                     </div>
                 )}
 
                 {/* Canlı Yoğunluk Göstergesi */}
-                <div className="mt-2 p-2 rounded-2xl bg-[#FFEBD3] border border-[#FFB6A6]/60">
-                    <div className="flex items-center justify-between text-[10px] font-extrabold text-[#4A2B20]">
-                        <span className="flex items-center gap-1 text-[#8C5E50]">
-                            <Activity className="h-3 w-3 text-[#1A4036]" />
+                <div className="mt-2 p-2 rounded-2xl bg-[#EDF3EE] border border-[#BCC7D2]">
+                    <div className="flex items-center justify-between text-[10px] font-extrabold text-[#253341]">
+                        <span className="flex items-center gap-1 text-[#3E5164]">
+                            <Activity className="h-3 w-3 text-[#AB421C]" />
                             Doluluk Oranı
                         </span>
                         <span className={`px-2 py-0.5 rounded-full border text-[9px] ${density.badgeClass}`}>
                             {density.label} (%{density.percentage})
                         </span>
                     </div>
-                    <div className="mt-1.5 h-2 w-full rounded-full bg-[#FFF6EC] overflow-hidden border border-[#FFB6A6]/30">
+                    <div className="mt-1.5 h-2 w-full rounded-full bg-[#DCE3EA] overflow-hidden border border-[#BCC7D2]">
                         <div
                             className={`h-full transition-all duration-500 rounded-full ${
                                 density.status === 'high'
-                                    ? 'bg-[#E06C62]'
+                                    ? 'bg-[#AB421C]'
                                     : density.status === 'medium'
-                                    ? 'bg-[#FFB6A6]'
-                                    : 'bg-[#9BCEC1]'
+                                    ? 'bg-[#EC7D55]'
+                                    : 'bg-[#3E5164]'
                             }`}
                             style={{ width: `${density.percentage}%` }}
                         />
@@ -179,7 +179,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                     <div className="mt-2 space-y-1">
                         <Button
                             size="sm"
-                            className="w-full h-8 text-xs font-bold rounded-2xl bg-[#9BCEC1] text-[#1A4036] hover:bg-[#9BCEC1]/80 shadow-md"
+                            className="w-full h-8 text-xs font-bold rounded-2xl bg-[#EC7D55] text-[#253341] hover:bg-[#AB421C] hover:text-[#F5F9F5] transition-colors duration-200 shadow-md"
                             onClick={handleGetRoute}
                             disabled={isLoadingRoute}
                         >
@@ -199,14 +199,14 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                         </Button>
 
                         {routeError && (
-                            <div className="text-[11px] font-bold text-[#E06C62] flex flex-col gap-1 mt-1 p-2 border border-[#E06C62]/30 bg-[#E06C62]/10 rounded-2xl">
+                            <div className="text-[11px] font-bold text-[#AB421C] flex flex-col gap-1 mt-1 p-2 border border-[#AB421C]/40 bg-[#AB421C]/10 rounded-2xl">
                                 <span>{routeError}</span>
                                 {directionsUrl && (
                                     <a
                                         href={directionsUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-[#1A4036] hover:underline font-bold flex items-center gap-0.5"
+                                        className="text-[#253341] hover:text-[#AB421C] hover:underline font-bold flex items-center gap-0.5 transition-colors duration-200"
                                     >
                                         Google Haritalar'da Aç <ExternalLink className="h-3 w-3" />
                                     </a>
@@ -217,59 +217,59 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                 )}
             </CardHeader>
 
-            <Separator className="bg-[#FFB6A6]/40" />
+            <Separator className="bg-[#BCC7D2]" />
 
             <CardContent className="p-3.5 pt-2 sm:p-4 sm:pt-2">
                 {/* Qibla Compass Visual */}
-                <div className="mb-3 flex flex-col items-center justify-center p-2 bg-[#FFEBD3] rounded-2xl border border-[#FFB6A6] gap-1">
-                    <span className="text-[9px] font-extrabold text-[#8C5E50] uppercase tracking-wider">Kıble Açısı</span>
-                    <div className="relative w-12 h-12 rounded-full border-2 border-[#FFB6A6] flex items-center justify-center bg-[#FFF6EC] shadow-inner">
-                        <span className="absolute top-0.5 text-[7px] font-black text-[#8C5E50]">K</span>
-                        <span className="absolute bottom-0.5 text-[7px] font-black text-[#8C5E50]">G</span>
-                        <span className="absolute left-1 text-[7px] font-black text-[#8C5E50]">B</span>
-                        <span className="absolute right-1 text-[7px] font-black text-[#8C5E50]">D</span>
+                <div className="mb-3 flex flex-col items-center justify-center p-2 bg-[#EDF3EE] rounded-2xl border border-[#BCC7D2] gap-1">
+                    <span className="text-[9px] font-extrabold text-[#3E5164] uppercase tracking-wider">Kıble Açısı</span>
+                    <div className="relative w-12 h-12 rounded-full border-2 border-[#BCC7D2] flex items-center justify-center bg-[#F5F9F5] shadow-inner">
+                        <span className="absolute top-0.5 text-[7px] font-black text-[#3E5164]">K</span>
+                        <span className="absolute bottom-0.5 text-[7px] font-black text-[#3E5164]">G</span>
+                        <span className="absolute left-1 text-[7px] font-black text-[#3E5164]">B</span>
+                        <span className="absolute right-1 text-[7px] font-black text-[#3E5164]">D</span>
                         <div 
-                            className="w-1 h-8 bg-[#9BCEC1] rounded-full transition-transform duration-500 ease-out"
+                            className="w-1 h-8 bg-[#EC7D55] rounded-full transition-transform duration-500 ease-out"
                             style={{ transform: `rotate(${qiblaBearing}deg)` }}
                         />
-                        <div className="absolute w-2 h-2 rounded-full bg-[#FFF6EC] border border-[#1A4036] shadow-xs z-10" />
+                        <div className="absolute w-2 h-2 rounded-full bg-[#F5F9F5] border border-[#253341] shadow-xs z-10" />
                     </div>
-                    <span className="text-[10px] font-black text-[#4A2B20]">
+                    <span className="text-[10px] font-black text-[#253341]">
                         {Math.round(qiblaBearing)}° {bearingToCompass(qiblaBearing)}
                     </span>
                 </div>
 
                 {/* Tesis Rozetleri */}
                 <div className="mb-3 flex flex-wrap gap-1">
-                    <Badge className="bg-[#9BCEC1] text-[#1A4036] text-[9px] font-extrabold">
+                    <Badge className="bg-[#DBE6DD] text-[#253341] border border-[#BCC7D2] text-[9px] font-extrabold">
                         <Accessibility className="mr-1 h-3 w-3" /> Erişilebilir
                     </Badge>
-                    <Badge className="bg-[#FFEBD3] text-[#4A2B20] border border-[#FFB6A6] text-[9px] font-extrabold">
+                    <Badge className="bg-[#EDF3EE] text-[#253341] border border-[#BCC7D2] text-[9px] font-extrabold">
                         <Car className="mr-1 h-3 w-3" /> Otopark Var
                     </Badge>
-                    <Badge className="bg-[#FFB6A6]/40 text-[#4A2B20] text-[9px] font-extrabold">
+                    <Badge className="bg-[#F2A488]/60 text-[#253341] border border-[#F2A488] text-[9px] font-extrabold">
                         <Users className="mr-1 h-3 w-3" /> Kadınlar Bölümü
                     </Badge>
                 </div>
 
-                <dl className="space-y-1.5 text-xs font-medium text-[#4A2B20]">
+                <dl className="space-y-1.5 text-xs font-medium text-[#253341]">
                     {mosque.district && (
-                        <div className="flex justify-between border-b border-[#FFB6A6]/20 pb-1">
-                            <dt className="text-[#8C5E50] font-semibold">İlçe</dt>
+                        <div className="flex justify-between border-b border-[#BCC7D2]/60 pb-1">
+                            <dt className="text-[#3E5164] font-semibold">İlçe</dt>
                             <dd className="font-bold">{mosque.district}</dd>
                         </div>
                     )}
 
                     {mosque.neighborhood && (
-                        <div className="flex justify-between border-b border-[#FFB6A6]/20 pb-1">
-                            <dt className="text-[#8C5E50] font-semibold">Mahalle</dt>
+                        <div className="flex justify-between border-b border-[#BCC7D2]/60 pb-1">
+                            <dt className="text-[#3E5164] font-semibold">Mahalle</dt>
                             <dd className="font-bold">{mosque.neighborhood}</dd>
                         </div>
                     )}
 
                     {mosque.architect && (
-                        <div className="flex justify-between border-b border-[#FFB6A6]/20 pb-1">
-                            <dt className="flex items-center gap-1 text-[#8C5E50] font-semibold">
+                        <div className="flex justify-between border-b border-[#BCC7D2]/60 pb-1">
+                            <dt className="flex items-center gap-1 text-[#3E5164] font-semibold">
                                 <User className="h-3.5 w-3.5" />
                                 Mimar
                             </dt>
@@ -278,8 +278,8 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                     )}
 
                     {mosque.capacity && (
-                        <div className="flex justify-between border-b border-[#FFB6A6]/20 pb-1">
-                            <dt className="flex items-center gap-1 text-[#8C5E50] font-semibold">
+                        <div className="flex justify-between border-b border-[#BCC7D2]/60 pb-1">
+                            <dt className="flex items-center gap-1 text-[#3E5164] font-semibold">
                                 <Users className="h-3.5 w-3.5" />
                                 Kapasite
                             </dt>
@@ -288,8 +288,8 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                     )}
 
                     {wheelchairInfo && (
-                        <div className="flex justify-between border-b border-[#FFB6A6]/20 pb-1">
-                            <dt className="flex items-center gap-1 text-[#8C5E50] font-semibold">
+                        <div className="flex justify-between border-b border-[#BCC7D2]/60 pb-1">
+                            <dt className="flex items-center gap-1 text-[#3E5164] font-semibold">
                                 <Accessibility className="h-3.5 w-3.5" />
                                 Engelli Erişimi
                             </dt>
@@ -302,7 +302,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                     )}
 
                     <div className="flex justify-between pt-1">
-                        <dt className="flex items-center gap-1 text-[#8C5E50] font-semibold">
+                        <dt className="flex items-center gap-1 text-[#3E5164] font-semibold">
                             <MapPin className="h-3.5 w-3.5" />
                             Koordinat
                         </dt>
@@ -313,12 +313,12 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                 </dl>
 
                 {/* Dış Bağlantılar */}
-                <div className="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-[#FFB6A6]/40">
+                <div className="mt-3 flex flex-wrap gap-1.5 pt-2 border-t border-[#BCC7D2]">
                     <a
                         href={mosque.osmUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A4036] hover:underline"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#253341] hover:text-[#AB421C] hover:underline transition-colors duration-200"
                     >
                         <ExternalLink className="h-3 w-3" />
                         OSM Kaydı
@@ -329,7 +329,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                             href={mosque.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A4036] hover:underline"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#253341] hover:text-[#AB421C] hover:underline transition-colors duration-200"
                         >
                             <Globe className="h-3 w-3" />
                             Web Sitesi
@@ -341,7 +341,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                             href={`https://www.wikidata.org/wiki/${mosque.wikidata}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A4036] hover:underline"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#253341] hover:text-[#AB421C] hover:underline transition-colors duration-200"
                         >
                             <BookOpen className="h-3 w-3" />
                             Wikidata
@@ -353,7 +353,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                             href={`https://tr.wikipedia.org/wiki/${mosque.wikipedia}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A4036] hover:underline"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#253341] hover:text-[#AB421C] hover:underline transition-colors duration-200"
                         >
                             <BookOpen className="h-3 w-3" />
                             Wikipedia
@@ -365,7 +365,7 @@ export const MosqueDetails = memo(function MosqueDetails({ mosque, userCoords }:
                             href={mosque.image}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1A4036] hover:underline"
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#253341] hover:text-[#AB421C] hover:underline transition-colors duration-200"
                         >
                             <ImageIcon className="h-3 w-3" />
                             Görsel

@@ -119,17 +119,17 @@ export function MosquesFeature() {
         <>
             <Header title="İstanbul Camileri" eyebrow="İstanbul Cami Rehberi">
                 {hasData && (
-                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-[#8C5E50]">
-                        <span className="font-extrabold text-[#1A4036] bg-[#9BCEC1] px-2 py-0.5 rounded-full border border-[#7CB8AA]">
+                    <div className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-[#3E5164]">
+                        <span className="font-extrabold text-[#253341] bg-[#DBE6DD] px-2 py-0.5 rounded-full border border-[#BCC7D2]">
                             {filters.district ? `${searchedMosques.length} Cami (${filters.district})` : `${totalCount} Cami`}
                         </span>
-                        <span className="text-[#FFB6A6]">•</span>
-                        <span className="font-bold text-[#4A2B20]">{districts.length} İlçe</span>
-                        <span className="text-[#FFB6A6]">•</span>
-                        <span className="flex items-center gap-1 font-bold text-[#4A2B20]">
+                        <span className="text-[#BCC7D2]">•</span>
+                        <span className="font-bold text-[#253341]">{districts.length} İlçe</span>
+                        <span className="text-[#BCC7D2]">•</span>
+                        <span className="flex items-center gap-1 font-bold text-[#253341]">
                             <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9BCEC1] opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#9BCEC1]"></span>
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#EC7D55] opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#EC7D55]"></span>
                             </span>
                             {geoStatusMessage}
                         </span>
@@ -142,10 +142,10 @@ export function MosquesFeature() {
                     {ui.ramadanMode && <RamadanBanner />}
                     <Suspense
                         fallback={
-                            <Card className={`${MAP_FALLBACK_HEIGHT} rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC]`}>
+                            <Card className={`${MAP_FALLBACK_HEIGHT} rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA]`}>
                                 <CardContent className="flex h-full items-center justify-center">
-                                    <div className="flex items-center gap-3 font-bold text-[#4A2B20]">
-                                        <div className="h-6 w-6 animate-spin rounded-full border-3 border-[#9BCEC1] border-t-transparent" />
+                                    <div className="flex items-center gap-3 font-bold text-[#253341]">
+                                        <div className="h-6 w-6 animate-spin rounded-full border-3 border-[#EC7D55] border-t-transparent" />
                                         <p>Harita yükleniyor...</p>
                                     </div>
                                 </CardContent>
@@ -154,8 +154,8 @@ export function MosquesFeature() {
                     >
                         <ErrorBoundary
                             fallback={
-                                <Card className="h-full min-h-[300px] flex items-center justify-center border-2 border-[#E06C62]/30 bg-[#FFF6EC] rounded-3xl">
-                                    <CardContent className="flex flex-col items-center justify-center p-6 text-center text-sm font-bold text-[#E06C62] gap-2">
+                                <Card className="h-full min-h-[300px] flex items-center justify-center border-2 border-[#AB421C]/40 bg-[#DCE3EA] rounded-3xl">
+                                    <CardContent className="flex flex-col items-center justify-center p-6 text-center text-sm font-bold text-[#AB421C] gap-2">
                                         <AlertCircle className="h-6 w-6" />
                                         <span>Harita yüklenirken bir sorun oluştu. Sayfayı yenilemeyi deneyebilirsiniz.</span>
                                     </CardContent>
@@ -191,16 +191,16 @@ export function MosquesFeature() {
                                     userCoords={userCoords}
                                 />
                             ) : searchedMosques.length > 0 ? (
-                                <Card className="flex flex-col justify-center rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC]">
-                                    <CardContent className="flex flex-col items-center justify-center p-6 text-center text-xs font-bold text-[#8C5E50] gap-2">
-                                        <MapPin className="h-7 w-7 text-[#FFB6A6]" />
+                                <Card className="flex flex-col justify-center rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA] transition-colors duration-200">
+                                    <CardContent className="flex flex-col items-center justify-center p-6 text-center text-xs font-bold text-[#3E5164] gap-2">
+                                        <MapPin className="h-7 w-7 text-[#EC7D55]" />
                                         <span>Detayları görmek için haritadan veya listeden bir cami seçin</span>
                                     </CardContent>
                                 </Card>
                             ) : (
-                                <Card className="flex flex-col justify-center rounded-3xl border-2 border-[#FFB6A6] bg-[#FFF6EC]">
-                                    <CardContent className="flex items-center justify-center p-6 text-xs font-bold text-[#8C5E50]">
-                                        <Heart className="mr-2 h-5 w-5 text-[#E06C62]" />
+                                <Card className="flex flex-col justify-center rounded-3xl border-2 border-[#BCC7D2] bg-[#DCE3EA] transition-colors duration-200">
+                                    <CardContent className="flex items-center justify-center p-6 text-xs font-bold text-[#3E5164]">
+                                        <Heart className="mr-2 h-5 w-5 text-[#AB421C]" />
                                         Filtrelere uyan cami bulunamadı
                                     </CardContent>
                                 </Card>

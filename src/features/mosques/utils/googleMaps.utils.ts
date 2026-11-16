@@ -12,12 +12,12 @@ export const GOOGLE_MAP_STYLES: google.maps.MapTypeStyle[] = [
     {
         featureType: 'poi.park',
         elementType: 'geometry',
-        stylers: [{ color: '#dedede' }],
+        stylers: [{ color: '#DBE6DD' }],
     },
     {
         featureType: 'water',
         elementType: 'geometry',
-        stylers: [{ color: '#a0c8d0' }],
+        stylers: [{ color: '#DCE3EA' }],
     },
 ];
 
